@@ -1,0 +1,25 @@
+encryption = "age"
+
+[git]
+autoAdd = true
+autoCommit = true
+autoPush = true
+
+[edit]
+command = "code"
+args = ["--wait"]
+
+[diff]
+command = "code"
+args = ["--wait", "--diff"]
+
+[merge]
+command = "bash"
+args = [
+    "-c",
+    "cp {{ "{{ .Target }}" }} {{ "{{ .Target }}" }}.base && code --new-window --wait --merge {{ "{{ .Destination }}" }} {{ "{{ .Target }}" }} {{ "{{ .Target }}" }}.base {{ "{{ .Source }}" }}",
+]
+
+[age]
+identity = "~/.ssh/personal"
+recipientsFile = "~/.ssh/personal.pub"

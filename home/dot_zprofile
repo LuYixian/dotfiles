@@ -1,0 +1,11 @@
+# Added by OrbStack: command-line tools and integration
+# Comment this line if you don't want it to be added again.
+source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+
+# export PATH
+export PATH=$PATH:$HOME/bin/
+
+# Homebrew setup
+if type "/opt/homebrew/bin/brew" >/dev/null 2>&1; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
