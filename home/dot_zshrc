@@ -24,6 +24,7 @@ alias_if_cmd_exists "chezmoi" "dot"
 alias_if_cmd_exists "nvim" "vi"
 alias_if_cmd_exists "nvim" "vim"
 alias_if_cmd_exists "nvim" "view"
+alias_if_cmd_exists "lsd" "ls"
 
 # do not save duplicates in history
 setopt hist_ignore_dups
