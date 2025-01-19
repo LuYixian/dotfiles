@@ -1,16 +1,32 @@
-source <(fzf --zsh)
+# factory functions
+function eval_if_cmd_exists() {
+    cmd=$1
+    eval_tgt=$2
+    if type $cmd >/dev/null 2>&1; then
+        eval $eval_tgt
+    fi
+}
 
-eval "$(starship init zsh)"
-eval "$(sheldon source)"
+function alias_if_cmd_exists() {
+    cmd=$1
+    alias_name=$2
+    if type $cmd >/dev/null 2>&1; then
+        alias $alias_name=$cmd
+    fi
+}
 
-eval "$(navi widget zsh)"
+eval_if_cmd_exists "starship" "$(starship init zsh)"
+eval_if_cmd_exists "sheldon" "$(sheldon source)"
+eval_if_cmd_exists "fzf" "$(fzf --zsh)"
+eval_if_cmd_exists "navi" "$(navi widget zsh)"
 
-# export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --no-messages --glob "!.git/"'
-# export FZF_DEFAULT_OPTS='--height 50% --layout=reverse --border'
-# export FZF_CTRL_T_COMMAND='fd --type f --hidden --follow --exclude .git'
-# export FZF_CTRL_T_OPTS='--preview "bat --color=always --style=numbers,header,changes,grid --line-range=:500 {}"'
+alias_if_cmd_exists "chezmoi" "dot"
+alias_if_cmd_exists "nvim" "vi"
+alias_if_cmd_exists "nvim" "vim"
+alias_if_cmd_exists "nvim" "view"
 
-alias vi="nvim"
-alias vim="nvim"
-alias view="nvim -R"
-alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+# do not save duplicates in history
+setopt hist_ignore_dups
+setopt hist_ignore_all_dups
+# japanese filename support
+setopt print_eight_bit
