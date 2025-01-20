@@ -1,0 +1,4 @@
+# https://ghostty.zerebos.com/
+theme = Dracula
+font-family = "CaskaydiaCove NFM"
+macos-titlebar-proxy-icon = hidden

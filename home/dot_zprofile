@@ -11,6 +11,9 @@ export FZF_DEFAULT_OPTS='--height 50% --layout=reverse --border'
 export FZF_CTRL_T_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_OPTS='--preview "bat --color=always --style=numbers,header,changes,grid --line-range=:500 {}"'
 
+# bat settings
+export BAT_THEME="Dracula"
+
 # Homebrew setup
 if type "/opt/homebrew/bin/brew" >/dev/null 2>&1; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
