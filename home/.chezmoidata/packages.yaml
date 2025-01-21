@@ -56,5 +56,6 @@ packages:
     - "1password-cli"
     - "cheatsheet"
     - "ghostty"
+    - "mockoon"
     - "ngrok"
     - "orbstack"
