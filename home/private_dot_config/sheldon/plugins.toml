@@ -12,12 +12,12 @@
 
 shell = "zsh"
 
-[templates]
-defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
-
 [plugins]
 [plugins.zsh-defer]
 github = "romkatv/zsh-defer"
+
+[templates]
+defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
 
 [plugins.zsh-autosuggestions]
 apply = ["defer"]
@@ -55,6 +55,9 @@ github = "zsh-users/zsh-syntax-highlighting"
 
 [plugins.zsh-fzf-history-search]
 github = "joshskidmore/zsh-fzf-history-search"
+
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
 
 # For example:
 #

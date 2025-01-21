@@ -26,6 +26,7 @@ packages:
     - "lsd"
     - "macos-trash"
     - "navi"
+    - "neofetch"
     - "neovim"
     - "onefetch"
     - "openssh"
@@ -54,5 +55,6 @@ packages:
     casks:
     - "1password-cli"
     - "cheatsheet"
+    - "ghostty"
     - "ngrok"
     - "orbstack"
