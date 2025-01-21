@@ -56,9 +56,6 @@ github = "zsh-users/zsh-syntax-highlighting"
 [plugins.zsh-fzf-history-search]
 github = "joshskidmore/zsh-fzf-history-search"
 
-[plugins.fzf-tab]
-github = "Aloxaf/fzf-tab"
-
 # For example:
 #
 # [plugins.base16]
