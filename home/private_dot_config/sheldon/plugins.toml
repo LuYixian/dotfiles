@@ -46,6 +46,10 @@ github = "b4b4r07/enhancd"
 apply = ["defer"]
 github = "so-fancy/diff-so-fancy"
 
+[plugins.zsh-terraform]
+apply = ["defer"]
+github = 'macunha1/zsh-terraform'
+
 [plugins.ripgrep-shell-completions]
 apply = ["fpath"]
 remote = "https://github.com/BurntSushi/ripgrep/raw/master/crates/core/flags/complete/rg.zsh"

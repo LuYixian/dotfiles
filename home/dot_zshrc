@@ -3,7 +3,7 @@ function eval_if_cmd_exists() {
     cmd=$1
     eval_tgt=$2
     if type $cmd >/dev/null 2>&1; then
-        eval $eval_tgt
+        eval "$(eval $eval_tgt)"
     fi
 }
 
@@ -15,10 +15,10 @@ function alias_if_cmd_exists() {
     fi
 }
 
-eval_if_cmd_exists "starship" "$(starship init zsh)"
-eval_if_cmd_exists "sheldon" "$(sheldon source)"
-eval_if_cmd_exists "fzf" "$(fzf --zsh)"
-eval_if_cmd_exists "navi" "$(navi widget zsh)"
+eval_if_cmd_exists "starship" "starship init zsh"
+eval_if_cmd_exists "sheldon" "sheldon source"
+eval_if_cmd_exists "fzf" "fzf --zsh"
+eval_if_cmd_exists "navi" "navi widget zsh"
 
 alias_if_cmd_exists "chezmoi" "dot"
 alias_if_cmd_exists "nvim" "vi"

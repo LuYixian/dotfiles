@@ -1,5 +1,53 @@
 encryption = "age"
 
+{{/* boolean feature tags */}}
+{{- $work := false -}}{{/* true if this machine is a work machine */}}
+{{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
+{{- $personal := false -}}{{/* true if this machine should have personal secrets */}}
+{{- "" -}}
+
+{{- $osID := .chezmoi.os -}}
+{{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
+{{-   $osID = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{/* detect GitHub codespaces, VSCode remote containers, Docker containers, Multipass VMs, and Vagrant boxes */}}
+{{- if or (env "CODESPACES") (env "REMOTE_CONTAINERS_IPC") (eq .chezmoi.username "root" "ubuntu" "vagrant" "vscode") -}}
+{{-   $headless = true -}}
+{{- end -}}
+
+{{/* work around unreliable hostname on darwin */}}
+{{- $hostname := .chezmoi.hostname -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $hostname := output "scutil" "--get" "ComputerName" | trim -}}
+{{- end -}}
+
+{{- if eq $hostname "yixianlu" -}}
+{{-   $work = true -}}
+{{- else -}}
+{{-   $personal = true -}}
+{{- end -}}
+
+{{/* prompt for headless if stdin is a TTY */}}
+{{- if stdinIsATTY -}}
+{{-   $headless = promptBoolOnce . "headless" "headless" -}}
+{{- else -}}
+{{-   $headless = true -}}
+{{- end -}}
+
+{{- $email := "mcluoc@gmail.com" -}}
+{{- if $work -}}
+{{-   $email = "yixian.lu@acesinc.co.jp" -}}
+{{- end -}}
+
+[data]
+    email = {{ $email | quote }}
+    work = {{ $work }}
+    personal = {{ $personal }}
+    headless = {{ $headless }}
+    hostname = {{ $hostname | quote }}
+    osid = {{ $osID | quote }}
+
 [edit]
 command = "code"
 args = ["--wait"]
