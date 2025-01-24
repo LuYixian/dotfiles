@@ -1,37 +1,6 @@
-# factory functions
-function eval_if_cmd_exists() {
-    cmd=$1
-    eval_tgt=$2
-    if type $cmd >/dev/null 2>&1; then
-        eval "$(eval $eval_tgt)"
-    fi
-}
-
-function alias_if_cmd_exists() {
-    cmd=$1
-    alias_name=$2
-    if type $cmd >/dev/null 2>&1; then
-        alias $alias_name=$cmd
-    fi
-}
-
-eval_if_cmd_exists "starship" "starship init zsh"
-eval_if_cmd_exists "sheldon" "sheldon source"
-eval_if_cmd_exists "fzf" "fzf --zsh"
-eval_if_cmd_exists "navi" "navi widget zsh"
-
-alias_if_cmd_exists "chezmoi" "dot"
-alias_if_cmd_exists "nvim" "vi"
-alias_if_cmd_exists "nvim" "vim"
-alias_if_cmd_exists "nvim" "view"
-alias_if_cmd_exists "lsd" "ls"
-alias ll="ls -l"
-alias la="ls -a"
-alias lla="ls -la"
-alias_if_cmd_exists "bat" "cat"
-alias_if_cmd_exists "dust" "du"
-alias_if_cmd_exists "tldr" "man"
-alias_if_cmd_exists "hyperfine" "hf"
+source $HOME/.custom/eval.sh
+source $HOME/.custom/alias.sh
+source $HOME/.custom/micromamba.sh
 
 # do not save duplicates in history
 setopt hist_ignore_dups

@@ -30,6 +30,7 @@ packages:
       - "lazygit"
       - "lsd"
       - "macos-trash"
+      - "micromamba"
       - "navi"
       - "neofetch"
       - "neovim"
