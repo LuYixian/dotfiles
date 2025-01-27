@@ -1,5 +1,8 @@
 # export PATH
-export PATH=$PATH:$HOME/bin/
+export PATH="$PATH:$HOME/bin/"
+
+# set xdg configuration directory
+export XDG_CONFIG_HOME="$HOME/.config"
 
 # fzf settings
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix'
@@ -12,9 +15,6 @@ export BAT_THEME="Dracula"
 
 # gpg symmetric encryption
 export GPG_TTY=$(tty)
-
-export MAMBA_EXE='/opt/homebrew/bin/micromamba';
-export MAMBA_ROOT_PREFIX='$HOME/.local/share/mamba';
 
 {{ if eq .chezmoi.os "darwin" -}}
 
