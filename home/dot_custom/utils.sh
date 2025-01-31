@@ -1,0 +1,3 @@
+nw() {
+    sudo sniffnet "$@"
+}

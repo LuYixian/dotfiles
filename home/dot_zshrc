@@ -1,5 +1,6 @@
 source $HOME/.custom/eval.sh
 source $HOME/.custom/alias.sh
+source $HOME/.custom/utils.sh
 
 # do not save duplicates in history
 setopt hist_ignore_dups
