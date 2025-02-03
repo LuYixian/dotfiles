@@ -5,7 +5,6 @@ packages:
       - "derailed/k9s"
       - "homebrew/bundle"
       - "homebrew/services"
-      - "koekeishiya/formulae"
       work:
       - "azure/functions"
       personal:
@@ -49,16 +48,14 @@ packages:
       - "starship"
       - "tfenv"
       - "tlrc"
+      - "tmux"
       - "tokei"
       - "wget"
       - "yarn"
       - "yazi"
       - "yq"
-      - "zellij"
       - "zoxide"
       - "derailed/k9s/k9s"
-      - "koekeishiya/formulae/skhd"
-      - "koekeishiya/formulae/yabai"
       work:
       - "aws-sam-cli"
       - "azure-cli"
@@ -79,6 +76,7 @@ packages:
       - "cheatsheet"
       - "ghostty"
       - "mockoon"
+      - "nikitabobko/tap/aerospace"
       - "ngrok"
       - "orbstack"
       work:

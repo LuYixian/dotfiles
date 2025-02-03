@@ -1,4 +1,10 @@
-# https://ghostty.zerebos.com/
+# # https://ghostty.zerebos.com/
 theme = Dracula
 font-family = "CaskaydiaCove NFM"
 macos-titlebar-proxy-icon = hidden
+font-size = 15
+mouse-hide-while-typing = true
+window-decoration = true
+macos-option-as-alt = true
+window-padding-y = 0,2
+window-padding-x = 3,1
