@@ -2,7 +2,7 @@
 theme = Dracula
 font-family = "CaskaydiaCove NFM"
 macos-titlebar-proxy-icon = hidden
-font-size = 15
+font-size = 14
 mouse-hide-while-typing = true
 window-decoration = true
 macos-option-as-alt = true

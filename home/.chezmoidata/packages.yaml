@@ -73,6 +73,7 @@ packages:
     casks:
       normal:
       - "1password-cli"
+      - "alt-tab"
       - "cheatsheet"
       - "ghostty"
       - "mockoon"
