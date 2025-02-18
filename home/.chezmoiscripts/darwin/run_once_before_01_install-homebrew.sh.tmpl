@@ -7,4 +7,11 @@ if ! command -v brew >/dev/null 2>&1; then
     printf "📦 Homebrew not installed. Installing.\n"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
+
+# Install or update Nix
+if ! command -v nix >/dev/null 2>&1; then
+    printf "📦 Nix not installed. Installing.\n"
+    sh <(curl -L https://nixos.org/nix/install)
+fi
+
 {{ end -}}
