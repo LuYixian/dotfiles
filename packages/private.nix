@@ -2,8 +2,7 @@
 {
   imports = [
     ./homebrew/shared.nix
-    ./homebrew/work.nix
+    ./homebrew/private.nix
     ./nix-pkgs/shared.nix
-    ./nix-pkgs/work.nix
   ];
 }

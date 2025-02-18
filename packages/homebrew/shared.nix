@@ -12,15 +12,35 @@
       # 'zap': uninstalls all formulae(and related files) not listed in the generated Brewfile
       cleanup = "zap";
     };
+
+    # `brew install`
+    # TODO Feel free to add your favorite packages here.
+    brews = [
+      "macos-trash"
+    ];
+
+    # `brew install --cask`
+    # TODO Feel free to add the apps you need here.
+    casks = [
+      "visual-studio-code"
+      "iina" # video player
+      "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
+      "eudic"
+      "1password-cli"
+      "alt-tab"
+      "cheatsheet"
+      "keyboardcleantool"
+      "ghostty"
+      "mockoon"
+      "nikitabobko/tap/aerospace"
+      "ngrok"
+      "orbstack"
+      "slack"
+    ];
   };
 
     taps = [
       "homebrew/services"
       "homebrew/bundle"
     ];
-
-  imports = [
-    ./casks
-    ./masApps
-  ];
 }

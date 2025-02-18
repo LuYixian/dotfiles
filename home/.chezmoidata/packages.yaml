@@ -68,7 +68,7 @@ packages:
       # - "poetry"
       # - "redis"
       # - "tflint"
-      - "volta"
+      # - "volta"
       personal:
     casks:
       normal:
