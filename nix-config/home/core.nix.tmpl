@@ -1,0 +1,45 @@
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    {{ range .home-pkgs.shared -}}
+    "{{ . | quote }}"
+    {{ end -}}
+    {{- if .work -}}
+    {{ range .home-pkgs.work -}}
+    "{{ . | quote }}"
+    {{ end -}}
+    {{- end -}}
+    {{ if .private -}}
+    {{ range .home-pkgs.private -}}
+    "{{ . | quote }}"
+    {{ end -}}
+    {{- end -}}
+  ];
+
+  programs = {
+    # modern vim
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+      vimAlias = true;
+    };
+
+    # terminal file manager
+    yazi = {
+      enable = true;
+      enableZshIntegration = true;
+      settings = {
+        manager = {
+          show_hidden = true;
+          sort_dir_first = true;
+        };
+      };
+    };
+
+    # skim provides a single executable: sk.
+    # Basically anywhere you would want to use grep, try sk instead.
+    skim = {
+      enable = true;
+      enableBashIntegration = true;
+    };
+  };
+}

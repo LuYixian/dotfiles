@@ -1,0 +1,107 @@
+homebrew:
+  taps:
+  - "homebrew/bundle"
+  - "homebrew/services"
+  brews:
+    shared:
+    - "macos-trash"
+    work:
+    - "cliclick"
+    - "md5sha1sum"
+    private:
+  casks:
+    shared:
+    - "visual-studio-code"
+    - "alt-tab"
+    - "cheatsheet"
+    - "keyboardcleantool"
+    - "ghostty"
+    - "mockoon"
+    - "nikitabobko/tap/aerospace"
+    - "ngrok"
+    - "orbstack"
+    - "slack"
+    work:
+    private:
+    - "1password-cli"
+    - "iina" # video player
+    - "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
+    - "telegram"
+    - "discord"
+sys-pkgs:
+  - git
+  - neovim
+home-pkgs:
+  shared:
+  - act
+  - age
+  - aria2
+  - asciinema
+  - bat
+  - bat-extras.prettybat
+  - bat-extras.batwatch
+  - bat-extras.batpipe
+  - bat-extras.batman
+  - bat-extras.batgrep
+  - bat-extras.batdiff
+  - dust
+  - fastfetch
+  - fd
+  - ffmpeg
+  - fzf
+  - gh
+  - ghq
+  - git-lfs
+  - glow
+  - go
+  - hyperfine
+  - jq
+  - just # use Justfile to simplify nix-darwin's commands
+  - lazygit
+  - lsd
+  - navi
+  - nerdfonts
+  - nvitop
+  - onefetch
+  - openssh
+  - openssl
+  - ouch # a CLI tool tor compressing and decompressing for various formats
+  - p7zip
+  - p7zip-rar
+  - pdm
+  - poppler
+  - pueue
+  - ripgrep
+  - ripgrep-all
+  - sd
+  - skim
+  - sheldon
+  - sniffnet
+  - starship
+  - tenv
+  - tlrc
+  - tmux
+  - tokei
+  - tre-command
+  - wget
+  - yarn-berry
+  - yazi
+  - yq-go
+  - zoxide
+  - zstd
+  - k9s
+  work:
+  - aws-sam-cli
+  - azure-cli
+  - azure-functions-core-tools
+  - mariadb
+  - mysql84
+  - postgresql
+  - postgresql_16
+  - postgresql_15
+  - postgresql_14
+  - poetry
+  - redis
+  - tflint
+  - volta
+  private:

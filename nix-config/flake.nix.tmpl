@@ -1,0 +1,100 @@
+{
+  description = "YixianLu's system flake";
+
+  inputs = {
+    # flake-utils
+    flake-utils.url = github:numtide/flake-utils;
+
+    # nixpkgs
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    # nix-darwin
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # mac-app-util
+    mac-app-util.url = "github:hraban/mac-app-util";
+
+    # nix-homebrew
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    # Optional: Declarative tap management
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
+  };
+
+  outputs = inputs@{
+    self,
+    flake-utils,
+    nixpkgs,
+    nix-darwin,
+    mac-app-util,
+    nix-homebrew,
+    homebrew-core,
+    homebrew-cask,
+    homebrew-bundle,
+    ...
+    }:
+
+  let
+    # TODO replace with your own username, system and hostname
+    {{- $arch := .chezmoi.arch -}}
+    {{- if eq $arch "arm64" -}}
+      {{- $arch = "aarch64" -}}
+    {{- end -}}
+    system = "{{ .arch }}-{{ .chezmoi.os }}"; # aarch64-darwin or x86_64-darwin
+    hostname = "{{ .hostname }}";
+    username = "{{ .chezmoi.username }}";
+
+    specialArgs =
+      inputs
+      // {
+        inherit username hostname;
+      };
+
+  in
+  {
+    # Build darwin flake using:
+    # $ darwin-rebuild build --flake .#macbook
+
+    darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
+      inherit system specialArgs;
+      modules = [
+        ./modules/nix-core.nix
+        ./modules/system.nix
+        ./modules/apps.nix
+        ./modules/homebrew-mirror.nix # comment this line if you don't need a homebrew mirror
+        ./modules/host-users.nix
+
+        # home manager
+        home-manager.darwinModules.home-manager
+        {
+          # `home-manager` config
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = specialArgs;
+          home-manager.users.${username} = import ./home;
+          # To enable it for all users:
+          home-manager.sharedModules = [
+            mac-app-util.homeManagerModules.default
+          ];
+        }
+      ];
+    };
+
+    # nix code formatter
+    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
+
+  };
+}
