@@ -2,6 +2,7 @@ homebrew:
   taps:
   - "homebrew/bundle"
   - "homebrew/services"
+  - "nikitabobko/tap"
   brews:
     shared:
     - "macos-trash"
@@ -28,10 +29,10 @@ homebrew:
     - "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
     - "telegram"
     - "discord"
-sys-pkgs:
+sysPkgs:
   - git
   - neovim
-home-pkgs:
+homepkgs:
   shared:
   - act
   - age

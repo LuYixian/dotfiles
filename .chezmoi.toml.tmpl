@@ -7,9 +7,8 @@ encryption = "age"
 {{- "" -}}
 
 {{/* prompt for user specific configuration */}}
-{{-   $hostname = promptStringOnce . "hostname" "Hostname" -}}{{/* set the hostname */}}
+{{- $hostname := promptStringOnce . "hostname" "Hostname" -}}{{/* set the hostname */}}
 {{- $useremail := promptStringOnce . "useremail" "Email address" -}}{{/* set the useremail address */}}
-{{- $gitUsername := promptStringOnce . "gitUsername" "GitHub username" -}}{{/* set the github username */}}
 {{- $gitUsername := promptStringOnce . "gitUsername" "GitHub username" -}}{{/* set the github username */}}
 {{- $gitEmail := promptStringOnce . "gitEmail" "Git useremail" -}}{{/* set the github useremail */}}
 
@@ -34,15 +33,15 @@ encryption = "age"
 {{- $timezone := index (fromJson (output "curl" "-s" "http://ip-api.com/json/")) "timezone" -}}
 
 [data]
-    hostname = {{ $hostname | quote }}
-    useremail = {{ $useremail | quote }}
-    gitUsername = {{ $gitUsername | quote }}
-    gitEmail = {{ $gitEmail | quote }}
-    work = {{ $work }}
-    private = {{ $private }}
-    headless = {{ $headless }}
-    osid = {{ $osID | quote }}
-    timezone = {{ $timezone | quote }}
+hostname = {{ $hostname | quote }}
+useremail = {{ $useremail | quote }}
+gitUsername = {{ $gitUsername | quote }}
+gitEmail = {{ $gitEmail | quote }}
+work = {{ $work }}
+private = {{ $private }}
+headless = {{ $headless }}
+osid = {{ $osID | quote }}
+timezone = {{ $timezone | quote }}
 
 [edit]
 command = "code"

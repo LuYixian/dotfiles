@@ -27,7 +27,7 @@ let
       fi
       # check are there any uncommitted changes, if so, mark the revision as dirty
       if [ -n "$(git -C "{{ .chezmoi.sourceDir }}" status --porcelain 2>/dev/null)" ]; then
-        rev="${rev}-dirty"
+        rev="$rev-dirty"
       fi
       echo "$rev" > $out
     ''
@@ -87,9 +87,9 @@ in
       #   https://github.com/yannbertrand/macos-defaults
       NSGlobalDomain = {
         # `defaults read NSGlobalDomain "xxx"`
-        "com.apple.swipescrolldirection" = true;  # enable natural scrolling(default to true)
+        "com.apple.swipescrolldirection" = false;  # enable natural scrolling(default to true)
         "com.apple.sound.beep.feedback" = 0;  # disable beep sound when pressing volume up/down key
-        AppleInterfaceStyle = "Light";  # dark mode
+        AppleInterfaceStyle = null;  # dark mode
         AppleKeyboardUIMode = 3;  # Mode 3 enables full keyboard control.
         ApplePressAndHoldEnabled = true;  # enable press and hold
 
@@ -189,7 +189,7 @@ in
   };
 
   # Add ability to used TouchID for sudo authentication
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   # Create /etc/zshrc that loads the nix-darwin environment.
   # this is required if you want to use darwin's default shell - zsh
@@ -218,9 +218,9 @@ in
       nerd-fonts.caskaydia-cove
       nerd-fonts.caskaydia-mono
       nerd-fonts.jetbrains-mono
-      nerd-fonts.jiosevka
-      nerd-fonts.jiosevka-term
-      nerd-fonts.jiosevka-term-slab
+      nerd-fonts.iosevka
+      nerd-fonts.iosevka-term
+      nerd-fonts.iosevka-term-slab
     ];
   };
 }

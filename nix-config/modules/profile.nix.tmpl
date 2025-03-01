@@ -1,0 +1,20 @@
+{ pkgs, flakey-profile, ... }:
+
+flakey-profile.lib.mkProfile {
+  inherit pkgs;
+  paths = with pkgs; [
+    {{- range .homepkgs.shared }}
+    {{ . }}
+    {{- end }}
+    {{- if .work }}
+    {{- range .homepkgs.work }}
+    {{ . }}
+    {{- end }}
+    {{- end }}
+    {{- if .private }}
+    {{- range .homepkgs.private }}
+    {{ . }}
+    {{- end }}
+    {{- end }}
+  ];
+}

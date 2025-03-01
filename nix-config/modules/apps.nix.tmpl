@@ -16,9 +16,9 @@
   #
   # Related Discussion: https://discourse.nixos.org/t/darwin-again/29331
   environment.systemPackages = with pkgs; [
-    {{ range .sys-pkgs -}}
-    "{{ . | quote }}"
-    {{ end -}}
+    {{- range .sysPkgs }}
+    {{ . }}
+    {{- end }}
   ];
   environment.variables.EDITOR = "nvim";
 
@@ -38,43 +38,43 @@
     # `brew install`
     # TODO Feel free to add your favorite packages here.
     brews = [
-      {{ range .homebrew.brews.shared -}}
-      "{{ . | quote }}"
-      {{ end -}}
-      {{- if .work -}}
-      {{ range .homebrew.brews.work -}}
-      "{{ . | quote }}"
-      {{ end -}}
-      {{- end -}}
-      {{ if .private -}}
-      {{ range .homebrew.brews.private -}}
-      "{{ . | quote }}"
-      {{ end -}}
-      {{- end -}}
+      {{- range .homebrew.brews.shared }}
+      {{ . | quote }}
+      {{- end }}
+      {{- if .work }}
+      {{- range .homebrew.brews.work }}
+      {{ . | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if .private }}
+      {{- range .homebrew.brews.private }}
+      {{ . | quote }}
+      {{- end }}
+      {{- end }}
     ];
 
     # `brew install --cask`
     # TODO Feel free to add the apps you need here.
     casks = [
-      {{ range .homebrew.casks.shared -}}
-      "{{ . | quote }}"
-      {{ end -}}
-      {{- if .work -}}
-      {{ range .homebrew.casks.work -}}
-      "{{ . | quote }}"
-      {{ end -}}
-      {{- end -}}
-      {{ if .private -}}
-      {{ range .homebrew.casks.private -}}
-      "{{ . | quote }}"
-      {{ end -}}
-      {{- end -}}
+      {{- range .homebrew.casks.shared }}
+      {{ . | quote }}
+      {{- end }}
+      {{- if .work }}
+      {{- range .homebrew.casks.work }}
+      {{ . | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if .private }}
+      {{- range .homebrew.casks.private }}
+      {{ . | quote }}
+      {{- end }}
+      {{- end }}
     ];
-  };
 
     taps = [
-      {{ range .homebrew.taps -}}
-      "{{ . | quote }}"
-      {{ end -}}
+      {{- range .homebrew.taps }}
+      {{ . | quote }}
+      {{- end }}
     ];
+  };
 }

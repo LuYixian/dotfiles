@@ -17,6 +17,9 @@
     # mac-app-util
     mac-app-util.url = "github:hraban/mac-app-util";
 
+    # flakey-profile
+    flakey-profile.url = "github:lf-/flakey-profile";
+
     # nix-homebrew
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     # Optional: Declarative tap management
@@ -40,6 +43,7 @@
     nixpkgs,
     nix-darwin,
     mac-app-util,
+    flakey-profile,
     nix-homebrew,
     homebrew-core,
     homebrew-cask,
@@ -48,14 +52,23 @@
     }:
 
   let
+
     # TODO replace with your own username, system and hostname
-    {{- $arch := .chezmoi.arch -}}
+    {{ $arch := .chezmoi.arch }}
     {{- if eq $arch "arm64" -}}
       {{- $arch = "aarch64" -}}
     {{- end -}}
-    system = "{{ .arch }}-{{ .chezmoi.os }}"; # aarch64-darwin or x86_64-darwin
+    system = "{{ $arch }}-{{ .chezmoi.os }}"; # aarch64-darwin or x86_64-darwin
     hostname = "{{ .hostname }}";
     username = "{{ .chezmoi.username }}";
+
+    pkgs = import nixpkgs {
+      inherit system;
+    };
+
+    myProfile = import ./modules/profile.nix {
+      inherit pkgs flakey-profile;
+    };
 
     specialArgs =
       inputs
@@ -74,24 +87,23 @@
         ./modules/nix-core.nix
         ./modules/system.nix
         ./modules/apps.nix
-        ./modules/homebrew-mirror.nix # comment this line if you don't need a homebrew mirror
         ./modules/host-users.nix
-
-        # home manager
-        home-manager.darwinModules.home-manager
+        mac-app-util.darwinModules.default
+        nix-homebrew.darwinModules.nix-homebrew
         {
-          # `home-manager` config
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = specialArgs;
-          home-manager.users.${username} = import ./home;
-          # To enable it for all users:
-          home-manager.sharedModules = [
-            mac-app-util.homeManagerModules.default
-          ];
+          nix-homebrew = {
+            # Install Homebrew under the default prefix
+            enable = true;
+            # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
+            enableRosetta = if system == "aarch64-darwin" then true else false;
+            # User owning the Homebrew prefix
+            user = username;
+          };
         }
       ];
     };
+
+    packages."${hostname}" = myProfile;
 
     # nix code formatter
     formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
