@@ -1,7 +1,8 @@
-
-{ pkgs, lib, ... }:
-
 {
+  pkgs,
+  lib,
+  ...
+}: {
   # Enable alternative shell support in nix-darwin.
   # programs.fish.enable = true;
 

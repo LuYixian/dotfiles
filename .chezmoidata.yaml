@@ -61,13 +61,10 @@ homepkgs:
   - lazygit
   - lsd
   - navi
-  - nerdfonts
-  - nvitop
   - onefetch
   - openssh
   - openssl
   - ouch # a CLI tool tor compressing and decompressing for various formats
-  - p7zip
   - p7zip-rar
   - pdm
   - poppler
@@ -106,3 +103,5 @@ homepkgs:
   - tflint
   - volta
   private:
+  extra:
+  - nvitop
