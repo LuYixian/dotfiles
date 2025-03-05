@@ -22,12 +22,18 @@ homebrew:
       - "ghostty"
       - "input-source-pro"
       - "mockoon"
+      - "notion"
       - "nikitabobko/tap/aerospace"
       - "ngrok"
+      - "obs"
       - "orbstack"
+      - "pdf-expert"
+      - "rustdesk"
       - "slack"
+      - "slidepilot"
       - "karabiner-elements"
     work:
+      - "obsidian"
     private:
       - "adguard"
       - "balenaetcher"
@@ -37,6 +43,8 @@ homebrew:
       - "deepl"
       - "1password-cli"
       - "iina" # video player
+      - "logseq"
+      - "notion-calendar"
       - "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
       - "telegram"
       - "discord"
