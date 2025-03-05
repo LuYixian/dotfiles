@@ -1,7 +1,8 @@
 {{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
-{{- $homeDir := .chezmoi.homeDir -}}
+# next section is to tigger the script to run on change when the following files are modified
+{{ $homeDir := .chezmoi.homeDir -}}
 # flake.nix hash: {{ include (printf "%s/nix-config/flake.nix" $homeDir) | sha256sum }}
 # flake.lock hash: {{ include (printf "%s/nix-config/flake.lock" $homeDir) | sha256sum }}
 # apps.nix hash: {{ include (printf "%s/nix-config/modules/apps.nix" $homeDir) | sha256sum }}

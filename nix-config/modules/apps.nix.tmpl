@@ -33,6 +33,27 @@
       cleanup = "zap";
     };
 
+    # Applications to install from Mac App Store using mas.
+    # You need to install all these Apps manually first so that your apple account have records for them.
+    # otherwise Apple Store will refuse to install them.
+    # For details, see https://github.com/mas-cli/mas 
+    # TODO Feel free to add your favorite apps here.
+    masApps = {
+      {{- range .homebrew.masApps.shared }}
+      {{ index . 0 }} = {{ index . 1 }};
+      {{- end }}
+      {{- if .work }}
+      {{- range .homebrew.masApps.work }}
+      {{ index . 0 }} = {{ index . 1 }};
+      {{- end }}
+      {{- end }}
+      {{- if .private }}
+      {{- range .homebrew.masApps.private }}
+      {{ index . 0 }} = {{ index . 1 }};
+      {{- end }}
+      {{- end }}
+    };
+
     # `brew install`
     # TODO Feel free to add your favorite packages here.
     brews = [

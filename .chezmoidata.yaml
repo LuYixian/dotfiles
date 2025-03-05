@@ -1,117 +1,133 @@
 homebrew:
   taps:
-  - "homebrew/bundle"
-  - "homebrew/services"
-  - "nikitabobko/tap"
+    - "homebrew/bundle"
+    - "homebrew/services"
+    - "nikitabobko/tap"
   brews:
     shared:
-    - "macos-trash"
+      - "macos-trash"
     work:
-    - "cliclick"
-    - "md5sha1sum"
+      - "cliclick"
+      - "md5sha1sum"
     private:
   casks:
     shared:
-    - "arc" # よう削除
-    - "visual-studio-code"
-    - "alt-tab"
-    - "cheatsheet"
-    - "keyboardcleantool"
-    - "github"
-    - "ghostty"
-    - "input-source-pro"
-    - "mockoon"
-    - "nikitabobko/tap/aerospace"
-    - "ngrok"
-    - "orbstack"
-    - "slack"
-    - "karabiner-elements"
+      - "arc"
+      - "visual-studio-code"
+      - "alt-tab"
+      - "cheatsheet"
+      - "keka"
+      - "keyboardcleantool"
+      - "github"
+      - "ghostty"
+      - "input-source-pro"
+      - "mockoon"
+      - "nikitabobko/tap/aerospace"
+      - "ngrok"
+      - "orbstack"
+      - "slack"
+      - "karabiner-elements"
     work:
     private:
-    - "adguard"
-    - "balenaetcher"
-    - "bob"
-    - "chatgpt"
-    - "cleanmymac"
-    - "deepl"
-    - "1password-cli"
-    - "iina" # video player
-    - "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
-    - "telegram"
-    - "discord"
+      - "adguard"
+      - "balenaetcher"
+      - "bob"
+      - "chatgpt"
+      - "cleanmymac"
+      - "deepl"
+      - "1password-cli"
+      - "iina" # video player
+      - "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
+      - "telegram"
+      - "discord"
+  masApps:
+    shared:
+    work:
+    private:
+      - [ "KeystrokePro", "1572206224" ]
+      - [ "Messenger", "1480068668" ]
+      - [ "Magnet", "441258766" ]
+      - [ "Texifier", "458866234" ]
+      - [ "Notability", "360593530" ]
+      - [ "Goodnotes6", "1444383602" ]
+      - [ "MSWord", "462054704" ]
+      - [ "MSExcel", "462058435" ]
+      - [ "MSPowerPoint", "462062816" ]
+      - [ "WeChat", "836500024" ]
 sysPkgs:
   - git
   - neovim
 homepkgs:
   shared:
-  - act
-  - age
-  - aria2
-  - asciinema
-  - bat
-  - bat-extras.prettybat
-  - bat-extras.batwatch
-  - bat-extras.batpipe
-  - bat-extras.batman
-  - bat-extras.batgrep
-  - bat-extras.batdiff
-  - dust
-  - fastfetch
-  - fd
-  - ffmpeg
-  - fzf
-  - gh
-  - ghq
-  - git-lfs
-  - glow
-  - go
-  - hyperfine
-  - jq
-  - just # use Justfile to simplify nix-darwin's commands
-  - lazygit
-  - lsd
-  - navi
-  - onefetch
-  - openssh
-  - openssl
-  - ouch # a CLI tool tor compressing and decompressing for various formats
-  - p7zip-rar
-  - pdm
-  - poppler
-  - pueue
-  - ripgrep
-  - ripgrep-all
-  - sd
-  - skim
-  - sheldon
-  - sniffnet
-  - starship
-  - tenv
-  - tlrc
-  - tmux
-  - tokei
-  - tre-command
-  - wget
-  - yarn-berry
-  - yazi
-  - yq-go
-  - zoxide
-  - zstd
-  - k9s
+    - act
+    - age
+    - aria2
+    - asciinema
+    - bat
+    - bat-extras.prettybat
+    - bat-extras.batwatch
+    - bat-extras.batpipe
+    - bat-extras.batman
+    - bat-extras.batgrep
+    - bat-extras.batdiff
+    - dust
+    - fastfetch
+    - fd
+    - ffmpeg
+    - fzf
+    - gh
+    - ghq
+    - git-lfs
+    - glow
+    - go
+    - hyperfine
+    - jq
+    - just # use Justfile to simplify nix-darwin's commands
+    - lazygit
+    - lsd
+    - navi
+    - onefetch
+    - openssh
+    - openssl
+    - ouch # a CLI tool tor compressing and decompressing for various formats
+    - p7zip-rar
+    - pdm
+    - poppler
+    - pueue
+    - ripgrep
+    - ripgrep-all
+    - sd
+    - skim
+    - sheldon
+    - sniffnet
+    - starship
+    - tenv
+    - tlrc
+    - tmux
+    - tokei
+    - tre-command
+    - wget
+    - yarn-berry
+    - yazi
+    - yq-go
+    - zoxide
+    - zstd
+    - k9s
   work:
-  - aws-sam-cli
-  - azure-cli
-  - azure-functions-core-tools
-  - mariadb
-  - mysql84
-  - postgresql
-  - postgresql_16
-  - postgresql_15
-  - postgresql_14
-  - poetry
-  - redis
-  - tflint
-  - volta
+    - aws-sam-cli
+    - azure-cli
+    - azure-functions-core-tools
+    - mariadb
+    - mysql84
+    - postgresql
+    - postgresql_16
+    - postgresql_15
+    - postgresql_14
+    - poetry
+    - redis
+    - tflint
+    - volta
   private:
+    - mas
   extra:
-  - nvitop
+    - nvitop
