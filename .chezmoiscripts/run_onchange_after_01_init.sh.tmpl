@@ -1,6 +1,14 @@
 {{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
+{{- $homeDir := .chezmoi.homeDir -}}
+# flake.nix hash: {{ include (printf "%s/nix-config/flake.nix" $homeDir) | sha256sum }}
+# flake.lock hash: {{ include (printf "%s/nix-config/flake.lock" $homeDir) | sha256sum }}
+# apps.nix hash: {{ include (printf "%s/nix-config/modules/apps.nix" $homeDir) | sha256sum }}
+# host-users.nix hash: {{ include (printf "%s/nix-config/modules/host-users.nix" $homeDir) | sha256sum }}
+# nix-core.nix hash: {{ include (printf "%s/nix-config/modules/nix-core.nix" $homeDir) | sha256sum }}
+# system.nix hash: {{ include (printf "%s/nix-config/modules/system.nix" $homeDir) | sha256sum }}
+
 set -eufo pipefail
 
 # Install and switch to the nix-darwin configuration

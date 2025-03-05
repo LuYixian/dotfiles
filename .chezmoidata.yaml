@@ -12,18 +12,28 @@ homebrew:
     private:
   casks:
     shared:
+    - "arc" # よう削除
     - "visual-studio-code"
     - "alt-tab"
     - "cheatsheet"
     - "keyboardcleantool"
+    - "github"
     - "ghostty"
+    - "input-source-pro"
     - "mockoon"
     - "nikitabobko/tap/aerospace"
     - "ngrok"
     - "orbstack"
     - "slack"
+    - "karabiner-elements"
     work:
     private:
+    - "adguard"
+    - "balenaetcher"
+    - "bob"
+    - "chatgpt"
+    - "cleanmymac"
+    - "deepl"
     - "1password-cli"
     - "iina" # video player
     - "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
