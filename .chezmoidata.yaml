@@ -31,21 +31,28 @@ homebrew:
       - "rustdesk"
       - "slack"
       - "slidepilot"
+      - "tailscale"
       - "karabiner-elements"
+      - "zoom"
     work:
       - "obsidian"
     private:
+      - "1password"
+      - "1password-cli"
       - "adguard"
       - "balenaetcher"
       - "bob"
       - "chatgpt"
       - "cleanmymac"
       - "deepl"
-      - "1password-cli"
+      - "grammarly-desktop"
       - "iina" # video player
       - "logseq"
       - "notion-calendar"
       - "raycast" # (HotKey: alt/option + space)search, caculate and run scripts(with many plugins)
+      - "setapp"
+      - "soundsource"
+      - "surge"
       - "telegram"
       - "discord"
   masApps:
@@ -61,6 +68,7 @@ homebrew:
       - [ "MSWord", "462054704" ]
       - [ "MSExcel", "462058435" ]
       - [ "MSPowerPoint", "462062816" ]
+      - [ "OneDrive", "823766827" ]
       - [ "WeChat", "836500024" ]
 sysPkgs:
   - git
