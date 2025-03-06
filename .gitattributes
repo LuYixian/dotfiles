@@ -1,2 +1,2 @@
-*.nix.tmpl=nix
-*.sh.tmpl=shell
+*.nix.tmpl linguist-language=Nix
+*.sh.tmpl linguist-language=Shell
