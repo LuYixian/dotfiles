@@ -6,11 +6,15 @@ encryption = "age"
 {{- $headless := false -}}{{/* true if this machine does not have a screen and keyboard */}}
 {{- "" -}}
 
-{{/* prompt for user specific configuration */}}
+{{- $hostname := .chezmoi.hostname -}}
+{{- if not $work -}}
 {{- $hostname := promptStringOnce . "hostname" "Hostname" -}}{{/* set the hostname */}}
+{{- end -}}
+
+{{/* prompt for user specific configuration */}}
 {{- $useremail := promptStringOnce . "useremail" "Email address" -}}{{/* set the useremail address */}}
 {{- $gitUsername := promptStringOnce . "gitUsername" "GitHub username" -}}{{/* set the github username */}}
-{{- $gitEmail := promptStringOnce . "gitEmail" "Git useremail" -}}{{/* set the github useremail */}}
+{{- $gitEmail := promptStringOnce . "gitEmail" "GitHub useremail" -}}{{/* set the github useremail */}}
 
 {{- $osID := .chezmoi.os -}}
 {{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}

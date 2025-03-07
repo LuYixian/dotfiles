@@ -33,7 +33,6 @@ homebrew:
       - "slidepilot"
       - "tailscale"
       - "karabiner-elements"
-      - "zoom"
     work:
       - "obsidian"
     private:
@@ -55,6 +54,7 @@ homebrew:
       - "surge"
       - "telegram"
       - "discord"
+      - "zoom"
   masApps:
     shared:
     work:
@@ -134,11 +134,7 @@ homepkgs:
     - azure-cli
     - azure-functions-core-tools
     - mariadb
-    - mysql84
     - postgresql
-    - postgresql_16
-    - postgresql_15
-    - postgresql_14
     - poetry
     - redis
     - tflint
