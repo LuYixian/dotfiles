@@ -1,12 +1,3 @@
-# export PATH
-export PATH="$PATH:$HOME/bin"
-
-# set xdg configuration directory
-export XDG_CONFIG_HOME="$HOME/.config"
-
-# set zellij configuration directory
-export ZELLIJ_CONFIG_DIR="$HOME/.config/zellij"
-
 # fzf settings
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix'
 export FZF_DEFAULT_OPTS='--height 50% --layout=reverse --border'
@@ -23,10 +14,4 @@ export GPG_TTY=$(tty)
 # Added by OrbStack: command-line tools and integration
 # Comment this line if you don't want it to be added again.
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
-{{- if .work -}}
-# Added by OrbStack: work-specific command-line tools and integration
-export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
-{{- end -}}
-{{ end -}}
+{{- end }}

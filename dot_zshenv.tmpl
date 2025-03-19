@@ -1,0 +1,10 @@
+# export PATH
+export PATH="$PATH:$HOME/bin"
+
+# set xdg configuration directory
+export XDG_CONFIG_HOME="$HOME/.config"
+
+{{ if .work -}}
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+{{- end }}
