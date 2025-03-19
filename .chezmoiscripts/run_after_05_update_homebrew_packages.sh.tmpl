@@ -1,0 +1,20 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+echo "⚙️ Updateing Homebrew repositories..."
+brew update
+
+# check for outdated packages
+outdated=$(brew outdated --greedy)
+if [ -z "$outdated" ]; then
+    echo "🍺 No outdated packages found."
+else
+    echo "⚙️ Outdated packages found. Upgrading..."
+    brew upgrade --greedy
+    echo "🍺 Cleaning up..."
+    brew cleanup
+fi
+
+{{ end -}}

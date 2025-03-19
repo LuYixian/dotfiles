@@ -107,7 +107,7 @@ homepkgs:
     - openssl
     - ouch # a CLI tool tor compressing and decompressing for various formats
     - p7zip-rar
-    - pdm
+    - uv
     - poppler
     - pueue
     - ripgrep
