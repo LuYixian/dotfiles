@@ -1,9 +1,6 @@
-{{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
 set -eufo pipefail
 
 echo "⚙️ Building and switching profiles with Nix flakes."
 nix run ~/nix-config#{{ .hostname }}.switch --extra-experimental-features 'nix-command flakes' --show-trace --verbose
-
-{{ end -}}
