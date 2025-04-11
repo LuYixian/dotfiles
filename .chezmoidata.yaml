@@ -130,6 +130,7 @@ homepkgs:
     - zstd
     - k9s
   work:
+    - google-cloud-sdk
     - aws-sam-cli
     - azure-cli
     - azure-functions-core-tools
