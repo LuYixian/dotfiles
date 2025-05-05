@@ -1,7 +1,5 @@
 homebrew:
   taps:
-    - "homebrew/bundle"
-    - "homebrew/services"
     - "nikitabobko/tap"
   brews:
     shared:
@@ -15,7 +13,7 @@ homebrew:
       - "arc"
       - "visual-studio-code"
       - "alt-tab"
-      - "cheatsheet"
+      - "cursor"
       - "keka"
       - "keyboardcleantool"
       - "github"
