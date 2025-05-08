@@ -3,6 +3,9 @@
 
 set -eufo pipefail
 
+echo "⚙️ Updating Homebrew repositories..."
+brew update
+
 # check for outdated packages
 outdated=$(brew outdated --greedy)
 if [ -z "$outdated" ]; then
@@ -10,6 +13,7 @@ if [ -z "$outdated" ]; then
 else
     echo "⚙️ Outdated packages found. Upgrading..."
     brew upgrade --greedy
+    echo "⚙️ Upgrading completed."
     echo "🍺 Cleaning up..."
     brew cleanup
 fi
