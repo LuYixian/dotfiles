@@ -20,7 +20,7 @@ if ! command -v darwin-version >/dev/null 2>&1; then
 else
     echo "📦 nix-darwin already installed."
     echo "⚙️ Building and switching nix-darwin configuration for {{ .hostname }}."
-    darwin-rebuild switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
+    sudo darwin-rebuild switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
 fi
 
 {{ end -}}
