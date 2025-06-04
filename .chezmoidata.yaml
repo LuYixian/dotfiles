@@ -10,7 +10,6 @@ homebrew:
     private:
   casks:
     shared:
-      - "arc"
       - "visual-studio-code"
       - "alt-tab"
       - "cursor"
@@ -31,6 +30,7 @@ homebrew:
       - "slidepilot"
       - "tailscale"
       - "karabiner-elements"
+      - "zen"
     work:
       - "obsidian"
     private:
