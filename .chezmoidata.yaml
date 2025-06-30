@@ -23,7 +23,6 @@ homebrew:
       - "mockoon"
       - "notion"
       - "nikitabobko/tap/aerospace"
-      - "ngrok"
       - "obs"
       - "orbstack"
       - "pdf-expert"
