@@ -16,7 +16,7 @@ set -eufo pipefail
 if ! command -v darwin-version >/dev/null 2>&1; then
     echo "📦 nix-darwin not installed. Installing."
     echo "⚙️ Building and switching nix-darwin configuration for {{ .hostname }}."
-    nix run nix-darwin/master#darwin-rebuild --extra-experimental-features "nix-command flakes"  -- switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
+    sudo nix run nix-darwin/master#darwin-rebuild --extra-experimental-features "nix-command flakes"  -- switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
 else
     echo "📦 nix-darwin already installed."
     echo "⚙️ Building and switching nix-darwin configuration for {{ .hostname }}."

@@ -12,12 +12,14 @@ homebrew:
     shared:
       - "visual-studio-code"
       - "alt-tab"
+      - "thebrowsercompany-dia"
       - "cursor"
       - "keka"
       - "keyboardcleantool"
       - "github"
       - "ghostty"
       - "input-source-pro"
+      # - "mactex"
       - "mockoon"
       - "notion"
       - "nikitabobko/tap/aerospace"
@@ -30,7 +32,6 @@ homebrew:
       - "slidepilot"
       - "tailscale"
       - "karabiner-elements"
-      - "zen"
     work:
       - "obsidian"
     private:
@@ -41,7 +42,6 @@ homebrew:
       - "bob"
       - "chatgpt"
       - "cleanmymac"
-      - "deepl"
       - "grammarly-desktop"
       - "iina" # video player
       - "logseq"
@@ -73,6 +73,7 @@ sysPkgs:
   - neovim
 homepkgs:
   shared:
+    - "(texliveFull.withPackages (ps: with ps; []))"
     - act
     - age
     - aria2
