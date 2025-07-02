@@ -72,7 +72,7 @@ sysPkgs:
   - neovim
 homepkgs:
   shared:
-    - "(texliveFull.withPackages (ps: with ps; []))"
+    # - "(texliveFull.withPackages (ps: with ps; []))"
     - act
     - age
     - aria2
