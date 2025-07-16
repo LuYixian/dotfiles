@@ -1,12 +1,17 @@
 homebrew:
   taps:
-    - "nikitabobko/tap"
+    shared:
+      - "nikitabobko/tap"
+    work:
+      - "azure/functions"
   brews:
     shared:
       - "macos-trash"
     work:
       - "cliclick"
       - "md5sha1sum"
+      - "azure-cli"
+      - "azure-functions-core-tools@4"
     private:
   casks:
     shared:
@@ -130,8 +135,6 @@ homepkgs:
   work:
     - google-cloud-sdk
     - aws-sam-cli
-    - azure-cli
-    - azure-functions-core-tools
     - mariadb
     - postgresql
     - poetry
