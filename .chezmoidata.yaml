@@ -4,6 +4,7 @@ homebrew:
       - "nikitabobko/tap"
     work:
       - "azure/functions"
+    private:
   brews:
     shared:
       - "macos-trash"
