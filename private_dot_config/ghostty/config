@@ -8,3 +8,4 @@ window-decoration = true
 macos-option-as-alt = true
 window-padding-y = 0,2
 window-padding-x = 3,1
+keybind = shift+enter=text:\n

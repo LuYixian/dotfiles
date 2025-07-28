@@ -19,10 +19,8 @@ homebrew:
       - "visual-studio-code"
       - "alt-tab"
       - "thebrowsercompany-dia"
-      - "cursor"
       - "keka"
       - "keyboardcleantool"
-      - "github"
       - "ghostty"
       - "input-source-pro"
       # - "mactex"
@@ -39,6 +37,7 @@ homebrew:
       - "karabiner-elements"
     work:
       - "obsidian"
+      - "cursor"
     private:
       - "1password"
       - "1password-cli"
@@ -90,6 +89,7 @@ homepkgs:
     - bat-extras.batman
     - bat-extras.batgrep
     - bat-extras.batdiff
+    - claude-code
     - dust
     - fastfetch
     - fd
