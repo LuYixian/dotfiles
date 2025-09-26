@@ -90,6 +90,7 @@ homepkgs:
     - bat-extras.batgrep
     - bat-extras.batdiff
     - claude-code
+    - certbot
     - dust
     - fastfetch
     - fd
