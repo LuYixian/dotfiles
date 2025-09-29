@@ -33,7 +33,7 @@ homebrew:
       - "rustdesk"
       - "slack"
       - "slidepilot"
-      - "tailscale"
+      - "tailscale-app"
       - "karabiner-elements"
     work:
       - "obsidian"
@@ -43,7 +43,7 @@ homebrew:
       - "1password-cli"
       - "adguard"
       - "balenaetcher"
-      - "bob"
+      - "bob-app"
       - "chatgpt"
       - "cleanmymac"
       - "grammarly-desktop"
