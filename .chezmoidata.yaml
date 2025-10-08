@@ -134,6 +134,7 @@ homepkgs:
     - zoxide
     - zstd
     - k9s
+    - volta
   work:
     - google-cloud-sdk
     - aws-sam-cli
@@ -142,7 +143,6 @@ homepkgs:
     - poetry
     - redis
     - tflint
-    - volta
   private:
     - mas
   extra:
