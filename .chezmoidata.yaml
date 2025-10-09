@@ -38,6 +38,7 @@ homebrew:
     work:
       - "obsidian"
       - "cursor"
+      - "iterm2"
     private:
       - "1password"
       - "1password-cli"
