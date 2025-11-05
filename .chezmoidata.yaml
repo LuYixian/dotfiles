@@ -13,6 +13,7 @@ homebrew:
       - "md5sha1sum"
       - "azure-cli"
       - "azure-functions-core-tools@4"
+      - "aws-sam-cli"
     private:
   casks:
     shared:
@@ -138,7 +139,7 @@ homepkgs:
     - volta
   work:
     - google-cloud-sdk
-    - aws-sam-cli
+    - awscli2
     - mariadb
     - postgresql
     - poetry
