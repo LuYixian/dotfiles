@@ -24,6 +24,7 @@ homebrew:
       - "keyboardcleantool"
       - "ghostty"
       - "input-source-pro"
+      - "iterm2"
       # - "mactex"
       - "mockoon"
       - "notion"
@@ -39,7 +40,6 @@ homebrew:
     work:
       - "obsidian"
       - "cursor"
-      - "iterm2"
     private:
       - "1password"
       - "1password-cli"
