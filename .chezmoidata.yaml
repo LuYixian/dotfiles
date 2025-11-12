@@ -9,6 +9,7 @@ homebrew:
     shared:
       - "macos-trash"
     work:
+      - "libomp"
       - "cliclick"
       - "md5sha1sum"
       - "azure-cli"
