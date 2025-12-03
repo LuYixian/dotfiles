@@ -9,6 +9,7 @@ homebrew:
     shared:
       - "macos-trash"
     work:
+      - "poetry"
       - "libomp"
       - "cliclick"
       - "md5sha1sum"
@@ -143,7 +144,6 @@ homepkgs:
     - awscli2
     - mariadb
     - postgresql
-    - poetry
     - redis
     - tflint
   private:
