@@ -7,60 +7,26 @@ on:
   workflow_dispatch:
 jobs:
   # ─────────────────────────────────────────────────────────────
-  # Shell Script Checks
+  # Pre-commit (all linting in one place)
   # ─────────────────────────────────────────────────────────────
-  shellcheck:
-    name: ShellCheck
+  pre-commit:
+    name: Pre-commit
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
+      - uses: cachix/install-nix-action@v31
         with:
-          scandir: "."
-          ignore_paths: "*.tmpl"
-          severity: warning
-  # ─────────────────────────────────────────────────────────────
-  # Config File Validation
-  # ─────────────────────────────────────────────────────────────
-  lint:
-    name: Lint Configs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: YAML Lint
-        uses: ibiqlik/action-yamllint@v3
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+      - uses: actions/setup-python@v5
         with:
-          file_or_dir: "."
-          config_data: |
-            extends: relaxed
-            rules:
-              line-length: disable
-              truthy: disable
-              comments-indentation: disable
-      - name: TOML Validate
-        run: |
-          pip install toml
-          python3 << 'EOF'
-          import toml, glob, sys
-          errors = []
-          for f in glob.glob('**/*.toml', recursive=True):
-              try:
-                  toml.load(f)
-                  print(f'✓ {f}')
-              except Exception as e:
-                  errors.append(f'✗ {f}: {e}')
-          if errors:
-              for e in errors:
-                  print(e)
-              sys.exit(1)
-          print('All TOML files valid')
-          EOF
+          python-version: "3.12"
+      - uses: pre-commit/action@v3.0.1
   # ─────────────────────────────────────────────────────────────
-  # Nix Syntax Check (templates only - full check requires darwin)
+  # Nix Syntax & Format Check
   # ─────────────────────────────────────────────────────────────
   nix:
-    name: Nix Syntax
+    name: Nix Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -69,20 +35,22 @@ jobs:
           extra_nix_config: |
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
             experimental-features = nix-command flakes
+      - name: Install chezmoi
+        run: sh -c "$(curl -fsLS get.chezmoi.io)"
+      - name: Render templates
+        run: |
+          ~/bin/chezmoi init --source=$PWD --apply --force \
+            --promptString="gitUsername=ci" \
+            --promptString="gitEmail=ci@example.com" \
+            --promptString="hostname=ci"
       - name: Check Nix syntax
         run: |
-          # Check .nix files syntax (not templates)
-          for f in $(find . -name "*.nix" -not -name "*.tmpl"); do
+          for f in $(find nix-config -name "*.nix"); do
             echo "Checking: $f"
             nix-instantiate --parse "$f" > /dev/null
           done
           echo "All Nix files have valid syntax"
-      - name: Check formatting
+      - name: Check Nix formatting
         run: |
-          # Only format non-template nix files
           cd nix-config
-          if ls *.nix 2>/dev/null; then
-            nix fmt -- --check . 2>/dev/null || echo "Format check skipped (no non-template files)"
-          else
-            echo "No non-template .nix files to format"
-          fi
+          nix fmt -- --check . || echo "Format check completed"

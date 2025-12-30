@@ -102,6 +102,12 @@ repl:
 fmt:
     nix fmt
 
+# Check nix formatting (fails if changes needed)
+[group('nix')]
+fmt-check:
+    chezmoi apply
+    nix fmt -- --check .
+
 # Remove all generations older than 7 days
 [group('nix')]
 clean days='7':

@@ -1,5 +1,6 @@
 README.md
 .gitignore
 .github/
+.pre-commit-config.yaml
 init.sh
 docs/

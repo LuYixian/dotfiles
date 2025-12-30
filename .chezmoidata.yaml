@@ -117,6 +117,7 @@ homepkgs:
     - mise
     - navi
     - pixi # fast Python/conda package manager
+    - pre-commit
     - rclone # cloud storage sync
     - onefetch
     - openssh
