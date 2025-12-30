@@ -1,5 +1,6 @@
 {
   pkgs,
+  self,
   username,
   ...
 } @ args:
@@ -13,29 +14,7 @@
 #    https://github.com/yannbertrand/macos-defaults
 #
 ###################################################################################
-let
-  # Get the current git revision of chezmoi
-  rev = builtins.readFile (
-    pkgs.runCommand "get-chezmoi-rev" {
-      buildInputs = [pkgs.git];
-      allowedPaths = ["/Users/yixianlu/.local/share/chezmoi"];
-    } ''
-      #!/usr/bin/env bash
-      set -euo pipefail
-      # get the current git revision, if it's not a git repository, return "null"
-      rev=$(git -C "{{ .chezmoi.sourceDir }}" rev-parse HEAD 2>/dev/null || echo "null")
-      if [ "$rev" = "null" ]; then
-        echo "null" > $out
-        exit 0
-      fi
-      # check are there any uncommitted changes, if so, mark the revision as dirty
-      if [ -n "$(git -C "{{ .chezmoi.sourceDir }}" status --porcelain 2>/dev/null)" ]; then
-        rev="$rev-dirty"
-      fi
-      echo "$rev" > $out
-    ''
-  );
-in {
+{
   system = {
     # Used for backwards compatibility, please read the changelog before changing.
     # $ darwin-rebuild changelog
@@ -43,7 +22,7 @@ in {
     # darwin-rebuild will not be able to upgrade if this is not set.
     primaryUser = username; # the primary user of the system
     # Set Git commit hash for darwin-version.
-    configurationRevision = rev;
+    configurationRevision = if self ? rev then self.rev else null;
 
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
     activationScripts.activateSettings = {

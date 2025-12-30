@@ -4,7 +4,9 @@
 set -eufo pipefail
 
 # define the URL of the latest Paperlib release
-DMG_URL="https://distribution.paperlib.app/electron-mac-arm/latest.dmg"
+{{ $arch := "arm" -}}
+{{ if eq .chezmoi.arch "amd64" -}}{{ $arch = "x64" -}}{{ end -}}
+DMG_URL="https://distribution.paperlib.app/electron-mac-{{ $arch }}/latest.dmg"
 TEMP_DMG="/tmp/latest.dmg"
 
 # download the latest Paperlib release

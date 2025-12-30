@@ -1,0 +1,18 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+# Setup devenv cachix cache for faster downloads
+# This only runs once
+
+if command -v cachix >/dev/null 2>&1; then
+    echo "Setting up devenv cachix cache..."
+    cachix use devenv 2>/dev/null || true
+    echo "devenv cache configured."
+else
+    echo "cachix not found, skipping devenv cache setup."
+    echo "Run 'cachix use devenv' manually after installing cachix."
+fi
+
+{{ end -}}

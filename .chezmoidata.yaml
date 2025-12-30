@@ -37,6 +37,7 @@ homebrew:
       - "rustdesk"
       - "slack"
       - "slidepilot"
+      - "steam"
       - "tailscale-app"
       - "karabiner-elements"
     work:
@@ -94,8 +95,12 @@ homepkgs:
     - bat-extras.batgrep
     - bat-extras.batdiff
     - claude-code
+    - cachix
     - certbot
+    - devenv
+    - duf
     - dust
+    - eza
     - fastfetch
     - fd
     - ffmpeg
@@ -109,13 +114,13 @@ homepkgs:
     - jq
     - just # use Justfile to simplify nix-darwin's commands
     - lazygit
-    - lsd
     - navi
     - onefetch
     - openssh
     - openssl
     - ouch # a CLI tool tor compressing and decompressing for various formats
     - p7zip-rar
+    - python3
     - uv
     - poppler
     - pueue
@@ -148,5 +153,3 @@ homepkgs:
     - tflint
   private:
     - mas
-  extra:
-    - nvitop

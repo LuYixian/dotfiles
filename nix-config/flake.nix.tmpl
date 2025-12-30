@@ -93,10 +93,7 @@
             # Install Homebrew under the default prefix
             enable = true;
             # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
-            enableRosetta =
-              if system == "aarch64-darwin"
-              then true
-              else false;
+            enableRosetta = system == "aarch64-darwin";
             # User owning the Homebrew prefix
             user = username;
           };
