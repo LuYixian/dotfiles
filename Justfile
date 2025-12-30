@@ -106,7 +106,7 @@ fmt:
 [group('nix')]
 fmt-check:
     chezmoi apply
-    nix fmt -- --check .
+    cd ~/nix-config && nix fmt -- --check .
 
 # Remove all generations older than 7 days
 [group('nix')]

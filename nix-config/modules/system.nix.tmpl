@@ -22,7 +22,10 @@
     # darwin-rebuild will not be able to upgrade if this is not set.
     primaryUser = username; # the primary user of the system
     # Set Git commit hash for darwin-version.
-    configurationRevision = if self ? rev then self.rev else null;
+    configurationRevision =
+      if self ? rev
+      then self.rev
+      else null;
 
     # activationScripts are executed every time you boot the system or run `nixos-rebuild` / `darwin-rebuild`.
     activationScripts.activateSettings = {
