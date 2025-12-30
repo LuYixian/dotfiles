@@ -1,4 +1,332 @@
-## dotfiles
-```bash
+# 📂 dotfiles
 
+[![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
+[![nix-darwin](https://img.shields.io/badge/nix--darwin-24.11-5277C3)](https://github.com/LnL7/nix-darwin)
+![code size](https://img.shields.io/github/languages/code-size/LuYixian/dotfiles)
+![repo size](https://img.shields.io/github/repo-size/LuYixian/dotfiles)
+[![last commit](https://img.shields.io/github/last-commit/LuYixian/dotfiles)](https://github.com/LuYixian/dotfiles/commits/main)
+
+[![zsh](https://img.shields.io/badge/zsh-5.9+-F15A24?logo=zsh&logoColor=white)](https://www.zsh.org/)
+[![chezmoi](https://img.shields.io/github/v/tag/twpayne/chezmoi?color=4B91E2&label=chezmoi&sort=semver)](https://github.com/twpayne/chezmoi)
+[![starship](https://img.shields.io/github/v/tag/starship/starship?color=DD0B78&label=starship&logo=starship&logoColor=white&sort=semver)](https://github.com/starship/starship)
+[![sheldon](https://img.shields.io/github/v/tag/rossmacarthur/sheldon?color=5C5C5C&label=sheldon&sort=semver)](https://github.com/rossmacarthur/sheldon)
+[![mise](https://img.shields.io/github/v/tag/jdx/mise?color=5C4EE5&label=mise&sort=semver)](https://github.com/jdx/mise)
+[![atuin](https://img.shields.io/github/v/tag/atuinsh/atuin?color=FF6B6B&label=atuin&sort=semver)](https://github.com/atuinsh/atuin)
+[![tmux](https://img.shields.io/github/v/tag/tmux/tmux?color=1BB91F&label=tmux&logo=tmux&logoColor=white&sort=semver)](https://github.com/tmux/tmux)
+
+A modern, reproducible macOS development environment powered by **nix-darwin** and **chezmoi**. This repository provides a fully declarative system configuration that can bootstrap a new Mac in minutes, with all packages, settings, and dotfiles automatically applied.
+
+The entire setup is built around Rust-based CLI tools for blazing-fast performance, and supports multi-profile configurations to seamlessly switch between work and personal environments.
+
+---
+
+## 💡 Motivation
+
+Setting up a new development machine is tedious. You need to install dozens of packages, configure countless tools, and remember all those little tweaks you made over the years. This repository solves that problem by:
+
+- **Declarative Configuration** - Every package, setting, and configuration file is defined in code
+- **Reproducibility** - Run one command and get the exact same environment on any Mac
+- **Version Control** - Track changes to your system configuration over time
+- **Multi-Profile Support** - Different package sets for work vs personal machines
+
+---
+
+## 🚀 Quick Start
+
+### One-Line Installation
+
+```bash
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 ```
+
+### Manual Installation
+
+```bash
+# Step 1: Install Nix using Determinate Systems installer
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# Step 2: Install chezmoi and initialize with this repo
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
+
+# Step 3: Build and activate nix-darwin configuration
+cd ~/.local/share/chezmoi
+just darwin
+```
+
+After installation, restart your terminal to enjoy your new environment.
+
+---
+
+## 🏗️ Architecture
+
+This dotfiles setup combines two powerful tools:
+
+**chezmoi** manages dotfiles across machines. It handles templating, secrets, and ensures your configuration files are always in sync. Files prefixed with `dot_` become dotfiles, and `.tmpl` files are processed as Go templates.
+
+**nix-darwin** provides declarative macOS system configuration. It manages system packages through Nix, Homebrew formulas and casks, and macOS system preferences. The entire system state is defined in Nix expressions and can be rebuilt atomically.
+
+The two tools complement each other: chezmoi handles user-level dotfiles while nix-darwin manages system-level configuration and package installation.
+
+---
+
+## 🛠️ Tool Chains
+
+This setup replaces traditional Unix tools with modern, Rust-based alternatives that are faster, more user-friendly, and provide better defaults.
+
+### Modern CLI Replacements
+
+| Classic | Modern | Description |
+|---------|--------|-------------|
+| `ls` | [eza](https://github.com/eza-community/eza) | Git integration, icons, tree views |
+| `cat` | [bat](https://github.com/sharkdp/bat) | Syntax highlighting, git integration |
+| `grep` | [ripgrep](https://github.com/BurntSushi/ripgrep) | Lightning-fast regex search |
+| `find` | [fd](https://github.com/sharkdp/fd) | Intuitive syntax, respects .gitignore |
+| `du` | [dust](https://github.com/bootandy/dust) | Visual disk usage analyzer |
+| `df` | [duf](https://github.com/muesli/duf) | Beautiful disk free table |
+| `cd` | [zoxide](https://github.com/ajeetdsouza/zoxide) | Smart directory jumping |
+| `man` | [tldr](https://github.com/tldr-pages/tlrc) | Practical command examples |
+| `time` | [hyperfine](https://github.com/sharkdp/hyperfine) | Command benchmarking |
+
+### Shell Environment
+
+The shell prompt is powered by **Starship**, a minimal and fast prompt written in Rust. It's configured with the Dracula color palette and shows contextual information like git status, current directory, and programming language versions.
+
+**Sheldon** manages zsh plugins efficiently. Unlike oh-my-zsh or zinit, Sheldon is written in Rust and provides fast plugin loading with optional deferred execution for non-critical plugins.
+
+**Atuin** revolutionizes shell history. It stores your command history in a SQLite database and provides fuzzy search across your entire history. Press Ctrl+R and instantly find that complex command you ran three months ago.
+
+**Direnv** automatically loads and unloads environment variables when you enter and leave directories. Combined with the helper functions in this repo, you can quickly set up per-project Python virtualenvs, Nix development shells, or mise environments.
+
+| Tool | Role |
+|------|------|
+| [starship](https://github.com/starship/starship) | Minimal, blazing-fast prompt with git integration |
+| [sheldon](https://github.com/rossmacarthur/sheldon) | Fast, configurable zsh plugin manager |
+| [atuin](https://github.com/atuinsh/atuin) | Magical shell history with fuzzy search |
+| [direnv](https://github.com/direnv/direnv) | Per-directory environment variables |
+| [fzf](https://github.com/junegunn/fzf) | Fuzzy finder for files, history, and more |
+| [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) | Fish-like command suggestions |
+| [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) | Syntax highlighting for commands |
+
+### Development Tools
+
+**mise** (formerly rtx) is a polyglot runtime manager that handles Node.js, Python, Go, Rust, Terraform, and more. It's faster than nvm/pyenv/rbenv and provides a unified interface for all language runtimes.
+
+**lazygit** provides a beautiful terminal UI for git. It makes complex git operations like interactive rebasing, cherry-picking, and conflict resolution much more accessible.
+
+**yazi** is a blazing-fast terminal file manager with image preview support. It's the modern replacement for ranger, written in Rust for maximum performance.
+
+**tmux** configuration includes vim-style keybindings, Dracula theme colors, and popup windows for quick access to lazygit and htop. The prefix key is set to Ctrl+A for easier access.
+
+| Tool | Role |
+|------|------|
+| [mise](https://github.com/jdx/mise) | Polyglot runtime manager (Node, Python, Go, Rust) |
+| [lazygit](https://github.com/jesseduffield/lazygit) | Beautiful terminal UI for git |
+| [yazi](https://github.com/sxyazi/yazi) | Blazing fast terminal file manager |
+| [tmux](https://github.com/tmux/tmux) | Terminal multiplexer with popup windows |
+| [ghq](https://github.com/x-motemen/ghq) | Remote repository management |
+| [gh](https://github.com/cli/cli) | GitHub CLI for issues, PRs, and more |
+
+### AI Integration
+
+**Claude Code** is integrated directly into the shell environment. The `aicommit` function generates conventional commit messages from staged changes using AI. The Starship prompt can optionally display Claude API usage stats.
+
+### Desktop Applications
+
+GUI applications are managed through Homebrew casks:
+
+| Category | Applications |
+|----------|--------------|
+| Terminal | Ghostty, iTerm2 |
+| Editor | Neovim, VS Code, Cursor |
+| Browser | Arc (Dia) |
+| Window Manager | AeroSpace (i3-like tiling) |
+| Productivity | Notion, Obsidian, Logseq, Raycast |
+| Container | OrbStack (Docker alternative) |
+
+---
+
+## ⚙️ Shell Functions
+
+Beyond aliases, this setup provides powerful shell functions for common workflows.
+
+### Project Navigation
+
+The `dev` function combines **ghq** and **fzf** for project management. Type `dev`, and you get a fuzzy-searchable list of all your git repositories with a tree preview. Select one and you're instantly there, with tmux session renamed to match.
+
+```bash
+dev                 # FZF-powered project selector (with ghq)
+mkcd <dir>          # Create directory and cd into it
+dotcd               # Jump to chezmoi source
+dotfiles            # Open dotfiles in editor
+```
+
+### Git Workflow
+
+`fgc` provides fuzzy branch checkout with log preview. `fgl` lets you browse commits with full diff preview. `fga` shows unstaged files and lets you selectively stage them. These functions make complex git operations feel natural.
+
+```bash
+fgc                 # Fuzzy git checkout (branches)
+fgl                 # Fuzzy git log viewer
+fga                 # Fuzzy git add (select files)
+aicommit            # Generate commit message with AI
+```
+
+### System Utilities
+
+`fkill` provides safe process killing with confirmation prompts - no more accidentally killing critical processes. `port` quickly shows what's using a specific network port. `backup_dev_env` exports your current Brewfile, VS Code extensions, and mise tools for backup.
+
+```bash
+fkill               # Fuzzy process killer (with confirmation)
+fenv                # Fuzzy environment variable viewer
+port <num>          # Show process using port
+backup_dev_env      # Backup dev environment configs
+```
+
+### Environment Setup
+
+`create_direnv_venv` sets up a Python virtualenv with direnv integration in one command. `create_direnv_nix` does the same for Nix flake development environments.
+
+```bash
+create_direnv_venv  # Create Python venv with direnv
+create_direnv_nix   # Create Nix flake with direnv
+create_direnv_mise  # Create mise environment with direnv
+create_py_project   # Quick Python project setup with uv
+```
+
+---
+
+## 📦 Package Management
+
+Packages are managed through multiple sources, each with its strengths:
+
+| Source | Description | Examples |
+|--------|-------------|----------|
+| Nix packages | Reproducible, rollback-able | ripgrep, bat, eza, starship |
+| Homebrew formulas | macOS-specific tools | macos-trash, poetry |
+| Homebrew casks | GUI applications | VS Code, Ghostty, Notion |
+| Mac App Store | App Store exclusives | Magnet, WeChat, Office |
+
+All package lists are defined in `.chezmoidata.yaml` with support for shared, work-only, and private-only packages.
+
+---
+
+## 📁 Directory Structure
+
+```text
+~/.local/share/chezmoi/
+├── .chezmoidata.yaml           # Package definitions for all profiles
+├── .chezmoi.toml.tmpl          # Chezmoi configuration
+├── Justfile                    # Task runner for common operations
+├── .chezmoiscripts/            # Lifecycle scripts
+│   ├── run_once_before_*.sh    # Run once before first apply
+│   ├── run_onchange_after_*.sh # Run when specific files change
+│   └── run_after_*.sh          # Run after every apply
+├── dot_custom/                 # Custom shell configuration
+│   ├── alias.sh                # Conditional aliases
+│   ├── eval.sh                 # Tool initialization
+│   ├── exports.sh              # Environment variables
+│   └── functions.sh            # Shell functions
+├── nix-config/                 # Nix-darwin configuration
+│   ├── flake.nix.tmpl          # Flake inputs and outputs
+│   └── modules/
+│       ├── apps.nix.tmpl       # Package installation
+│       ├── system.nix.tmpl     # macOS system preferences
+│       ├── nix-core.nix        # Nix daemon settings
+│       └── host-users.nix      # User configuration
+└── private_dot_config/         # XDG config files
+    ├── atuin/config.toml       # Shell history settings
+    ├── git/config.tmpl         # Git configuration
+    ├── ghostty/config          # Terminal emulator
+    ├── lazygit/config.yml      # Git TUI settings
+    ├── mise/config.toml        # Runtime manager
+    ├── sheldon/plugins.toml    # Zsh plugins
+    ├── starship.toml           # Prompt configuration (Dracula theme)
+    ├── tmux/tmux.conf          # Terminal multiplexer
+    └── yazi/                   # File manager
+```
+
+---
+
+## 🔄 Daily Operations
+
+All common operations are available through the Justfile:
+
+```bash
+# Chezmoi operations
+just apply          # Apply dotfile changes
+just diff           # Show pending changes
+just re-add         # Re-add modified files
+
+# Nix-darwin operations
+just darwin         # Rebuild and switch configuration
+just darwin-debug   # Build with verbose output
+
+# Maintenance
+just up             # Update all flake inputs
+just gc             # Garbage collect old generations
+just clean          # Clean generations older than 7 days
+just optimize       # Optimize nix store (hard-link duplicates)
+
+# All-in-one
+just full-upgrade   # Complete system upgrade (7 steps)
+just update-all     # Update flake + chezmoi + homebrew
+```
+
+---
+
+## 🎨 Multi-Profile Configuration
+
+The setup supports different configurations for different machines. In `.chezmoidata.yaml`, packages are organized into three categories:
+
+- **shared** - Installed on all machines
+- **work** - Only installed on work machines (Azure CLI, Cursor, etc.)
+- **private** - Only installed on personal machines (1Password, gaming, etc.)
+
+```bash
+# For work machines
+chezmoi init --data='{"work": true}'
+
+# For personal machines
+chezmoi init --data='{"private": true}'
+```
+
+---
+
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| Alt + Up | Navigate to parent directory |
+| Alt + Down | Navigate to previous directory |
+| Ctrl + R | Search command history (Atuin) |
+| Ctrl + A | tmux prefix key |
+
+---
+
+## 🎭 Theming
+
+All tools are configured with the **Dracula** color palette for a consistent, eye-friendly dark theme:
+
+- Starship prompt colors
+- tmux status bar
+- bat syntax highlighting
+- lazygit interface
+- yazi file manager
+
+---
+
+## 📊 Stats
+
+<!-- 获取你自己的 repobeats: https://repobeats.axiom.co -->
+![Repobeats analytics](https://repobeats.axiom.co/api/embed/YOUR_REPOBEATS_ID.svg "Repobeats analytics image")
+
+<!-- 或者使用 GitHub stats card -->
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=LuYixian&show_icons=true&theme=dracula&hide_border=true&count_private=true)
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License.
