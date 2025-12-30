@@ -57,10 +57,4 @@ remote = "https://github.com/BurntSushi/ripgrep/raw/master/crates/core/flags/com
 [plugins.zsh-syntax-highlighting]
 github = "zsh-users/zsh-syntax-highlighting"
 
-[plugins.zsh-fzf-history-search]
-github = "joshskidmore/zsh-fzf-history-search"
-
-# For example:
-#
-# [plugins.base16]
-# github = "chriskempson/base16-shell"
+# Note: zsh-fzf-history-search removed - using atuin instead

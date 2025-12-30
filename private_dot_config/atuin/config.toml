@@ -1,0 +1,99 @@
+# Atuin configuration
+# https://docs.atuin.sh/configuration/config/
+
+# ─────────────────────────────────────────────────────────────
+# Sync Settings
+# ─────────────────────────────────────────────────────────────
+# Disable sync by default (enable if you want cross-machine history)
+auto_sync = false
+sync_frequency = "0"
+
+# ─────────────────────────────────────────────────────────────
+# Search Settings
+# ─────────────────────────────────────────────────────────────
+# Search mode: prefix, fulltext, fuzzy, skim
+search_mode = "fuzzy"
+
+# Filter mode for Ctrl+R: global, host, session, directory
+filter_mode = "global"
+
+# Filter mode when pressing up arrow
+filter_mode_shell_up_key_binding = "session"
+
+# Show preview of the selected command
+show_preview = true
+
+# Maximum preview height
+max_preview_height = 4
+
+# Show help text in the search UI
+show_help = true
+
+# ─────────────────────────────────────────────────────────────
+# History Settings
+# ─────────────────────────────────────────────────────────────
+# What to do when pressing Enter on a command
+# true = execute immediately, false = copy to input line
+enter_accept = true
+
+# Record command exit code and duration
+exit_mode = "return-original"
+
+# Ignore commands with leading space
+secrets_filter = true
+
+# Commands to exclude from history
+history_filter = [
+    "^cd$",
+    "^ls$",
+    "^ll$",
+    "^la$",
+    "^exit$",
+    "^clear$",
+    "^pwd$",
+]
+
+# ─────────────────────────────────────────────────────────────
+# UI Settings
+# ─────────────────────────────────────────────────────────────
+# Style: auto, full, compact
+style = "auto"
+
+# Inline height (0 = full screen)
+inline_height = 0
+
+# Show timestamp in search results
+show_tabs = true
+
+# Invert the UI (search bar at bottom)
+invert = false
+
+# ─────────────────────────────────────────────────────────────
+# Key Bindings
+# ─────────────────────────────────────────────────────────────
+# Ctrl+R: search history
+# Up Arrow: search within current session
+# These are configured in the shell init
+
+# ─────────────────────────────────────────────────────────────
+# Stats
+# ─────────────────────────────────────────────────────────────
+# Track subcommands separately in stats
+[stats]
+common_subcommands = [
+    "git",
+    "cargo",
+    "npm",
+    "pnpm",
+    "yarn",
+    "docker",
+    "kubectl",
+    "mise",
+    "uv",
+    "chezmoi",
+]
+
+# ─────────────────────────────────────────────────────────────
+# Daemon (optional, improves performance)
+# ─────────────────────────────────────────────────────────────
+# daemon.enabled = true

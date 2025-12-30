@@ -1,0 +1,43 @@
+# mise global configuration
+# https://mise.jdx.dev/configuration.html
+
+[tools]
+# Node.js (replaces volta)
+node = "lts"
+
+# Terraform (replaces tenv)
+terraform = "latest"
+
+# Python (for tools that need it)
+python = "3.12"
+
+# Go
+go = "latest"
+
+# Rust
+rust = "latest"
+
+[settings]
+# Automatically install tools when entering directory
+auto_install = true
+
+# Use idiomatic version files (.node-version, .python-version, etc.)
+idiomatic_version_file = true
+
+# Experimental features
+experimental = true
+
+# Trust specific project paths (more secure than trusting ~)
+# Add your trusted project directories here
+trusted_config_paths = [
+    "~/Projects",
+    "~/Work",
+]
+
+# Always keep latest versions
+always_keep_download = false
+always_keep_install = false
+
+[env]
+# Add local bin to PATH
+_.path = ["./node_modules/.bin", "./bin"]

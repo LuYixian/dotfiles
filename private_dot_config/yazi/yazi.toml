@@ -1,0 +1,56 @@
+# yazi configuration
+# https://yazi-rs.github.io/docs/configuration/yazi
+
+[mgr]
+# Show hidden files
+show_hidden = true
+# Sort directories first
+sort_dir_first = true
+# Sort by natural order (1, 2, 10 instead of 1, 10, 2)
+sort_by = "natural"
+sort_reverse = false
+# Line mode: size, mtime, permissions, owner, or none
+linemode = "size"
+# Show symlink target
+show_symlink = true
+
+[preview]
+# Maximum file size to preview (in bytes)
+max_width = 1000
+max_height = 1000
+# Image preview with sixel/kitty/iterm2
+image_filter = "lanczos3"
+image_quality = 90
+# Use ueberzugpp for image preview in terminal
+# Ghostty supports sixel, so this should work
+sixel_fraction = 10
+
+[opener]
+# Use default apps
+edit = [
+  { run = '${EDITOR:-nvim} "$@"', block = true, for = "unix" },
+]
+open = [
+  { run = 'open "$@"', for = "macos" },
+]
+reveal = [
+  { run = 'open -R "$@"', for = "macos" },
+]
+
+[open]
+rules = [
+  # Text files
+  { name = "*.{txt,md,json,yaml,yml,toml,ini,conf,sh,zsh,bash,fish}", use = ["edit", "reveal"] },
+  # Code files
+  { name = "*.{rs,go,py,js,ts,tsx,jsx,c,cpp,h,hpp,java,kt,swift}", use = ["edit", "reveal"] },
+  # Nix files
+  { name = "*.nix", use = ["edit", "reveal"] },
+  # Fallback
+  { name = "*", use = ["open", "reveal"] },
+]
+
+[tasks]
+# Maximum concurrent tasks
+micro_workers = 10
+macro_workers = 25
+bizarre_retry = 5

@@ -66,17 +66,17 @@ homebrew:
     shared:
     work:
     private:
-      - [ "KeystrokePro", "1572206224" ]
-      - [ "Messenger", "1480068668" ]
-      - [ "Magnet", "441258766" ]
-      - [ "Texifier", "458866234" ]
-      - [ "Notability", "360593530" ]
-      - [ "Goodnotes6", "1444383602" ]
-      - [ "MSWord", "462054704" ]
-      - [ "MSExcel", "462058435" ]
-      - [ "MSPowerPoint", "462062816" ]
-      - [ "OneDrive", "823766827" ]
-      - [ "WeChat", "836500024" ]
+      - ["KeystrokePro", "1572206224"]
+      - ["Messenger", "1480068668"]
+      - ["Magnet", "441258766"]
+      - ["Texifier", "458866234"]
+      - ["Notability", "360593530"]
+      - ["Goodnotes6", "1444383602"]
+      - ["MSWord", "462054704"]
+      - ["MSExcel", "462058435"]
+      - ["MSPowerPoint", "462062816"]
+      - ["OneDrive", "823766827"]
+      - ["WeChat", "836500024"]
 sysPkgs:
   - git
   - neovim
@@ -87,6 +87,7 @@ homepkgs:
     - age
     - aria2
     - asciinema
+    - atuin # shell history management
     - bat
     - bat-extras.prettybat
     - bat-extras.batwatch
@@ -95,9 +96,8 @@ homepkgs:
     - bat-extras.batgrep
     - bat-extras.batdiff
     - claude-code
-    - cachix
     - certbot
-    - devenv
+    - direnv # per-directory environment variables
     - duf
     - dust
     - eza
@@ -114,7 +114,10 @@ homepkgs:
     - jq
     - just # use Justfile to simplify nix-darwin's commands
     - lazygit
+    - mise
     - navi
+    - pixi # fast Python/conda package manager
+    - rclone # cloud storage sync
     - onefetch
     - openssh
     - openssl
@@ -131,7 +134,6 @@ homepkgs:
     - sheldon
     - sniffnet
     - starship
-    - tenv
     - tlrc
     - tmux
     - tokei
@@ -143,7 +145,6 @@ homepkgs:
     - zoxide
     - zstd
     - k9s
-    - volta
   work:
     - google-cloud-sdk
     - awscli2

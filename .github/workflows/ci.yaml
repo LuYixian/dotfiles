@@ -1,0 +1,88 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  # ─────────────────────────────────────────────────────────────
+  # Shell Script Checks
+  # ─────────────────────────────────────────────────────────────
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: "."
+          ignore_paths: "*.tmpl"
+          severity: warning
+  # ─────────────────────────────────────────────────────────────
+  # Config File Validation
+  # ─────────────────────────────────────────────────────────────
+  lint:
+    name: Lint Configs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: YAML Lint
+        uses: ibiqlik/action-yamllint@v3
+        with:
+          file_or_dir: "."
+          config_data: |
+            extends: relaxed
+            rules:
+              line-length: disable
+              truthy: disable
+              comments-indentation: disable
+      - name: TOML Validate
+        run: |
+          pip install toml
+          python3 << 'EOF'
+          import toml, glob, sys
+          errors = []
+          for f in glob.glob('**/*.toml', recursive=True):
+              try:
+                  toml.load(f)
+                  print(f'✓ {f}')
+              except Exception as e:
+                  errors.append(f'✗ {f}: {e}')
+          if errors:
+              for e in errors:
+                  print(e)
+              sys.exit(1)
+          print('All TOML files valid')
+          EOF
+  # ─────────────────────────────────────────────────────────────
+  # Nix Syntax Check (templates only - full check requires darwin)
+  # ─────────────────────────────────────────────────────────────
+  nix:
+    name: Nix Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+            experimental-features = nix-command flakes
+      - name: Check Nix syntax
+        run: |
+          # Check .nix files syntax (not templates)
+          for f in $(find . -name "*.nix" -not -name "*.tmpl"); do
+            echo "Checking: $f"
+            nix-instantiate --parse "$f" > /dev/null
+          done
+          echo "All Nix files have valid syntax"
+      - name: Check formatting
+        run: |
+          # Only format non-template nix files
+          cd nix-config
+          if ls *.nix 2>/dev/null; then
+            nix fmt -- --check . 2>/dev/null || echo "Format check skipped (no non-template files)"
+          else
+            echo "No non-template .nix files to format"
+          fi

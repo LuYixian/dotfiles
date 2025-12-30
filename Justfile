@@ -1,11 +1,44 @@
 # just is a command runner, Justfile is very similar to Makefile, but simpler.
 
-# TODO update hostname here!
-hostname := "your-hostname"
+set shell := ['bash', '-euo', 'pipefail', '-c']
+
+# Hostname for nix-darwin builds
+hostname := `hostname -s`
 
 # List all the just commands
 default:
-  @just --list
+    @just --list
+
+############################################################################
+#
+#  Chezmoi related commands
+#
+############################################################################
+
+# Apply chezmoi changes
+[group('chezmoi')]
+apply:
+    chezmoi apply
+
+# Edit chezmoi managed files
+[group('chezmoi')]
+edit file:
+    chezmoi edit {{file}}
+
+# Show chezmoi diff
+[group('chezmoi')]
+diff:
+    chezmoi diff
+
+# Update chezmoi and apply
+[group('chezmoi')]
+update:
+    chezmoi update
+
+# Re-add modified files to chezmoi
+[group('chezmoi')]
+re-add:
+    chezmoi re-add
 
 ############################################################################
 #
@@ -13,74 +46,194 @@ default:
 #
 ############################################################################
 
-#  TODO Feel free to remove this target if you don't need a proxy to speed up the build process
-[group('desktop')]
-darwin-set-proxy:
-  sudo python3 scripts/darwin_set_proxy.py
+# Build and switch nix-darwin configuration
+[group('darwin')]
+darwin:
+    nix build .#darwinConfigurations.{{hostname}}.system \
+        --extra-experimental-features 'nix-command flakes'
+    ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}}
 
-[group('desktop')]
-darwin: darwin-set-proxy
-  nix build .#darwinConfigurations.{{hostname}}.system \
-    --extra-experimental-features 'nix-command flakes'
+# Build and switch with debug output
+[group('darwin')]
+darwin-debug:
+    nix build .#darwinConfigurations.{{hostname}}.system --show-trace --verbose \
+        --extra-experimental-features 'nix-command flakes'
+    ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}} --show-trace --verbose
 
-  ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}}
+# Check nix-darwin configuration without building
+[group('darwin')]
+darwin-check:
+    nix flake check
 
-[group('desktop')]
-darwin-debug: darwin-set-proxy
-  nix build .#darwinConfigurations.{{hostname}}.system --show-trace --verbose \
-    --extra-experimental-features 'nix-command flakes'
-
-  ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}} --show-trace --verbose
+# Build darwin configuration without switching
+[group('darwin')]
+darwin-build:
+    nix build .#darwinConfigurations.{{hostname}}.system \
+        --extra-experimental-features 'nix-command flakes'
 
 ############################################################################
 #
-#  nix related commands
+#  Nix related commands
 #
 ############################################################################
 
-# Update all the flake inputs
+# Update all flake inputs
 [group('nix')]
 up:
-  nix flake update
+    nix flake update
 
-# Update specific input
-# Usage: just upp nixpkgs
+# Update specific flake input
 [group('nix')]
 upp input:
-  nix flake update {{input}}
+    nix flake update {{input}}
 
 # List all generations of the system profile
 [group('nix')]
 history:
-  nix profile history --profile /nix/var/nix/profiles/system
+    nix profile history --profile /nix/var/nix/profiles/system
 
-# Open a nix shell with the flake
+# Open a nix repl with nixpkgs
 [group('nix')]
 repl:
-  nix repl -f flake:nixpkgs
+    nix repl -f flake:nixpkgs
 
-# remove all generations older than 7 days
-# on darwin, you may need to switch to root user to run this command
-[group('nix')]
-clean:
-  sudo nix profile wipe-history --profile /nix/var/nix/profiles/system  --older-than 7d
-
-# Garbage collect all unused nix store entries
-[group('nix')]
-gc:
-  # garbage collect all unused nix store entries(system-wide)
-  sudo nix-collect-garbage --delete-older-than 7d
-  # garbage collect all unused nix store entries(for the user - home-manager)
-  # https://github.com/NixOS/nix/issues/8508
-  nix-collect-garbage --delete-older-than 7d
-
+# Format nix files
 [group('nix')]
 fmt:
-  # format the nix files in this repo
-  nix fmt
+    nix fmt
 
-# Show all the auto gc roots in the nix store
+# Remove all generations older than 7 days
+[group('nix')]
+clean days='7':
+    sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than {{days}}d
+
+# Garbage collect unused nix store entries
+[group('nix')]
+gc days='7':
+    # Garbage collect system-wide
+    sudo nix-collect-garbage --delete-older-than {{days}}d
+    # Garbage collect user (home-manager)
+    nix-collect-garbage --delete-older-than {{days}}d
+
+# Verify all nix store entries
+[group('nix')]
+verify:
+    nix store verify --all
+
+# Repair corrupted nix store entries
+[group('nix')]
+repair *paths:
+    nix store repair {{paths}}
+
+# Show all auto gc roots in the nix store
 [group('nix')]
 gcroot:
-  ls -al /nix/var/nix/gcroots/auto/
+    eza -lag /nix/var/nix/gcroots/auto/ 2>/dev/null || ls -al /nix/var/nix/gcroots/auto/
 
+# Optimize nix store (hard-link identical files)
+[group('nix')]
+optimize:
+    nix store optimise
+
+############################################################################
+#
+#  Git related commands
+#
+############################################################################
+
+# Git status
+[group('git')]
+st:
+    git status
+
+# Git diff
+[group('git')]
+gd:
+    git diff
+
+# Git log with graph
+[group('git')]
+gl:
+    git log --oneline --graph --decorate -20
+
+# Commit all changes with message
+[group('git')]
+cm message:
+    git add -A && git commit -m "{{message}}"
+
+# Push to remote
+[group('git')]
+push:
+    git push
+
+# Pull from remote
+[group('git')]
+pull:
+    git pull --rebase
+
+############################################################################
+#
+#  Utility commands
+#
+############################################################################
+
+# Show system info
+[group('utils')]
+info:
+    @echo "Hostname: {{hostname}}"
+    @echo "OS: $(uname -s)"
+    @echo "Arch: $(uname -m)"
+    @nix --version
+    @darwin-rebuild --version 2>/dev/null || true
+
+# Update all (flake + chezmoi + homebrew)
+[group('utils')]
+update-all: up
+    chezmoi update
+    brew update && brew upgrade
+
+# Full system upgrade (updates + rebuild + cleanup)
+[group('utils')]
+full-upgrade:
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 1/7: Updating nix flake inputs..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    nix flake update
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 2/7: Rebuilding nix-darwin..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    nix build .#darwinConfigurations.{{hostname}}.system --extra-experimental-features 'nix-command flakes'
+    ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}}
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 3/7: Updating chezmoi..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    chezmoi update || true
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 4/7: Updating mise tools..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    mise upgrade || true
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 5/7: Updating sheldon plugins..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    sheldon lock --update || true
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 6/7: Updating homebrew..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    brew update && brew upgrade
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 7/7: Cleaning up..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    brew cleanup --prune=7
+    @echo ""
+    @echo "✓ Full upgrade complete!"
+
+# Clean all (nix gc + brew cleanup)
+[group('utils')]
+clean-all: gc
+    brew cleanup --prune=7

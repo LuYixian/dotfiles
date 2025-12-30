@@ -1,0 +1,47 @@
+# yazi keymap configuration
+# https://yazi-rs.github.io/docs/configuration/keymap
+
+[manager]
+prepend_keymap = [
+  # Quick navigation
+  { on = ["g", "h"], run = "cd ~", desc = "Go to home" },
+  { on = ["g", "c"], run = "cd ~/.config", desc = "Go to config" },
+  { on = ["g", "d"], run = "cd ~/Downloads", desc = "Go to downloads" },
+  { on = ["g", "p"], run = "cd ~/Projects", desc = "Go to projects" },
+  { on = ["g", "."], run = "cd ~/.local/share/chezmoi", desc = "Go to dotfiles" },
+
+  # Toggle hidden files
+  { on = ["<C-h>"], run = "hidden toggle", desc = "Toggle hidden files" },
+
+  # Create new file/directory
+  { on = ["a"], run = "create", desc = "Create file/directory" },
+
+  # Open in editor
+  { on = ["e"], run = "open --interactive", desc = "Open interactively" },
+
+  # Shell
+  { on = ["!"], run = "shell --block --confirm", desc = "Run shell command" },
+
+  # Fuzzy find with fzf
+  { on = ["<C-f>"], run = "plugin fzf", desc = "Fuzzy find" },
+
+  # Bulk rename
+  { on = ["r"], run = "rename --cursor=before_ext", desc = "Rename" },
+
+  # Copy path
+  { on = ["y", "p"], run = "copy path", desc = "Copy file path" },
+  { on = ["y", "d"], run = "copy dirname", desc = "Copy directory path" },
+  { on = ["y", "n"], run = "copy filename", desc = "Copy filename" },
+
+  # Archive operations
+  { on = ["b", "z"], run = "plugin ouch --args=zip", desc = "Compress to zip" },
+  { on = ["b", "t"], run = "plugin ouch --args=tar.gz", desc = "Compress to tar.gz" },
+]
+
+[input]
+prepend_keymap = [
+  # Emacs-like keybindings for input
+  { on = ["<C-a>"], run = "move -999", desc = "Move to line start" },
+  { on = ["<C-e>"], run = "move 999", desc = "Move to line end" },
+  { on = ["<C-k>"], run = "kill 999", desc = "Kill to line end" },
+]

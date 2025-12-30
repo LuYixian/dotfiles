@@ -1,0 +1,28 @@
+
+# <type>[optional scope]: <description>          (max 72 chars)
+#
+# [optional body]                                (wrap at 72 chars)
+#
+# [optional footer(s)]
+#
+# ─────────────────────────────────────────────────────────────────────
+# Types:
+#   feat:     New feature
+#   fix:      Bug fix
+#   docs:     Documentation only
+#   style:    Formatting (no code change)
+#   refactor: Code change (no feature/fix)
+#   perf:     Performance improvement
+#   test:     Adding tests
+#   build:    Build system or dependencies
+#   ci:       CI configuration
+#   chore:    Other changes
+#
+# Examples:
+#   feat(auth): add OAuth2 login support
+#   fix: resolve memory leak in cache handler
+#   docs: update API documentation
+#   refactor!: drop support for Node 12
+#
+# Breaking changes: Add ! after type or BREAKING CHANGE: in footer
+# ─────────────────────────────────────────────────────────────────────

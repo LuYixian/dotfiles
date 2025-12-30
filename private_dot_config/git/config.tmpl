@@ -1,0 +1,67 @@
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+
+[user]
+	name = {{ .gitUsername }}
+	email = {{ .gitEmail }}
+
+[init]
+    defaultBranch = main
+
+[push]
+    autoSetupRemote = true
+
+[pull]
+    rebase = true
+
+[core]
+    pager = diff-so-fancy | less --tabs=4 -RF
+    editor = nvim
+
+[interactive]
+    diffFilter = diff-so-fancy --patch
+
+[commit]
+    template = ~/.config/git/message
+    verbose = true
+
+[merge]
+    conflictstyle = zdiff3
+
+[diff]
+    algorithm = histogram
+    colorMoved = default
+
+[rebase]
+    autoStash = true
+    autoSquash = true
+
+[fetch]
+    prune = true
+    prunetags = true
+
+[rerere]
+    enabled = true
+
+[alias]
+    # Quick commands (use lazygit for everything else)
+    st = status -sb
+    lg = log --oneline --graph --decorate -10
+
+    # Amend without editor (useful for quick fixes)
+    can = commit --amend --no-edit
+
+    # Undo last commit (keep changes staged)
+    undo = reset --soft HEAD~1
+
+    # Force push safely
+    pf = push --force-with-lease
+
+    # Show current user
+    whoami = "!echo $(git config user.name) '<'$(git config user.email)'>'"
+
+    # Open lazygit
+    ui = "!lazygit"

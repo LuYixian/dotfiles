@@ -1,0 +1,67 @@
+# Dracula color palette for consistent theming
+export DRACULA_BG="#282a36"
+export DRACULA_FG="#f8f8f2"
+export DRACULA_SELECTION="#44475a"
+export DRACULA_COMMENT="#6272a4"
+export DRACULA_CYAN="#8be9fd"
+export DRACULA_GREEN="#50fa7b"
+export DRACULA_ORANGE="#ffb86c"
+export DRACULA_PINK="#ff79c6"
+export DRACULA_PURPLE="#bd93f9"
+export DRACULA_RED="#ff5555"
+export DRACULA_YELLOW="#f1fa8c"
+
+# fzf configuration with Dracula theme
+export FZF_DEFAULT_OPTS="
+  --color=fg:${DRACULA_FG},bg:${DRACULA_BG},hl:${DRACULA_PURPLE}
+  --color=fg+:${DRACULA_FG},bg+:${DRACULA_SELECTION},hl+:${DRACULA_CYAN}
+  --color=info:${DRACULA_ORANGE},prompt:${DRACULA_GREEN},pointer:${DRACULA_PINK}
+  --color=marker:${DRACULA_CYAN},spinner:${DRACULA_PURPLE},header:${DRACULA_COMMENT}
+  --color=border:${DRACULA_COMMENT}
+  --height=60%
+  --layout=reverse
+  --border=rounded
+  --margin=1
+  --padding=1
+  --info=inline
+  --separator='─'
+  --preview-window='right:50%:border-left'
+"
+
+# Use fd for file searching (respects .gitignore)
+if command -v fd >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+fi
+
+# Preview with bat for CTRL-T (file search)
+if command -v bat >/dev/null 2>&1; then
+  export FZF_CTRL_T_OPTS="
+    --preview 'bat --color=always --style=numbers --line-range=:500 {}'
+    --preview-window='right:60%:border-left'
+    --bind 'ctrl-/:toggle-preview'
+  "
+fi
+
+# Preview directories with eza for ALT-C (cd)
+if command -v eza >/dev/null 2>&1; then
+  export FZF_ALT_C_OPTS="
+    --preview 'eza --tree --level=2 --color=always --icons {}'
+    --preview-window='right:50%:border-left'
+  "
+fi
+
+# CTRL-R history search options
+export FZF_CTRL_R_OPTS="
+  --preview 'echo {}'
+  --preview-window='down:3:wrap'
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --header 'Press CTRL-Y to copy command'
+"
+
+# 1Password SSH Agent
+# Use 1Password's SSH agent for secure key management
+if [[ -S "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" ]]; then
+  export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+fi
