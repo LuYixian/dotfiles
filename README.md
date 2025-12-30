@@ -1,4 +1,8 @@
-# 📂 dotfiles
+<div align="center">
+
+![header](https://capsule-render.vercel.app/api?type=waving&color=0:282a36,100:bd93f9&height=200&section=header&text=~/.dotfiles&fontSize=48&fontColor=f8f8f2&fontAlignY=30&desc=One%20command%20%C2%B7%20Full%20environment%20%C2%B7%20Zero%20hassle&descSize=16&descColor=8be9fd&descAlignY=55&animation=fadeIn)
+
+**chezmoi + nix-darwin · Reproducible macOS dev environment**
 
 [![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -16,9 +20,10 @@
 [![atuin](https://img.shields.io/github/v/tag/atuinsh/atuin?color=FF6B6B&label=atuin&sort=semver)](https://github.com/atuinsh/atuin)
 [![tmux](https://img.shields.io/github/v/tag/tmux/tmux?color=1BB91F&label=tmux&logo=tmux&logoColor=white&sort=semver)](https://github.com/tmux/tmux)
 
-A modern, reproducible macOS development environment powered by **nix-darwin** and **chezmoi**. This repository provides a fully declarative system configuration that can bootstrap a new Mac in minutes, with all packages, settings, and dotfiles automatically applied.
+*A modern, reproducible macOS development environment powered by nix-darwin and chezmoi*
+</div>
 
-The entire setup is built around Rust-based CLI tools for blazing-fast performance, and supports multi-profile configurations to seamlessly switch between work and personal environments.
+This repository provides a fully declarative system configuration that can bootstrap a new Mac in minutes, with all packages, settings, and dotfiles automatically applied. The entire setup is built around Rust-based CLI tools for blazing-fast performance, and supports multi-profile configurations to seamlessly switch between work and personal environments.
 
 ---
 
@@ -77,17 +82,17 @@ This setup replaces traditional Unix tools with modern, Rust-based alternatives 
 
 ### Modern CLI Replacements
 
-| Classic | Modern | Description |
-|---------|--------|-------------|
-| `ls` | [eza](https://github.com/eza-community/eza) | Git integration, icons, tree views |
-| `cat` | [bat](https://github.com/sharkdp/bat) | Syntax highlighting, git integration |
-| `grep` | [ripgrep](https://github.com/BurntSushi/ripgrep) | Lightning-fast regex search |
-| `find` | [fd](https://github.com/sharkdp/fd) | Intuitive syntax, respects .gitignore |
-| `du` | [dust](https://github.com/bootandy/dust) | Visual disk usage analyzer |
-| `df` | [duf](https://github.com/muesli/duf) | Beautiful disk free table |
-| `cd` | [zoxide](https://github.com/ajeetdsouza/zoxide) | Smart directory jumping |
-| `man` | [tldr](https://github.com/tldr-pages/tlrc) | Practical command examples |
-| `time` | [hyperfine](https://github.com/sharkdp/hyperfine) | Command benchmarking |
+| Classic | Modern                                            | Description                           |
+| ------- | ------------------------------------------------- | ------------------------------------- |
+| `ls`    | [eza](https://github.com/eza-community/eza)       | Git integration, icons, tree views    |
+| `cat`   | [bat](https://github.com/sharkdp/bat)             | Syntax highlighting, git integration  |
+| `grep`  | [ripgrep](https://github.com/BurntSushi/ripgrep)  | Lightning-fast regex search           |
+| `find`  | [fd](https://github.com/sharkdp/fd)               | Intuitive syntax, respects .gitignore |
+| `du`    | [dust](https://github.com/bootandy/dust)          | Visual disk usage analyzer            |
+| `df`    | [duf](https://github.com/muesli/duf)              | Beautiful disk free table             |
+| `cd`    | [zoxide](https://github.com/ajeetdsouza/zoxide)   | Smart directory jumping               |
+| `man`   | [tldr](https://github.com/tldr-pages/tlrc)        | Practical command examples            |
+| `time`  | [hyperfine](https://github.com/sharkdp/hyperfine) | Command benchmarking                  |
 
 ### Shell Environment
 
@@ -99,15 +104,15 @@ The shell prompt is powered by **Starship**, a minimal and fast prompt written i
 
 **Direnv** automatically loads and unloads environment variables when you enter and leave directories. Combined with the helper functions in this repo, you can quickly set up per-project Python virtualenvs, Nix development shells, or mise environments.
 
-| Tool | Role |
-|------|------|
-| [starship](https://github.com/starship/starship) | Minimal, blazing-fast prompt with git integration |
-| [sheldon](https://github.com/rossmacarthur/sheldon) | Fast, configurable zsh plugin manager |
-| [atuin](https://github.com/atuinsh/atuin) | Magical shell history with fuzzy search |
-| [direnv](https://github.com/direnv/direnv) | Per-directory environment variables |
-| [fzf](https://github.com/junegunn/fzf) | Fuzzy finder for files, history, and more |
-| [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) | Fish-like command suggestions |
-| [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) | Syntax highlighting for commands |
+| Tool                                                                            | Role                                              |
+| ------------------------------------------------------------------------------- | ------------------------------------------------- |
+| [starship](https://github.com/starship/starship)                                | Minimal, blazing-fast prompt with git integration |
+| [sheldon](https://github.com/rossmacarthur/sheldon)                             | Fast, configurable zsh plugin manager             |
+| [atuin](https://github.com/atuinsh/atuin)                                       | Magical shell history with fuzzy search           |
+| [direnv](https://github.com/direnv/direnv)                                      | Per-directory environment variables               |
+| [fzf](https://github.com/junegunn/fzf)                                          | Fuzzy finder for files, history, and more         |
+| [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)         | Fish-like command suggestions                     |
+| [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) | Syntax highlighting for commands                  |
 
 ### Development Tools
 
@@ -119,14 +124,14 @@ The shell prompt is powered by **Starship**, a minimal and fast prompt written i
 
 **tmux** configuration includes vim-style keybindings, Dracula theme colors, and popup windows for quick access to lazygit and htop. The prefix key is set to Ctrl+A for easier access.
 
-| Tool | Role |
-|------|------|
-| [mise](https://github.com/jdx/mise) | Polyglot runtime manager (Node, Python, Go, Rust) |
-| [lazygit](https://github.com/jesseduffield/lazygit) | Beautiful terminal UI for git |
-| [yazi](https://github.com/sxyazi/yazi) | Blazing fast terminal file manager |
-| [tmux](https://github.com/tmux/tmux) | Terminal multiplexer with popup windows |
-| [ghq](https://github.com/x-motemen/ghq) | Remote repository management |
-| [gh](https://github.com/cli/cli) | GitHub CLI for issues, PRs, and more |
+| Tool                                                | Role                                              |
+| --------------------------------------------------- | ------------------------------------------------- |
+| [mise](https://github.com/jdx/mise)                 | Polyglot runtime manager (Node, Python, Go, Rust) |
+| [lazygit](https://github.com/jesseduffield/lazygit) | Beautiful terminal UI for git                     |
+| [yazi](https://github.com/sxyazi/yazi)              | Blazing fast terminal file manager                |
+| [tmux](https://github.com/tmux/tmux)                | Terminal multiplexer with popup windows           |
+| [ghq](https://github.com/x-motemen/ghq)             | Remote repository management                      |
+| [gh](https://github.com/cli/cli)                    | GitHub CLI for issues, PRs, and more              |
 
 ### AI Integration
 
@@ -136,14 +141,14 @@ The shell prompt is powered by **Starship**, a minimal and fast prompt written i
 
 GUI applications are managed through Homebrew casks:
 
-| Category | Applications |
-|----------|--------------|
-| Terminal | Ghostty, iTerm2 |
-| Editor | Neovim, VS Code, Cursor |
-| Browser | Arc (Dia) |
-| Window Manager | AeroSpace (i3-like tiling) |
-| Productivity | Notion, Obsidian, Logseq, Raycast |
-| Container | OrbStack (Docker alternative) |
+| Category       | Applications                      |
+| -------------- | --------------------------------- |
+| Terminal       | Ghostty, iTerm2                   |
+| Editor         | Neovim, VS Code, Cursor           |
+| Browser        | Arc (Dia)                         |
+| Window Manager | AeroSpace (i3-like tiling)        |
+| Productivity   | Notion, Obsidian, Logseq, Raycast |
+| Container      | OrbStack (Docker alternative)     |
 
 ---
 
@@ -201,12 +206,12 @@ create_py_project   # Quick Python project setup with uv
 
 Packages are managed through multiple sources, each with its strengths:
 
-| Source | Description | Examples |
-|--------|-------------|----------|
-| Nix packages | Reproducible, rollback-able | ripgrep, bat, eza, starship |
-| Homebrew formulas | macOS-specific tools | macos-trash, poetry |
-| Homebrew casks | GUI applications | VS Code, Ghostty, Notion |
-| Mac App Store | App Store exclusives | Magnet, WeChat, Office |
+| Source            | Description                 | Examples                    |
+| ----------------- | --------------------------- | --------------------------- |
+| Nix packages      | Reproducible, rollback-able | ripgrep, bat, eza, starship |
+| Homebrew formulas | macOS-specific tools        | macos-trash, poetry         |
+| Homebrew casks    | GUI applications            | VS Code, Ghostty, Notion    |
+| Mac App Store     | App Store exclusives        | Magnet, WeChat, Office      |
 
 All package lists are defined in `.chezmoidata.yaml` with support for shared, work-only, and private-only packages.
 
@@ -296,12 +301,12 @@ chezmoi init --data='{"private": true}'
 
 ## ⌨️ Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| Alt + Up | Navigate to parent directory |
+| Shortcut   | Action                         |
+| ---------- | ------------------------------ |
+| Alt + Up   | Navigate to parent directory   |
 | Alt + Down | Navigate to previous directory |
-| Ctrl + R | Search command history (Atuin) |
-| Ctrl + A | tmux prefix key |
+| Ctrl + R   | Search command history (Atuin) |
+| Ctrl + A   | tmux prefix key                |
 
 ---
 
