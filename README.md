@@ -22,7 +22,7 @@ The entire setup is built around Rust-based CLI tools for blazing-fast performan
 
 ---
 
-## 💡 Motivation
+## 🎯 Motivation
 
 Setting up a new development machine is tedious. You need to install dozens of packages, configure countless tools, and remember all those little tweaks you made over the years. This repository solves that problem by:
 
@@ -59,7 +59,7 @@ After installation, restart your terminal to enjoy your new environment.
 
 ---
 
-## 🏗️ Architecture
+## 🧩 Architecture
 
 This dotfiles setup combines two powerful tools:
 
@@ -71,7 +71,7 @@ The two tools complement each other: chezmoi handles user-level dotfiles while n
 
 ---
 
-## 🛠️ Tool Chains
+## ⚡ Tool Chains
 
 This setup replaces traditional Unix tools with modern, Rust-based alternatives that are faster, more user-friendly, and provide better defaults.
 
@@ -147,7 +147,7 @@ GUI applications are managed through Homebrew casks:
 
 ---
 
-## ⚙️ Shell Functions
+## 🔧 Shell Functions
 
 Beyond aliases, this setup provides powerful shell functions for common workflows.
 
@@ -276,7 +276,7 @@ just update-all     # Update flake + chezmoi + homebrew
 
 ---
 
-## 🎨 Multi-Profile Configuration
+## 👤 Multi-Profile Configuration
 
 The setup supports different configurations for different machines. In `.chezmoidata.yaml`, packages are organized into three categories:
 
@@ -305,7 +305,7 @@ chezmoi init --data='{"private": true}'
 
 ---
 
-## 🎭 Theming
+## 🌙 Theming
 
 All tools are configured with the **Dracula** color palette for a consistent, eye-friendly dark theme:
 
@@ -317,13 +317,9 @@ All tools are configured with the **Dracula** color palette for a consistent, ey
 
 ---
 
-## 📊 Stats
+## 📈 Stats
 
-<!-- 获取你自己的 repobeats: https://repobeats.axiom.co -->
-![Repobeats analytics](https://repobeats.axiom.co/api/embed/YOUR_REPOBEATS_ID.svg "Repobeats analytics image")
-
-<!-- 或者使用 GitHub stats card -->
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=LuYixian&show_icons=true&theme=dracula&hide_border=true&count_private=true)
+![Repobeats](https://repobeats.axiom.co/api/embed/b47788b120b4e3a0f049b72115d88268d5523f64.svg "Repobeats analytics")
 
 ---
 
