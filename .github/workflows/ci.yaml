@@ -36,10 +36,11 @@ jobs:
             access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
             experimental-features = nix-command flakes
       - name: Install chezmoi
-        run: sh -c "$(curl -fsLS get.chezmoi.io)"
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
       - name: Render templates
         run: |
-          ~/bin/chezmoi init --source=$PWD --apply --force \
+          chezmoi init --source=$PWD --apply --force \
             --promptString="gitUsername=ci" \
             --promptString="gitEmail=ci@example.com" \
             --promptString="hostname=ci"
