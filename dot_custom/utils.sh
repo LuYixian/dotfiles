@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Utility functions
 
 # nw - Network monitoring with sniffnet

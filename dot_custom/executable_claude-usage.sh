@@ -23,9 +23,9 @@ total_tokens=$((input_tokens + output_tokens))
 
 # Format with K suffix for readability
 if [[ $total_tokens -gt 1000000 ]]; then
-    formatted=$(printf "%.1fM" $(echo "scale=1; $total_tokens/1000000" | bc))
+    formatted=$(printf "%.1fM" "$(echo "scale=1; $total_tokens/1000000" | bc)")
 elif [[ $total_tokens -gt 1000 ]]; then
-    formatted=$(printf "%.1fk" $(echo "scale=1; $total_tokens/1000" | bc))
+    formatted=$(printf "%.1fk" "$(echo "scale=1; $total_tokens/1000" | bc)")
 else
     formatted=$total_tokens
 fi

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Dracula color palette for consistent theming
 export DRACULA_BG="#282a36"
 export DRACULA_FG="#f8f8f2"

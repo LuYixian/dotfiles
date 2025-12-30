@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Shell initialization helpers
 # Conditionally eval commands only if the tool exists
 

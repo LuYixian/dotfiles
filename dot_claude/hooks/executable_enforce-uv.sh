@@ -2,7 +2,8 @@
 # enforce-uv.sh - Enforce using uv instead of pip for Python package management
 
 main() {
-  local input=$(cat)
+  local input
+  input=$(cat)
 
   # Validate input
   if [ -z "$input" ]; then
@@ -10,13 +11,16 @@ main() {
     exit 0
   fi
 
-  local tool_name=$(echo "$input" | jq -r '.tool_name' 2>/dev/null || echo "")
-  local command=$(echo "$input" | jq -r '.tool_input.command // ""' 2>/dev/null || echo "")
+  local tool_name
+  local command
+  tool_name=$(echo "$input" | jq -r '.tool_name' 2>/dev/null || echo "")
+  command=$(echo "$input" | jq -r '.tool_input.command // ""' 2>/dev/null || echo "")
 
   if [[ "$tool_name" == "Bash" ]]; then
     case "$command" in
       pip\ install*|pip3\ install*)
-        local packages=$(echo "$command" | sed -E 's/pip[0-9]? install//' | sed 's/--[^ ]*//g' | xargs)
+        local packages
+        packages=$(echo "$command" | sed -E 's/pip[0-9]? install//' | sed 's/--[^ ]*//g' | xargs)
         cat <<-EOF
 {
   "decision": "block",
@@ -31,7 +35,8 @@ EOF
         exit 0
         ;;
       pip\ uninstall*|pip3\ uninstall*)
-        local packages=$(echo "$command" | sed -E 's/pip[0-9]? uninstall//' | sed 's/-y//g' | xargs)
+        local packages
+        packages=$(echo "$command" | sed -E 's/pip[0-9]? uninstall//' | sed 's/-y//g' | xargs)
         cat <<-EOF
 {
   "decision": "block",

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Shell aliases
 # Conditionally create aliases only if the tool exists
 
@@ -5,6 +6,7 @@ alias_if_cmd_exists() {
     local cmd="$1"
     local alias_name="$2"
     if command -v "$cmd" >/dev/null 2>&1; then
+        # shellcheck disable=SC2139
         alias "$alias_name"="$cmd"
     fi
 }

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # ─────────────────────────────────────────────────────────────
 # Alt+Up/Down Directory Navigation
 # ─────────────────────────────────────────────────────────────
@@ -7,7 +8,7 @@ _cd_up() {
 }
 
 _cd_back() {
-    cd - >/dev/null 2>&1
+    cd - >/dev/null 2>&1 || return 1
     zle reset-prompt
 }
 
@@ -323,7 +324,8 @@ zshconfig() {
 # Usage: backup_dev_env
 backup_dev_env() {
     local backup_dir="${1:-$(chezmoi source-path)/backups}"
-    local date_str=$(date +%Y%m%d)
+    local date_str
+    date_str=$(date +%Y%m%d)
 
     mkdir -p "$backup_dir"
 
