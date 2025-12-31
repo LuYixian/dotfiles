@@ -139,12 +139,21 @@ mkcd() {
 alias take="mkcd"  # Alternative name
 
 # ─────────────────────────────────────────────────────────────
-# aicommit - Generate commit message with AI CLI (claude, codex, gemini)
-# Usage: aicommit [--dry-run]
+# aicommit - Generate commit message with AI CLI
+# Usage: aicommit [--dry-run] [provider]
+# Config: AICOMMIT_PROVIDER env var (default: gemini)
 # ─────────────────────────────────────────────────────────────
 aicommit() {
     local dry_run=false
-    [[ "$1" == "--dry-run" ]] && dry_run=true
+    local provider="${AICOMMIT_PROVIDER:-gemini}"
+
+    # Parse arguments
+    for arg in "$@"; do
+        case "$arg" in
+            --dry-run|-n) dry_run=true ;;
+            claude|codex|gemini|auto) provider="$arg" ;;
+        esac
+    done
 
     # Get staged diff
     local diff
@@ -152,7 +161,6 @@ aicommit() {
 
     if [[ -z "$diff" ]]; then
         echo "No staged changes. Use 'git add' first."
-        # Show untracked files as hint
         local untracked
         untracked=$(git ls-files --others --exclude-standard)
         if [[ -n "$untracked" ]]; then
@@ -178,25 +186,36 @@ $diff
 Return ONLY the commit message, nothing else."
 
     local message=""
+    local providers=()
 
-    # Try Claude CLI first
-    if [[ -z "$message" ]] && command -v claude &>/dev/null; then
-        message=$(echo "$prompt" | claude --print 2>/dev/null | head -1)
+    # Determine provider order
+    if [[ "$provider" == "auto" ]]; then
+        providers=(claude codex gemini)
+    else
+        providers=("$provider")
     fi
 
-    # Try Codex CLI
-    if [[ -z "$message" ]] && command -v codex &>/dev/null; then
-        message=$(echo "$prompt" | codex --print 2>/dev/null | head -1)
-    fi
-
-    # Try Gemini CLI
-    if [[ -z "$message" ]] && command -v gemini &>/dev/null; then
-        message=$(echo "$prompt" | gemini 2>/dev/null | head -1)
-    fi
+    # Try providers in order
+    for p in "${providers[@]}"; do
+        [[ -n "$message" ]] && break
+        case "$p" in
+            claude)
+                command -v claude &>/dev/null && \
+                    message=$(echo "$prompt" | claude --print 2>/dev/null | head -1)
+                ;;
+            codex)
+                command -v codex &>/dev/null && \
+                    message=$(echo "$prompt" | codex --print 2>/dev/null | head -1)
+                ;;
+            gemini)
+                command -v gemini &>/dev/null && \
+                    message=$(echo "$prompt" | gemini -o text 2>/dev/null | head -1)
+                ;;
+        esac
+    done
 
     if [[ -z "$message" ]]; then
-        echo "Failed to generate commit message. No AI CLI available."
-        echo "Install one of: claude, codex, gemini"
+        echo "Failed to generate commit message with provider: $provider"
         return 1
     fi
 
@@ -204,8 +223,7 @@ Return ONLY the commit message, nothing else."
     message=$(echo "$message" | sed 's/^[[:space:]]*//;s/^[`'"'"'"]//;s/[`'"'"'"]$//')
 
     if $dry_run; then
-        echo "Generated commit message:"
-        echo "$message"
+        echo "[$provider] $message"
     else
         echo "Committing with message: $message"
         git commit -m "$message"

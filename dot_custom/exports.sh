@@ -66,3 +66,7 @@ export FZF_CTRL_R_OPTS="
 if [[ -S "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" ]]; then
   export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 fi
+
+# AI commit message provider (claude, codex, gemini, auto)
+# Override in ~/.custom/local.sh if needed
+export AICOMMIT_PROVIDER="${AICOMMIT_PROVIDER:-gemini}"

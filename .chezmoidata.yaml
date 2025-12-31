@@ -96,6 +96,8 @@ homepkgs:
     - bat-extras.batgrep
     - bat-extras.batdiff
     - claude-code
+    - codex
+    - gemini-cli
     - certbot
     - direnv # per-directory environment variables
     - duf
