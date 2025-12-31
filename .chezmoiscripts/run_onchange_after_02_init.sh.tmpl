@@ -1,13 +1,14 @@
 {{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
-# next section is to tigger the script to run on change when the following files are modified
+# next section is to trigger the script to run on change when the following files are modified
 {{ $homeDir := .chezmoi.homeDir -}}
 # flake.nix hash: {{ include (printf "%s/nix-config/flake.nix" $homeDir) | sha256sum }}
 # flake.lock hash: {{ include (printf "%s/nix-config/flake.lock" $homeDir) | sha256sum }}
 # apps.nix hash: {{ include (printf "%s/nix-config/modules/apps.nix" $homeDir) | sha256sum }}
 # host-users.nix hash: {{ include (printf "%s/nix-config/modules/host-users.nix" $homeDir) | sha256sum }}
 # nix-core.nix hash: {{ include (printf "%s/nix-config/modules/nix-core.nix" $homeDir) | sha256sum }}
+# profile.nix hash: {{ include (printf "%s/nix-config/modules/profile.nix" $homeDir) | sha256sum }}
 # system.nix hash: {{ include (printf "%s/nix-config/modules/system.nix" $homeDir) | sha256sum }}
 
 set -eufo pipefail

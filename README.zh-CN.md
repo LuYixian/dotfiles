@@ -194,6 +194,8 @@ GUI 应用通过 Homebrew cask 管理：
 
 除了 alias，这套配置还提供了一些面向常用工作流的 shell 函数。
 
+如果有不想提交到仓库的本机改动，可以写到 `~/.custom/local.sh`（存在时会被自动 `source`）。
+
 ### 项目跳转
 
 `dev` 函数把 **ghq** 与 **fzf** 组合起来做项目管理：输入 `dev` 后，会出现一个可模糊搜索的仓库列表（带目录树预览）；选中后立刻进入项目目录，同时把 tmux 会话重命名为项目名。
@@ -323,6 +325,9 @@ just up             # 更新所有 flake 输入
 just gc             # 清理旧的 generation
 just clean          # 清理 7 天前的 generation
 just optimize       # 优化 nix store（硬链接去重）
+
+# 开发
+just check          # 运行 pre-commit 检查
 
 # 一键合集
 just full-upgrade   # 完整系统升级（7 步）

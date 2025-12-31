@@ -8,7 +8,7 @@ encryption = "age"
 
 {{- $hostname := .chezmoi.hostname -}}
 {{- if not $work -}}
-{{- $hostname := promptStringOnce . "hostname" "Hostname" -}}{{/* set the hostname */}}
+{{- $hostname = promptStringOnce . "hostname" "Hostname" -}}{{/* set the hostname */}}
 {{- end -}}
 
 {{/* prompt for user specific configuration */}}
@@ -33,8 +33,26 @@ encryption = "age"
 {{-   $headless = true -}}
 {{- end -}}
 
-{{/* get the timezone from ip-api.com */}}
-{{- $timezone := index (fromJson (output "curl" "-s" "http://ip-api.com/json/")) "timezone" -}}
+{{/* timezone: prefer local config, fallback to ip-api.com */}}
+{{- $timezone := "" -}}
+
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $timezone = (output "sh" "-c" "readlink /etc/localtime 2>/dev/null | sed -E 's#.*/zoneinfo/##' || true") | trim -}}
+{{- else if eq .chezmoi.os "linux" -}}
+{{-   $timezone = (output "sh" "-c" "cat /etc/timezone 2>/dev/null || true") | trim -}}
+{{-   if eq $timezone "" -}}
+{{-     $timezone = (output "sh" "-c" "readlink /etc/localtime 2>/dev/null | sed -E 's#.*/zoneinfo/##' || true") | trim -}}
+{{-   end -}}
+{{- end -}}
+
+{{- if eq $timezone "" -}}
+{{-   $ipApiJson := output "sh" "-c" "curl -fsS --max-time 2 http://ip-api.com/json/ 2>/dev/null || echo '{}' " -}}
+{{-   $timezone = (index (fromJson $ipApiJson) "timezone") | default "" -}}
+{{- end -}}
+
+{{- if eq $timezone "" -}}
+{{-   $timezone = promptStringOnce . "timezone" "Timezone (e.g. Asia/Tokyo)" -}}
+{{- end -}}
 
 [data]
 hostname = {{ $hostname | quote }}

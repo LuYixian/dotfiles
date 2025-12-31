@@ -1,4 +1,7 @@
 README.md
+README.ja.md
+README.zh-CN.md
+.editorconfig
 .gitignore
 .github/
 .pre-commit-config.yaml

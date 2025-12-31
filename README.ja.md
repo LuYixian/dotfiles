@@ -194,6 +194,8 @@ GUI アプリは Homebrew cask で管理します：
 
 エイリアスに加えて、よく使うワークフロー向けのシェル関数を用意しています。
 
+コミットしたくないマシン固有の設定は `~/.custom/local.sh` に書けます（存在すれば自動で `source` されます）。
+
 ### プロジェクト移動
 
 `dev` 関数は **ghq** と **fzf** を組み合わせたプロジェクトセレクタです。`dev` を実行すると、ツリープレビュー付きのリポジトリ一覧をあいまい検索でき、選択するとそのまま移動します。tmux セッション名もプロジェクト名に合わせて変更されます。
@@ -323,6 +325,9 @@ just up             # flake 入力をすべて更新
 just gc             # 古い generation を削除
 just clean          # 7 日以上前の generation を削除
 just optimize       # nix store 最適化（重複ハードリンク）
+
+# 開発
+just check          # pre-commit を実行
 
 # オールインワン
 just full-upgrade   # 完全アップグレード（7 ステップ）

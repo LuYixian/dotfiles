@@ -194,6 +194,8 @@ GUI applications are managed through Homebrew casks:
 
 Beyond aliases, this setup provides powerful shell functions for common workflows.
 
+For machine-specific tweaks you don't want to commit, put them in `~/.custom/local.sh` (it will be sourced automatically if present).
+
 ### Project Navigation
 
 The `dev` function combines **ghq** and **fzf** for project management. Type `dev`, and you get a fuzzy-searchable list of all your git repositories with a tree preview. Select one and you're instantly there, with tmux session renamed to match.
@@ -323,6 +325,9 @@ just up             # Update all flake inputs
 just gc             # Garbage collect old generations
 just clean          # Clean generations older than 7 days
 just optimize       # Optimize nix store (hard-link duplicates)
+
+# Development
+just check          # Run pre-commit checks
 
 # All-in-one
 just full-upgrade   # Complete system upgrade (7 steps)

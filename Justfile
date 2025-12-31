@@ -192,6 +192,11 @@ info:
     @nix --version
     @darwin-rebuild --version 2>/dev/null || true
 
+# Run pre-commit checks
+[group('dev')]
+check:
+    pre-commit run --all-files
+
 # Update all (flake + chezmoi + homebrew)
 [group('utils')]
 update-all: up
