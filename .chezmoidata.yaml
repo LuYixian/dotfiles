@@ -106,6 +106,7 @@ homepkgs:
     - ffmpeg
     - fzf
     - gh
+    - gh-dash
     - ghq
     - git-lfs
     - glow

@@ -49,26 +49,26 @@ re-add:
 # Build and switch nix-darwin configuration
 [group('darwin')]
 darwin:
-    nix build .#darwinConfigurations.{{hostname}}.system \
+    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{hostname}}.system \
         --extra-experimental-features 'nix-command flakes'
-    ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}}
+    cd "$HOME/nix-config" && sudo ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}}
 
 # Build and switch with debug output
 [group('darwin')]
 darwin-debug:
-    nix build .#darwinConfigurations.{{hostname}}.system --show-trace --verbose \
+    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{hostname}}.system --show-trace --verbose \
         --extra-experimental-features 'nix-command flakes'
-    ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}} --show-trace --verbose
+    cd "$HOME/nix-config" && sudo ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}} --show-trace --verbose
 
 # Check nix-darwin configuration without building
 [group('darwin')]
 darwin-check:
-    nix flake check
+    cd "$HOME/nix-config" && nix flake check
 
 # Build darwin configuration without switching
 [group('darwin')]
 darwin-build:
-    nix build .#darwinConfigurations.{{hostname}}.system \
+    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{hostname}}.system \
         --extra-experimental-features 'nix-command flakes'
 
 ############################################################################
@@ -80,12 +80,12 @@ darwin-build:
 # Update all flake inputs
 [group('nix')]
 up:
-    nix flake update
+    cd "$HOME/nix-config" && nix flake update
 
 # Update specific flake input
 [group('nix')]
 upp input:
-    nix flake update {{input}}
+    cd "$HOME/nix-config" && nix flake update {{input}}
 
 # List all generations of the system profile
 [group('nix')]
@@ -100,13 +100,13 @@ repl:
 # Format nix files
 [group('nix')]
 fmt:
-    nix fmt
+    cd "$HOME/nix-config" && nix fmt
 
 # Check nix formatting (fails if changes needed)
 [group('nix')]
 fmt-check:
     chezmoi apply
-    cd ~/nix-config && nix fmt -- --check .
+    cd "$HOME/nix-config" && nix fmt -- --check .
 
 # Remove all generations older than 7 days
 [group('nix')]
@@ -204,13 +204,13 @@ full-upgrade:
     @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     @echo "Step 1/7: Updating nix flake inputs..."
     @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    nix flake update
+    cd "$HOME/nix-config" && nix flake update
     @echo ""
     @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     @echo "Step 2/7: Rebuilding nix-darwin..."
     @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    nix build .#darwinConfigurations.{{hostname}}.system --extra-experimental-features 'nix-command flakes'
-    ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}}
+    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{hostname}}.system --extra-experimental-features 'nix-command flakes'
+    cd "$HOME/nix-config" && sudo ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}}
     @echo ""
     @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     @echo "Step 3/7: Updating chezmoi..."

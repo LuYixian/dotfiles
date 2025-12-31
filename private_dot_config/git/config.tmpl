@@ -20,6 +20,7 @@
 [core]
     pager = diff-so-fancy | less --tabs=4 -RF
     editor = nvim
+    excludesFile = ~/.config/git/ignore
 
 [interactive]
     diffFilter = diff-so-fancy --patch
@@ -65,3 +66,25 @@
 
     # Open lazygit
     ui = "!lazygit"
+
+    # Show branches sorted by last commit date
+    branches = for-each-ref --sort=-committerdate refs/heads/ --format='%(color:blue)%(committerdate:relative)%(color:reset) %(color:green)%(refname:short)%(color:reset) %(color:yellow)%(authorname)%(color:reset)'
+
+    # Show recent branches (top 10)
+    recent = for-each-ref --sort=-committerdate refs/heads/ --format='%(refname:short)' --count=10
+
+    # Interactive rebase with autosquash
+    rsq = rebase -i --autosquash
+
+# ─────────────────────────────────────────────────────────────
+# URL Rewriting - Use SSH instead of HTTPS for git operations
+# This allows using SSH keys (incl. 1Password SSH agent) for auth
+# ─────────────────────────────────────────────────────────────
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/
+
+[url "ssh://git@gitlab.com/"]
+    insteadOf = https://gitlab.com/
+
+[url "ssh://git@bitbucket.org/"]
+    insteadOf = https://bitbucket.org/

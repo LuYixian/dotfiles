@@ -130,12 +130,13 @@ chezmoi-cd() {
 alias dotcd="chezmoi-cd"
 
 # ─────────────────────────────────────────────────────────────
-# mkcd - Make directory and cd into it
+# mkcd / take - Make directory and cd into it
 # Usage: mkcd <dirname>
 # ─────────────────────────────────────────────────────────────
 mkcd() {
     mkdir -p "$1" && cd "$1" || return 1
 }
+alias take="mkcd"  # Alternative name
 
 # ─────────────────────────────────────────────────────────────
 # aicommit - Generate commit message with AI CLI (claude, codex, gemini)
@@ -151,6 +152,14 @@ aicommit() {
 
     if [[ -z "$diff" ]]; then
         echo "No staged changes. Use 'git add' first."
+        # Show untracked files as hint
+        local untracked
+        untracked=$(git ls-files --others --exclude-standard)
+        if [[ -n "$untracked" ]]; then
+            echo ""
+            echo "Untracked files (use 'git add' to include):"
+            echo "$untracked" | sed 's/^/  /'
+        fi
         return 1
     fi
 
@@ -369,4 +378,74 @@ restore_vscode_ext() {
         echo "Backup file not found: $backup_file"
         return 1
     fi
+}
+
+# ─────────────────────────────────────────────────────────────
+# Git Utilities
+# Note: Some of these also exist as git aliases, but shell functions
+# provide additional features (cd, user feedback, etc.)
+# ─────────────────────────────────────────────────────────────
+
+# git-root - Jump to git repository root (can't be a git alias - needs cd)
+# Usage: git-root
+git-root() {
+    local root
+    root=$(git rev-parse --show-toplevel 2>/dev/null)
+    if [[ -n "$root" ]]; then
+        cd "$root" || return 1
+    else
+        echo "Not in a git repository"
+        return 1
+    fi
+}
+
+# git-undo - Undo last commit (keep changes staged)
+# Usage: git-undo
+git-undo() {
+    git reset --soft HEAD~1
+    echo "Last commit undone. Changes are staged."
+}
+
+# git-branches - Show branches sorted by last commit date
+# Usage: git-branches
+git-branches() {
+    git for-each-ref --sort=-committerdate refs/heads/ \
+        --format='%(color:blue)%(committerdate:relative)%(color:reset) %(color:green)%(refname:short)%(color:reset) %(color:yellow)%(authorname)%(color:reset)'
+}
+
+# git-cleanup - Delete merged branches
+# Usage: git-cleanup
+git-cleanup() {
+    local branches
+    branches=$(git branch --merged | grep -v '\*' | grep -v 'main' | grep -v 'master')
+    if [[ -z "$branches" ]]; then
+        echo "No merged branches to delete"
+        return 0
+    fi
+    echo "Branches to delete:"
+    echo "$branches"
+    echo ""
+    printf "Delete these branches? [y/N] "
+    read -r confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        echo "$branches" | xargs git branch -d
+        echo "Done."
+    else
+        echo "Cancelled."
+    fi
+}
+
+# ─────────────────────────────────────────────────────────────
+# Quick Directory Operations
+# ─────────────────────────────────────────────────────────────
+
+# up - Go up N directories
+# Usage: up 3  (equivalent to cd ../../..)
+up() {
+    local count="${1:-1}"
+    local path=""
+    for ((i = 0; i < count; i++)); do
+        path="../$path"
+    done
+    cd "$path" || return 1
 }

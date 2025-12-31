@@ -1,0 +1,100 @@
+# ─────────────────────────────────────────────────────────────
+# Global Git Ignore
+# System and editor files that should never be committed
+# ─────────────────────────────────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────
+# macOS
+# ─────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.localized
+
+# ─────────────────────────────────────────────────────────────
+# Linux
+# ─────────────────────────────────────────────────────────────
+*~
+.fuse_hidden*
+.nfs*
+
+# ─────────────────────────────────────────────────────────────
+# Windows
+# ─────────────────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ─────────────────────────────────────────────────────────────
+# Editors
+# ─────────────────────────────────────────────────────────────
+# Vim
+*.swp
+*.swo
+*.swn
+*.un~
+Session.vim
+.netrwhist
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+*.code-workspace
+
+# JetBrains
+.idea/
+*.iml
+
+# Emacs
+\#*\#
+.#*
+
+# ─────────────────────────────────────────────────────────────
+# Languages & Frameworks
+# ─────────────────────────────────────────────────────────────
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn/cache
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+*.egg
+.venv/
+venv/
+.Python
+
+# Rust
+target/
+# Note: Cargo.lock should be committed for binary projects
+
+# Go
+vendor/
+
+# ─────────────────────────────────────────────────────────────
+# Build & Cache
+# ─────────────────────────────────────────────────────────────
+*.log
+*.cache
+.cache/
+dist/
+build/
+out/
+
+# ─────────────────────────────────────────────────────────────
+# Environment & Secrets
+# ─────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key

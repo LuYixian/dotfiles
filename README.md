@@ -27,6 +27,32 @@ This repository provides a fully declarative system configuration that can boots
 
 ---
 
+## 📑 Table of Contents
+
+- [Motivation](#-motivation)
+- [Quick Start](#-quick-start)
+- [Architecture](#-architecture)
+- [Tool Chains](#-tool-chains)
+- [Shell Functions](#-shell-functions)
+- [Package Management](#-package-management)
+- [Directory Structure](#-directory-structure)
+- [Daily Operations](#-daily-operations)
+- [Multi-Profile Configuration](#-multi-profile-configuration)
+- [Keyboard Shortcuts](#%EF%B8%8F-keyboard-shortcuts)
+- [Theming](#-theming)
+- [Stats](#-stats)
+- [Acknowledgements](#-acknowledgements)
+- [License](#-license)
+
+---
+
+> [!WARNING]
+> **Review before running!** This repository contains scripts that will modify your system configuration.
+> Do not blindly execute setup commands without understanding what they do.
+> Fork this repository and customize it for your own needs.
+
+---
+
 ## 🎯 Motivation
 
 Setting up a new development machine is tedious. You need to install dozens of packages, configure countless tools, and remember all those little tweaks you made over the years. This repository solves that problem by:
@@ -229,10 +255,14 @@ All package lists are defined in `.chezmoidata.yaml` with support for shared, wo
 │   ├── run_onchange_after_*.sh # Run when specific files change
 │   └── run_after_*.sh          # Run after every apply
 ├── dot_custom/                 # Custom shell configuration
-│   ├── alias.sh                # Conditional aliases
+│   ├── alias.sh                # Aliases (including global aliases)
 │   ├── eval.sh                 # Tool initialization
 │   ├── exports.sh              # Environment variables
-│   └── functions.sh            # Shell functions
+│   ├── functions.sh            # Shell functions
+│   └── utils.sh                # Utility functions library
+├── dot_local/bin/              # Custom scripts (~/.local/bin)
+│   ├── battery                 # Battery status for tmux/terminal
+│   └── wifi                    # WiFi signal strength display
 ├── nix-config/                 # Nix-darwin configuration
 │   ├── flake.nix.tmpl          # Flake inputs and outputs
 │   └── modules/
@@ -242,7 +272,9 @@ All package lists are defined in `.chezmoidata.yaml` with support for shared, wo
 │       └── host-users.nix      # User configuration
 └── private_dot_config/         # XDG config files
     ├── atuin/config.toml       # Shell history settings
+    ├── gh-dash/config.yml      # GitHub dashboard TUI
     ├── git/config.tmpl         # Git configuration
+    ├── git/ignore              # Global gitignore
     ├── ghostty/config          # Terminal emulator
     ├── lazygit/config.yml      # Git TUI settings
     ├── mise/config.toml        # Runtime manager
@@ -325,6 +357,21 @@ All tools are configured with the **Dracula** color palette for a consistent, ey
 ## 📈 Stats
 
 ![Repobeats](https://repobeats.axiom.co/api/embed/b47788b120b4e3a0f049b72115d88268d5523f64.svg "Repobeats analytics")
+
+---
+
+## 🙏 Acknowledgements
+
+This dotfiles setup is built on the shoulders of giants. Special thanks to:
+
+- [chezmoi](https://github.com/twpayne/chezmoi) by [@twpayne](https://github.com/twpayne) - The powerful dotfiles manager
+- [nix-darwin](https://github.com/LnL7/nix-darwin) by [@LnL7](https://github.com/LnL7) - Declarative macOS configuration with Nix
+- [Nix](https://nixos.org/) by [NixOS](https://github.com/NixOS) - The purely functional package manager
+- [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer) by [@DeterminateSystems](https://github.com/DeterminateSystems)
+- [Sheldon](https://github.com/rossmacarthur/sheldon) by [@rossmacarthur](https://github.com/rossmacarthur) - Fast zsh plugin manager
+- [Dracula Theme](https://draculatheme.com/) by [@zenorocha](https://github.com/zenorocha) - The beautiful dark theme
+
+And all the other amazing open-source projects and their contributors that make this setup possible.
 
 ---
 
