@@ -37,7 +37,13 @@
     };
 
     defaults = {
-      # menuExtraClock.Show24Hour = true;  # show 24 hour clock
+      # Menu bar clock format
+      menuExtraClock = {
+        Show24Hour = true;
+        ShowSeconds = false;
+        ShowDayOfWeek = true;
+        ShowDate = 1; # 0 = When space allows, 1 = Always, 2 = Never
+      };
 
       # customize dock
       dock = {
@@ -185,7 +191,32 @@
   ];
 
   # Set your time zone.
-  time.timeZone = "Asia/Tokyo";
+  time.timeZone = "{{ .timezone }}";
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Power Management
+  # ─────────────────────────────────────────────────────────────────────────────
+  power = {
+    sleep = {
+      display = 15; # minutes before display sleeps
+      computer = 30; # minutes before computer sleeps
+      harddisk = 20; # minutes before hard disk sleeps
+    };
+  };
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # GnuPG Agent (for GPG key management)
+  # ─────────────────────────────────────────────────────────────────────────────
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = false; # using 1Password SSH agent instead
+  };
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Nix Index (command-not-found replacement)
+  # When a command is not found, suggests which nix package to install
+  # ─────────────────────────────────────────────────────────────────────────────
+  programs.nix-index.enable = true;
 
   # Fonts
   fonts = {

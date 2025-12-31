@@ -100,7 +100,7 @@ repl:
 # Format nix files
 [group('nix')]
 fmt:
-    cd "$HOME/nix-config" && nix fmt
+    cd "$HOME/nix-config" && nix fmt .
 
 # Check nix formatting (fails if changes needed)
 [group('nix')]
