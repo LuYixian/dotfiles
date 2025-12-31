@@ -4,6 +4,8 @@
 
 **chezmoi + nix-darwin · Reproducible macOS dev environment**
 
+[English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
+
 [![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
@@ -29,20 +31,20 @@ This repository provides a fully declarative system configuration that can boots
 
 ## 📑 Table of Contents
 
-- [Motivation](#-motivation)
-- [Quick Start](#-quick-start)
-- [Architecture](#-architecture)
-- [Tool Chains](#-tool-chains)
-- [Shell Functions](#-shell-functions)
-- [Package Management](#-package-management)
-- [Directory Structure](#-directory-structure)
-- [Daily Operations](#-daily-operations)
-- [Multi-Profile Configuration](#-multi-profile-configuration)
-- [Keyboard Shortcuts](#%EF%B8%8F-keyboard-shortcuts)
-- [Theming](#-theming)
-- [Stats](#-stats)
-- [Acknowledgements](#-acknowledgements)
-- [License](#-license)
+- [Motivation](#motivation)
+- [Quick Start](#quick-start)
+- [Architecture](#architecture)
+- [Tool Chains](#tool-chains)
+- [Shell Functions](#shell-functions)
+- [Package Management](#package-management)
+- [Directory Structure](#directory-structure)
+- [Daily Operations](#daily-operations)
+- [Multi-Profile Configuration](#multi-profile-configuration)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
+- [Theming](#theming)
+- [Stats](#stats)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
 
 ---
 
@@ -52,6 +54,8 @@ This repository provides a fully declarative system configuration that can boots
 > Fork this repository and customize it for your own needs.
 
 ---
+
+<a id="motivation"></a>
 
 ## 🎯 Motivation
 
@@ -63,6 +67,8 @@ Setting up a new development machine is tedious. You need to install dozens of p
 - **Multi-Profile Support** - Different package sets for work vs personal machines
 
 ---
+
+<a id="quick-start"></a>
 
 ## 🚀 Quick Start
 
@@ -83,12 +89,14 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 # Step 3: Build and activate nix-darwin configuration
 cd ~/.local/share/chezmoi
-just darwin
+nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwin
 ```
 
 After installation, restart your terminal to enjoy your new environment.
 
 ---
+
+<a id="architecture"></a>
 
 ## 🧩 Architecture
 
@@ -101,6 +109,8 @@ This dotfiles setup combines two powerful tools:
 The two tools complement each other: chezmoi handles user-level dotfiles while nix-darwin manages system-level configuration and package installation.
 
 ---
+
+<a id="tool-chains"></a>
 
 ## ⚡ Tool Chains
 
@@ -178,6 +188,8 @@ GUI applications are managed through Homebrew casks:
 
 ---
 
+<a id="shell-functions"></a>
+
 ## 🔧 Shell Functions
 
 Beyond aliases, this setup provides powerful shell functions for common workflows.
@@ -228,6 +240,8 @@ create_py_project   # Quick Python project setup with uv
 
 ---
 
+<a id="package-management"></a>
+
 ## 📦 Package Management
 
 Packages are managed through multiple sources, each with its strengths:
@@ -242,6 +256,8 @@ Packages are managed through multiple sources, each with its strengths:
 All package lists are defined in `.chezmoidata.yaml` with support for shared, work-only, and private-only packages.
 
 ---
+
+<a id="directory-structure"></a>
 
 ## 📁 Directory Structure
 
@@ -286,9 +302,11 @@ All package lists are defined in `.chezmoidata.yaml` with support for shared, wo
 
 ---
 
+<a id="daily-operations"></a>
+
 ## 🔄 Daily Operations
 
-All common operations are available through the Justfile:
+All common operations are available through the Justfile (if you don't have `just` yet, run `nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- <task>`):
 
 ```bash
 # Chezmoi operations
@@ -313,6 +331,8 @@ just update-all     # Update flake + chezmoi + homebrew
 
 ---
 
+<a id="multi-profile-configuration"></a>
+
 ## 👤 Multi-Profile Configuration
 
 The setup supports different configurations for different machines. In `.chezmoidata.yaml`, packages are organized into three categories:
@@ -331,6 +351,8 @@ chezmoi init --data='{"private": true}'
 
 ---
 
+<a id="keyboard-shortcuts"></a>
+
 ## ⌨️ Keyboard Shortcuts
 
 | Shortcut   | Action                         |
@@ -341,6 +363,8 @@ chezmoi init --data='{"private": true}'
 | Ctrl + A   | tmux prefix key                |
 
 ---
+
+<a id="theming"></a>
 
 ## 🌙 Theming
 
@@ -354,11 +378,15 @@ All tools are configured with the **Dracula** color palette for a consistent, ey
 
 ---
 
+<a id="stats"></a>
+
 ## 📈 Stats
 
 ![Repobeats](https://repobeats.axiom.co/api/embed/b47788b120b4e3a0f049b72115d88268d5523f64.svg "Repobeats analytics")
 
 ---
+
+<a id="acknowledgements"></a>
 
 ## 🙏 Acknowledgements
 
@@ -374,6 +402,8 @@ This dotfiles setup is built on the shoulders of giants. Special thanks to:
 And all the other amazing open-source projects and their contributors that make this setup possible.
 
 ---
+
+<a id="license"></a>
 
 ## 📝 License
 
