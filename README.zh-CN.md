@@ -6,15 +6,15 @@
 
 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-[![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
+[![CI](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)
 [![nix-darwin](https://img.shields.io/badge/nix--darwin-24.11-5277C3)](https://github.com/LnL7/nix-darwin)
 
-![code size](https://img.shields.io/github/languages/code-size/LuYixian/dotfiles)
-![repo size](https://img.shields.io/github/repo-size/LuYixian/dotfiles)
-[![last commit](https://img.shields.io/github/last-commit/LuYixian/dotfiles)](https://github.com/LuYixian/dotfiles/commits/main)
+![code size](https://img.shields.io/github/languages/code-size/signalridge/dotfiles)
+![repo size](https://img.shields.io/github/repo-size/signalridge/dotfiles)
+[![last commit](https://img.shields.io/github/last-commit/signalridge/dotfiles)](https://github.com/signalridge/dotfiles/commits/main)
 [![zsh](https://img.shields.io/badge/zsh-5.9+-F15A24?logo=zsh&logoColor=white)](https://www.zsh.org/)
 [![chezmoi](https://img.shields.io/github/v/tag/twpayne/chezmoi?color=4B91E2&label=chezmoi&sort=semver)](https://github.com/twpayne/chezmoi)
 
@@ -90,7 +90,7 @@
 ## 🚀 快速开始
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 ```
 
 这一条命令会自动完成：
@@ -403,13 +403,13 @@ just clean-all      # nix gc + brew cleanup
 
 ```bash
 # 工作机器
-chezmoi init --apply --promptBool work=true LuYixian
+chezmoi init --apply --promptBool work=true signalridge
 
 # 个人机器（默认：work=false -> private=true）
-chezmoi init --apply LuYixian
+chezmoi init --apply signalridge
 
 # 无头服务器（不需要 GUI 配置）
-chezmoi init --apply --promptBool headless=true LuYixian
+chezmoi init --apply --promptBool headless=true signalridge
 ```
 
 ---
