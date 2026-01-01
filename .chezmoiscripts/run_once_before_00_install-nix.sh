@@ -24,8 +24,15 @@ elif [[ -z "${NIX_INSTALLER_BINARY_ROOT:-}" ]]; then
         CHINA_MIRROR_OK=true
     fi
 
-    if curl -sS --connect-timeout 3 -m 5 https://install.determinate.systems >/dev/null 2>&1; then
+    # Test actual download speed (not just connectivity)
+    # Download small file and check if speed > 100KB/s
+    SPEED=$(curl -sS --connect-timeout 3 -m 10 -w '%{speed_download}' -o /dev/null https://install.determinate.systems/nix 2>/dev/null || echo "0")
+    # speed_download is in bytes/sec, 100KB/s = 102400
+    if awk "BEGIN {exit !($SPEED > 102400)}"; then
         OFFICIAL_OK=true
+        echo "   Official source speed: $(awk "BEGIN {printf \"%.0f\", $SPEED/1024}") KB/s ✓"
+    else
+        echo "   Official source speed: $(awk "BEGIN {printf \"%.0f\", $SPEED/1024}") KB/s (slow)"
     fi
 
     # Use mirror if: official is slow, OR (in China region: Chinese mirror fast but official slow)
