@@ -36,7 +36,7 @@
 - [亮点](#highlights)
 - [动机](#motivation)
 - [快速开始](#quick-start)
-- [私密信息与加密](#security)
+- [安全与加密](#security)
 - [架构](#architecture)
 - [工具链](#tool-chains)
 - [Shell 函数](#shell-functions)
@@ -64,9 +64,9 @@
 ## ✨ 亮点
 
 - **跨平台**：同一套配置支持 macOS + Linux（`nix-darwin` + `flakey-profile`）
-- **自动引导**：首次 apply 会安装 Nix（Determinate）、切换 profile，并在 macOS 上维护 Homebrew
-- **私密信息**：使用 `age` 加密（可选 1Password 自动拉取密钥）
-- **多 Profile**：`work` / `private` / `headless` 通过 `chezmoi init` 的 prompts 控制
+- **自动引导**：首次 `apply` 会安装 Nix（Determinate）、切换 Nix profile，并在 macOS 上维护 Homebrew
+- **私密文件**：使用 `age` 加密（可选通过 1Password 自动获取密钥）
+- **多 Profile**：`work` / `private` / `headless` 通过 `chezmoi init` 的交互提示（prompts）控制
 - **效率工具链**：现代 CLI、统一主题、以及 AI 辅助工具
 
 ---
@@ -89,41 +89,18 @@
 
 ## 🚀 快速开始
 
-### macOS
-
-#### 一行安装
-
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 ```
 
-#### 手动安装
+这一条命令会自动完成：
 
-```bash
-# 第 1 步：使用 Determinate Systems 安装器安装 Nix
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+1. 安装 Nix（Determinate Systems 安装器）
+2. 通过 Nix 安装 `age` 和 `1password-cli` 用于解密
+3. 从 1Password 获取解密密钥（或提示手动设置）
+4. 应用所有 dotfiles 和配置
 
-# 第 2 步：安装 chezmoi 并用本仓库初始化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
-
-# 第 3 步：构建并激活 nix-darwin 配置
-cd ~/.local/share/chezmoi
-nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwin
-```
-
-### Linux
-
-```bash
-# 第 1 步：使用 Determinate Systems 安装器安装 Nix
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-
-# 第 2 步：安装 chezmoi 并用本仓库初始化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
-
-# 首次 apply 时会通过 flakey-profile 自动安装软件包
-```
-
-安装完成后，重启终端即可享受你的新环境。如果因为加密文件解密失败导致 apply 中断，请参考「[私密信息与加密](#security)」。
+安装完成后，重启终端。macOS 用户运行 `just darwin` 激活 nix-darwin 配置。
 
 ---
 
@@ -131,11 +108,16 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 ## 🔐 私密信息与加密
 
-本仓库使用 `age` 加密管理私密文件（例如 `private_dot_ssh/encrypted_config.age`）。`chezmoi` 会根据 `.chezmoi.toml.tmpl` 使用 `~/.ssh/main`（私钥）和 `~/.ssh/main.pub`（收件人）进行解密。
+本仓库使用 `age` 加密管理私密文件（例如 `private_dot_ssh/encrypted_config.age`）。`chezmoi` 会根据 `.chezmoi.toml.tmpl` 使用 `~/.ssh/main`（私钥）和 `~/.ssh/main.pub`（接收者/recipient）进行解密。
 
-首次 apply 时，`.chezmoiscripts/run_once_before_01_setup-encryption-key.sh` 会通过 Nix 安装 `age` 与 `op`（1Password CLI），并尝试从 1Password 拉取密钥（桌面集成或 `OP_SERVICE_ACCOUNT_TOKEN`）。如果获取失败会退出并提示手动步骤。
+首次 apply 时，引导脚本会：
 
-如果你 fork 了本仓库，请按你的环境修改密钥路径和 1Password 条目路径。
+1. 安装 Nix（`run_once_before_00_install-nix.sh`）
+2. 通过 Nix 安装 `age` + `op` 并尝试从 1Password 获取密钥（`run_once_before_01_setup-encryption-key.sh`）
+
+如果 1Password 不可用，脚本会退出并提示手动设置步骤。
+
+如果你 fork 了本仓库，请按你的环境修改密钥路径与 1Password 条目路径。
 
 ---
 
@@ -145,7 +127,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 这套 dotfiles 方案将多款强大的工具组合在一起，实现跨平台配置：
 
-**chezmoi** 用于跨机器管理 dotfiles，支持模板、secret，并确保配置文件始终保持同步。以 `dot_` 前缀命名的文件会生成对应的点文件（dotfile），`.tmpl` 文件会作为 Go 模板处理，支持平台条件判断。
+**chezmoi** 用于跨机器管理 dotfiles，支持模板与私密信息（secrets），并确保配置文件始终保持同步。以 `dot_` 前缀命名的文件会生成对应的点文件（dotfile），`.tmpl` 文件会作为 Go 模板处理，支持平台条件判断。
 
 ### macOS 配置
 

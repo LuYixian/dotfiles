@@ -39,10 +39,6 @@ This repository provides a fully declarative system configuration that can boots
 - [✨ Highlights](#highlights)
 - [🎯 Motivation](#motivation)
 - [🚀 Quick Start](#quick-start)
-  - [macOS](#macos)
-    - [One-Line Installation](#one-line-installation)
-    - [Manual Installation](#manual-installation)
-  - [Linux](#linux)
 - [🔐 Security & Secrets](#security)
 - [🧩 Architecture](#architecture)
   - [macOS Configuration](#macos-configuration)
@@ -110,41 +106,18 @@ Setting up a new development machine is tedious. You need to install dozens of p
 
 ## 🚀 Quick Start
 
-### macOS
-
-#### One-Line Installation
-
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 ```
 
-#### Manual Installation
+This single command will automatically:
 
-```bash
-# Step 1: Install Nix using Determinate Systems installer
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+1. Install Nix (Determinate Systems installer)
+2. Install `age` and `1password-cli` for secrets decryption
+3. Fetch encryption key from 1Password (or prompt for manual setup)
+4. Apply all dotfiles and configurations
 
-# Step 2: Install chezmoi and initialize with this repo
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
-
-# Step 3: Build and activate nix-darwin configuration
-cd ~/.local/share/chezmoi
-nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwin
-```
-
-### Linux
-
-```bash
-# Step 1: Install Nix using Determinate Systems installer
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-
-# Step 2: Install chezmoi and initialize with this repo
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
-
-# Packages are automatically installed via flakey-profile on first apply
-```
-
-After installation, restart your terminal to enjoy your new environment. If apply fails due to encrypted files, see [Security & Secrets](#security).
+After installation, restart your terminal. For macOS, run `just darwin` to activate nix-darwin configuration.
 
 ---
 
@@ -154,7 +127,12 @@ After installation, restart your terminal to enjoy your new environment. If appl
 
 This repo uses `age` encryption for private files (e.g. `private_dot_ssh/encrypted_config.age`). Chezmoi is configured to decrypt using `~/.ssh/main` (private key) and `~/.ssh/main.pub` (recipient) via `.chezmoi.toml.tmpl`.
 
-On first apply, `.chezmoiscripts/run_once_before_01_setup-encryption-key.sh` will install `age` + `op` (1Password CLI) if needed and try to fetch the key from 1Password (desktop integration or `OP_SERVICE_ACCOUNT_TOKEN`). If it can’t, it exits with manual setup instructions.
+On first apply, the bootstrap scripts will:
+
+1. Install Nix (`run_once_before_00_install-nix.sh`)
+2. Install `age` + `op` via nix and fetch the key from 1Password (`run_once_before_01_setup-encryption-key.sh`)
+
+If 1Password is unavailable, the script exits with manual setup instructions.
 
 If you fork this repo, update the key path and 1Password item path to match your setup.
 

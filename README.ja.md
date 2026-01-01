@@ -64,9 +64,9 @@
 ## ✨ ハイライト
 
 - **クロスプラットフォーム**：macOS + Linux を 1 つの構成で管理（`nix-darwin` + `flakey-profile`）
-- **ブートストラップ**：初回 apply で Nix（Determinate）を導入し、profile 切り替えや Homebrew 更新（macOS）まで自動化
+- **ブートストラップ**：初回 `apply` で Nix（Determinate）を導入し、プロファイル切り替えや Homebrew 更新（macOS）まで自動化
 - **シークレット**：`age` 暗号化ファイル（必要に応じて 1Password で鍵を自動取得）
-- **プロファイル**：`work` / `private` / `headless` を `chezmoi init` の prompts で切り替え
+- **プロファイル**：`work` / `private` / `headless` を `chezmoi init` の対話プロンプトで切り替え
 - **快適さ**：モダン CLI、統一テーマ、AI ヘルパーを同梱
 
 ---
@@ -89,41 +89,18 @@
 
 ## 🚀 クイックスタート
 
-### macOS
-
-#### ワンライナー
-
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 ```
 
-#### 手動インストール
+このコマンド 1 つで自動的に：
 
-```bash
-# Step 1: Determinate Systems のインストーラで Nix をインストール
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+1. Nix をインストール（Determinate Systems インストーラ）
+2. Nix 経由で `age` と `1password-cli` をインストール（復号用）
+3. 1Password から復号鍵を取得（または手動セットアップを案内）
+4. すべての dotfiles と設定を適用
 
-# Step 2: chezmoi をインストールしてこのリポジトリで初期化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
-
-# Step 3: nix-darwin 設定をビルドして有効化
-cd ~/.local/share/chezmoi
-nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwin
-```
-
-### Linux
-
-```bash
-# Step 1: Determinate Systems のインストーラで Nix をインストール
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-
-# Step 2: chezmoi をインストールしてこのリポジトリで初期化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
-
-# 初回 apply 時に flakey-profile でパッケージが自動インストールされます
-```
-
-インストール後、ターミナルを再起動すると新しい環境が使えます。暗号化ファイルの復号で apply が失敗する場合は「[セキュリティとシークレット](#security)」を参照してください。
+インストール後、ターミナルを再起動してください。macOS では `just darwin` で nix-darwin 設定を有効化します。
 
 ---
 
@@ -133,7 +110,12 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 このリポジトリは `age` でシークレットを暗号化します（例：`private_dot_ssh/encrypted_config.age`）。`.chezmoi.toml.tmpl` で `~/.ssh/main`（秘密鍵）と `~/.ssh/main.pub`（受信者）を使って復号するよう設定しています。
 
-初回 apply 時に `.chezmoiscripts/run_once_before_01_setup-encryption-key.sh` が `age` と `op`（1Password CLI）を Nix で導入し、1Password（デスクトップ連携または `OP_SERVICE_ACCOUNT_TOKEN`）から鍵の取得を試みます。取得できない場合は手動セットアップ手順を表示して終了します。
+初回 `apply` 時、ブートストラップスクリプトが：
+
+1. Nix をインストール（`run_once_before_00_install-nix.sh`）
+2. Nix 経由で `age` + `op` をインストールし、1Password から鍵を取得（`run_once_before_01_setup-encryption-key.sh`）
+
+1Password が利用できない場合は、手動セットアップ手順を表示して終了します。
 
 fork して使う場合は、鍵パスと 1Password のアイテムパスを自分の環境に合わせて変更してください。
 
@@ -145,7 +127,7 @@ fork して使う場合は、鍵パスと 1Password のアイテムパスを自�
 
 この dotfiles セットアップは、クロスプラットフォーム構成のために複数の強力なツールを組み合わせています：
 
-**chezmoi** は複数マシン間で dotfiles を管理します。テンプレートや secret に対応し、設定ファイルを常に同期できます。`dot_` プレフィックスのファイルは dotfile として配置され、`.tmpl` は Go テンプレートとして処理され、プラットフォーム別の条件分岐もサポートします。
+**chezmoi** は複数マシン間で dotfiles を管理します。テンプレートやシークレットに対応し、設定ファイルを常に同期できます。`dot_` プレフィックスのファイルは dotfile として配置され、`.tmpl` は Go テンプレートとして処理され、プラットフォーム別の条件分岐もサポートします。
 
 ### macOS 構成
 
@@ -417,7 +399,7 @@ just clean-all      # nix gc + brew cleanup
 - **work** - 仕事用マシンのみ（Azure CLI、Cursor など）
 - **private** - 個人用マシンのみ（1Password、ゲーム関連など）
 
-`work` が主スイッチです。`work=false`（デフォルト）のとき `private=true` が自動で有効になります。`headless=true` で AeroSpace/Karabiner など GUI 設定をスキップします。`hostname` を聞かれたら `hostname -s` の値を入れてください（flake の名前に使います）。
+`work` が主スイッチです。`work=false`（デフォルト）のとき `private=true` が自動で有効になります。`headless=true` の場合は AeroSpace/Karabiner など GUI 設定がスキップされます。`hostname` を聞かれたら `hostname -s` の値を入れてください（flake の名前に使います）。
 
 ```bash
 # 仕事用マシン
