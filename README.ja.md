@@ -6,15 +6,15 @@
 
 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-[![CI](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml)
+[![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)
 [![nix-darwin](https://img.shields.io/badge/nix--darwin-24.11-5277C3)](https://github.com/LnL7/nix-darwin)
 
-![code size](https://img.shields.io/github/languages/code-size/signalridge/dotfiles)
-![repo size](https://img.shields.io/github/repo-size/signalridge/dotfiles)
-[![last commit](https://img.shields.io/github/last-commit/signalridge/dotfiles)](https://github.com/signalridge/dotfiles/commits/main)
+![code size](https://img.shields.io/github/languages/code-size/LuYixian/dotfiles)
+![repo size](https://img.shields.io/github/repo-size/LuYixian/dotfiles)
+[![last commit](https://img.shields.io/github/last-commit/LuYixian/dotfiles)](https://github.com/LuYixian/dotfiles/commits/main)
 [![zsh](https://img.shields.io/badge/zsh-5.9+-F15A24?logo=zsh&logoColor=white)](https://www.zsh.org/)
 [![chezmoi](https://img.shields.io/github/v/tag/twpayne/chezmoi?color=4B91E2&label=chezmoi&sort=semver)](https://github.com/twpayne/chezmoi)
 
@@ -33,8 +33,10 @@
 
 ## 📑 目次
 
+- [ハイライト](#highlights)
 - [目的](#motivation)
 - [クイックスタート](#quick-start)
+- [セキュリティとシークレット](#security)
 - [アーキテクチャ](#architecture)
 - [ツールチェーン](#tool-chains)
 - [シェル関数](#shell-functions)
@@ -54,6 +56,18 @@
 > **実行前に必ず確認してください！** このリポジトリにはシステム設定を変更するスクリプトが含まれます。
 > 何をするか理解しないまま、セットアップコマンドを実行しないでください。
 > まず Fork して、自分の環境に合わせてカスタマイズすることを推奨します。
+
+---
+
+<a id="highlights"></a>
+
+## ✨ ハイライト
+
+- **クロスプラットフォーム**：macOS + Linux を 1 つの構成で管理（`nix-darwin` + `flakey-profile`）
+- **ブートストラップ**：初回 apply で Nix（Determinate）を導入し、profile 切り替えや Homebrew 更新（macOS）まで自動化
+- **シークレット**：`age` 暗号化ファイル（必要に応じて 1Password で鍵を自動取得）
+- **プロファイル**：`work` / `private` / `headless` を `chezmoi init` の prompts で切り替え
+- **快適さ**：モダン CLI、統一テーマ、AI ヘルパーを同梱
 
 ---
 
@@ -80,7 +94,7 @@
 #### ワンライナー
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 ```
 
 #### 手動インストール
@@ -90,7 +104,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Step 2: chezmoi をインストールしてこのリポジトリで初期化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 # Step 3: nix-darwin 設定をビルドして有効化
 cd ~/.local/share/chezmoi
@@ -104,12 +118,24 @@ nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwi
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Step 2: chezmoi をインストールしてこのリポジトリで初期化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 # 初回 apply 時に flakey-profile でパッケージが自動インストールされます
 ```
 
-インストール後、ターミナルを再起動すると新しい環境が使えます。
+インストール後、ターミナルを再起動すると新しい環境が使えます。暗号化ファイルの復号で apply が失敗する場合は「[セキュリティとシークレット](#security)」を参照してください。
+
+---
+
+<a id="security"></a>
+
+## 🔐 セキュリティとシークレット
+
+このリポジトリは `age` でシークレットを暗号化します（例：`private_dot_ssh/encrypted_config.age`）。`.chezmoi.toml.tmpl` で `~/.ssh/main`（秘密鍵）と `~/.ssh/main.pub`（受信者）を使って復号するよう設定しています。
+
+初回 apply 時に `.chezmoiscripts/run_once_before_01_setup-encryption-key.sh` が `age` と `op`（1Password CLI）を Nix で導入し、1Password（デスクトップ連携または `OP_SERVICE_ACCOUNT_TOKEN`）から鍵の取得を試みます。取得できない場合は手動セットアップ手順を表示して終了します。
+
+fork して使う場合は、鍵パスと 1Password のアイテムパスを自分の環境に合わせて変更してください。
 
 ---
 
@@ -320,6 +346,8 @@ create_py_project   # uv で Python プロジェクトを作成
 │       ├── apps.nix.tmpl       # パッケージ導入（macOS）
 │       ├── system.nix.tmpl     # macOS システム設定
 │       └── host-users.nix      # ユーザー設定（macOS）
+├── private_dot_ssh/            # 暗号化された SSH 設定/シークレット
+│   └── encrypted_config.age    # 復号後は ~/.ssh/encrypted_config
 └── private_dot_config/         # XDG 設定ファイル
     ├── atuin/config.toml       # シェル履歴設定
     ├── gh-dash/config.yml      # GitHub ダッシュボード TUI
@@ -393,13 +421,13 @@ just clean-all      # nix gc + brew cleanup
 
 ```bash
 # 仕事用マシン
-chezmoi init --apply --promptBool work=true signalridge
+chezmoi init --apply --promptBool work=true LuYixian
 
 # 個人用マシン（デフォルト：work=false -> private=true）
-chezmoi init --apply signalridge
+chezmoi init --apply LuYixian
 
 # ヘッドレスサーバー（GUI 設定不要）
-chezmoi init --apply --promptBool headless=true signalridge
+chezmoi init --apply --promptBool headless=true LuYixian
 ```
 
 ---

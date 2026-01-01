@@ -6,15 +6,15 @@
 
 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-[![CI](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml)
+[![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)
 [![nix-darwin](https://img.shields.io/badge/nix--darwin-24.11-5277C3)](https://github.com/LnL7/nix-darwin)
 
-![code size](https://img.shields.io/github/languages/code-size/signalridge/dotfiles)
-![repo size](https://img.shields.io/github/repo-size/signalridge/dotfiles)
-[![last commit](https://img.shields.io/github/last-commit/signalridge/dotfiles)](https://github.com/signalridge/dotfiles/commits/main)
+![code size](https://img.shields.io/github/languages/code-size/LuYixian/dotfiles)
+![repo size](https://img.shields.io/github/repo-size/LuYixian/dotfiles)
+[![last commit](https://img.shields.io/github/last-commit/LuYixian/dotfiles)](https://github.com/LuYixian/dotfiles/commits/main)
 [![zsh](https://img.shields.io/badge/zsh-5.9+-F15A24?logo=zsh&logoColor=white)](https://www.zsh.org/)
 [![chezmoi](https://img.shields.io/github/v/tag/twpayne/chezmoi?color=4B91E2&label=chezmoi&sort=semver)](https://github.com/twpayne/chezmoi)
 
@@ -33,8 +33,10 @@
 
 ## 📑 目录
 
+- [亮点](#highlights)
 - [动机](#motivation)
 - [快速开始](#quick-start)
+- [私密信息与加密](#security)
 - [架构](#architecture)
 - [工具链](#tool-chains)
 - [Shell 函数](#shell-functions)
@@ -54,6 +56,18 @@
 > **运行前请先阅读！** 本仓库包含会修改系统配置的脚本。
 > 在不了解其作用前，不要盲目执行安装/初始化命令。
 > 建议先 Fork 本仓库，再按自己的需求进行定制。
+
+---
+
+<a id="highlights"></a>
+
+## ✨ 亮点
+
+- **跨平台**：同一套配置支持 macOS + Linux（`nix-darwin` + `flakey-profile`）
+- **自动引导**：首次 apply 会安装 Nix（Determinate）、切换 profile，并在 macOS 上维护 Homebrew
+- **私密信息**：使用 `age` 加密（可选 1Password 自动拉取密钥）
+- **多 Profile**：`work` / `private` / `headless` 通过 `chezmoi init` 的 prompts 控制
+- **效率工具链**：现代 CLI、统一主题、以及 AI 辅助工具
 
 ---
 
@@ -80,7 +94,7 @@
 #### 一行安装
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 ```
 
 #### 手动安装
@@ -90,7 +104,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # 第 2 步：安装 chezmoi 并用本仓库初始化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 # 第 3 步：构建并激活 nix-darwin 配置
 cd ~/.local/share/chezmoi
@@ -104,12 +118,24 @@ nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwi
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # 第 2 步：安装 chezmoi 并用本仓库初始化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 # 首次 apply 时会通过 flakey-profile 自动安装软件包
 ```
 
-安装完成后，重启终端即可享受你的新环境。
+安装完成后，重启终端即可享受你的新环境。如果因为加密文件解密失败导致 apply 中断，请参考「[私密信息与加密](#security)」。
+
+---
+
+<a id="security"></a>
+
+## 🔐 私密信息与加密
+
+本仓库使用 `age` 加密管理私密文件（例如 `private_dot_ssh/encrypted_config.age`）。`chezmoi` 会根据 `.chezmoi.toml.tmpl` 使用 `~/.ssh/main`（私钥）和 `~/.ssh/main.pub`（收件人）进行解密。
+
+首次 apply 时，`.chezmoiscripts/run_once_before_01_setup-encryption-key.sh` 会通过 Nix 安装 `age` 与 `op`（1Password CLI），并尝试从 1Password 拉取密钥（桌面集成或 `OP_SERVICE_ACCOUNT_TOKEN`）。如果获取失败会退出并提示手动步骤。
+
+如果你 fork 了本仓库，请按你的环境修改密钥路径和 1Password 条目路径。
 
 ---
 
@@ -320,6 +346,8 @@ create_py_project   # 使用 uv 快速初始化 Python 项目
 │       ├── apps.nix.tmpl       # 安装软件包（macOS）
 │       ├── system.nix.tmpl     # macOS 系统偏好设置
 │       └── host-users.nix      # 用户配置（macOS）
+├── private_dot_ssh/            # 加密的 SSH 配置/私密文件
+│   └── encrypted_config.age    # 解密后为 ~/.ssh/encrypted_config
 └── private_dot_config/         # XDG 配置文件
     ├── atuin/config.toml       # 命令历史设置
     ├── gh-dash/config.yml      # GitHub dashboard TUI
@@ -393,13 +421,13 @@ just clean-all      # nix gc + brew cleanup
 
 ```bash
 # 工作机器
-chezmoi init --apply --promptBool work=true signalridge
+chezmoi init --apply --promptBool work=true LuYixian
 
 # 个人机器（默认：work=false -> private=true）
-chezmoi init --apply signalridge
+chezmoi init --apply LuYixian
 
 # 无头服务器（不需要 GUI 配置）
-chezmoi init --apply --promptBool headless=true signalridge
+chezmoi init --apply --promptBool headless=true LuYixian
 ```
 
 ---

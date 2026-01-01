@@ -6,15 +6,15 @@
 
 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-[![CI](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml)
+[![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)
 [![nix-darwin](https://img.shields.io/badge/nix--darwin-24.11-5277C3)](https://github.com/LnL7/nix-darwin)
 
-![code size](https://img.shields.io/github/languages/code-size/signalridge/dotfiles)
-![repo size](https://img.shields.io/github/repo-size/signalridge/dotfiles)
-[![last commit](https://img.shields.io/github/last-commit/signalridge/dotfiles)](https://github.com/signalridge/dotfiles/commits/main)
+![code size](https://img.shields.io/github/languages/code-size/LuYixian/dotfiles)
+![repo size](https://img.shields.io/github/repo-size/LuYixian/dotfiles)
+[![last commit](https://img.shields.io/github/last-commit/LuYixian/dotfiles)](https://github.com/LuYixian/dotfiles/commits/main)
 [![zsh](https://img.shields.io/badge/zsh-5.9+-F15A24?logo=zsh&logoColor=white)](https://www.zsh.org/)
 [![chezmoi](https://img.shields.io/github/v/tag/twpayne/chezmoi?color=4B91E2&label=chezmoi&sort=semver)](https://github.com/twpayne/chezmoi)
 
@@ -31,41 +31,45 @@ This repository provides a fully declarative system configuration that can boots
 
 ---
 
+<a id="table-of-contents"></a>
+
 ## 📑 Table of Contents
 
-- [📑 Table of Contents](#-table-of-contents)
-- [🎯 Motivation](#-motivation)
-- [🚀 Quick Start](#-quick-start)
+- [📑 Table of Contents](#table-of-contents)
+- [✨ Highlights](#highlights)
+- [🎯 Motivation](#motivation)
+- [🚀 Quick Start](#quick-start)
   - [macOS](#macos)
     - [One-Line Installation](#one-line-installation)
     - [Manual Installation](#manual-installation)
   - [Linux](#linux)
-- [🧩 Architecture](#-architecture)
+- [🔐 Security & Secrets](#security)
+- [🧩 Architecture](#architecture)
   - [macOS Configuration](#macos-configuration)
   - [Linux Configuration](#linux-configuration)
   - [How They Work Together](#how-they-work-together)
-- [⚡ Tool Chains](#-tool-chains)
+- [⚡ Tool Chains](#tool-chains)
   - [Modern CLI Replacements](#modern-cli-replacements)
   - [Shell Environment](#shell-environment)
   - [Development Tools](#development-tools)
   - [AI Integration](#ai-integration)
   - [Desktop Applications (macOS only)](#desktop-applications-macos-only)
-- [🔧 Shell Functions](#-shell-functions)
+- [🔧 Shell Functions](#shell-functions)
   - [Project Navigation](#project-navigation)
   - [Git Workflow](#git-workflow)
   - [System Utilities](#system-utilities)
   - [Environment Setup](#environment-setup)
-- [📦 Package Management](#-package-management)
-- [📁 Directory Structure](#-directory-structure)
-- [🔄 Daily Operations](#-daily-operations)
+- [📦 Package Management](#package-management)
+- [📁 Directory Structure](#directory-structure)
+- [🔄 Daily Operations](#daily-operations)
   - [Cross-Platform Commands](#cross-platform-commands)
   - [macOS-Only Commands](#macos-only-commands)
-- [👤 Multi-Profile Configuration](#-multi-profile-configuration)
-- [⌨️ Keyboard Shortcuts](#️-keyboard-shortcuts)
-- [🌙 Theming](#-theming)
-- [📈 Stats](#-stats)
-- [🙏 Acknowledgements](#-acknowledgements)
-- [📝 License](#-license)
+- [👤 Multi-Profile Configuration](#multi-profile-configuration)
+- [⌨️ Keyboard Shortcuts](#keyboard-shortcuts)
+- [🌙 Theming](#theming)
+- [📈 Stats](#stats)
+- [🙏 Acknowledgements](#acknowledgements)
+- [📝 License](#license)
 
 ---
 
@@ -73,6 +77,18 @@ This repository provides a fully declarative system configuration that can boots
 > **Review before running!** This repository contains scripts that will modify your system configuration.
 > Do not blindly execute setup commands without understanding what they do.
 > Fork this repository and customize it for your own needs.
+
+---
+
+<a id="highlights"></a>
+
+## ✨ Highlights
+
+- **Cross-platform**: one repo for macOS + Linux (`nix-darwin` + `flakey-profile`)
+- **Bootstrap scripts**: installs Nix (Determinate), switches profiles, and keeps Homebrew updated (macOS)
+- **Secrets**: `age`-encrypted files with optional 1Password-backed key bootstrap
+- **Profiles**: `work` / `private` / `headless` switches via `chezmoi init` prompts
+- **Ergonomics**: modern CLI toolchain, consistent theming, and AI helpers
 
 ---
 
@@ -99,7 +115,7 @@ Setting up a new development machine is tedious. You need to install dozens of p
 #### One-Line Installation
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 ```
 
 #### Manual Installation
@@ -109,7 +125,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Step 2: Install chezmoi and initialize with this repo
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 # Step 3: Build and activate nix-darwin configuration
 cd ~/.local/share/chezmoi
@@ -123,12 +139,24 @@ nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwi
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Step 2: Install chezmoi and initialize with this repo
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
 
 # Packages are automatically installed via flakey-profile on first apply
 ```
 
-After installation, restart your terminal to enjoy your new environment.
+After installation, restart your terminal to enjoy your new environment. If apply fails due to encrypted files, see [Security & Secrets](#security).
+
+---
+
+<a id="security"></a>
+
+## 🔐 Security & Secrets
+
+This repo uses `age` encryption for private files (e.g. `private_dot_ssh/encrypted_config.age`). Chezmoi is configured to decrypt using `~/.ssh/main` (private key) and `~/.ssh/main.pub` (recipient) via `.chezmoi.toml.tmpl`.
+
+On first apply, `.chezmoiscripts/run_once_before_01_setup-encryption-key.sh` will install `age` + `op` (1Password CLI) if needed and try to fetch the key from 1Password (desktop integration or `OP_SERVICE_ACCOUNT_TOKEN`). If it can’t, it exits with manual setup instructions.
+
+If you fork this repo, update the key path and 1Password item path to match your setup.
 
 ---
 
@@ -339,6 +367,8 @@ All package lists are defined in `.chezmoidata.yaml` with support for shared, wo
 │       ├── apps.nix.tmpl       # Package installation (macOS)
 │       ├── system.nix.tmpl     # macOS system preferences
 │       └── host-users.nix      # User configuration (macOS)
+├── private_dot_ssh/            # Encrypted SSH configs/secrets
+│   └── encrypted_config.age    # Decrypted to ~/.ssh/encrypted_config
 └── private_dot_config/         # XDG config files
     ├── atuin/config.toml       # Shell history settings
     ├── gh-dash/config.yml      # GitHub dashboard TUI
@@ -412,13 +442,13 @@ The setup supports different configurations for different machines. In `.chezmoi
 
 ```bash
 # For work machines
-chezmoi init --apply --promptBool work=true signalridge
+chezmoi init --apply --promptBool work=true LuYixian
 
 # For personal machines (default: work=false -> private=true)
-chezmoi init --apply signalridge
+chezmoi init --apply LuYixian
 
 # For headless servers (no GUI configs)
-chezmoi init --apply --promptBool headless=true signalridge
+chezmoi init --apply --promptBool headless=true LuYixian
 ```
 
 ---
