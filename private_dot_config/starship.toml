@@ -15,7 +15,22 @@ purple = "#bd93f9"
 red = "#ff5555"
 yellow = "#f1fa8c"
 
+# Prompt character
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+# Command duration
+[cmd_duration]
+style = "bold yellow"
+
+# Username
+[username]
+style_user = "bold cyan"
+style_root = "bold red"
+
 [aws]
+style = "bold orange"
 symbol = "  "
 
 [buf]
@@ -38,6 +53,7 @@ symbol = " "
 
 [directory]
 read_only = " 󰌾"
+style = "bold cyan"
 
 [docker_context]
 symbol = " "
@@ -56,6 +72,10 @@ symbol = " "
 
 [git_branch]
 symbol = " "
+style = "bold pink"
+
+[git_status]
+style = "bold red"
 
 [git_commit]
 tag_symbol = '  '
@@ -77,6 +97,7 @@ symbol = " "
 
 [hostname]
 ssh_symbol = " "
+style = "bold purple"
 
 [java]
 symbol = " "
@@ -169,6 +190,7 @@ symbol = " "
 
 [python]
 symbol = " "
+style = "bold yellow"
 
 [rlang]
 symbol = "󰟔 "
@@ -178,6 +200,7 @@ symbol = " "
 
 [rust]
 symbol = "󱘗 "
+style = "bold orange"
 
 [scala]
 symbol = " "

@@ -1,8 +1,8 @@
 # shellcheck shell=bash
 
 # Terminal color support (ensure true color works over SSH)
-export TERM="${TERM:-xterm-256color}"
-export COLORTERM="${COLORTERM:-truecolor}"
+export TERM=xterm-256color
+export COLORTERM=truecolor
 
 # Dracula color palette for consistent theming
 export DRACULA_BG="#282a36"
