@@ -2,7 +2,7 @@
 # shellcheck shell=dash
 # Nix installer with automatic mirror selection for chezmoi
 
-set -u
+set -eu
 
 NIX_INSTALLER_VERSION="${NIX_INSTALLER_VERSION:-v3.15.1}"
 GITHUB_RELEASE="https://github.com/DeterminateSystems/nix-installer/releases/download/${NIX_INSTALLER_VERSION}"
@@ -18,7 +18,8 @@ die()   { error "$1"; exit 1; }
 # --- Architecture detection (handles Rosetta 2) ---
 
 get_arch() {
-    local os cpu
+    local os
+    local cpu
     os=$(uname -s)
     cpu=$(uname -m)
 
@@ -64,7 +65,9 @@ get_downloader() {
 }
 
 download() {
-    local url="$1" output="$2" dld
+    local url="$1"
+    local output="$2"
+    local dld
     dld=$(get_downloader)
 
     if [ "$dld" = "curl" ]; then
@@ -72,25 +75,32 @@ download() {
             --retry 3 -C - \
             "$url" -o "$output"
     else
-        wget -q --https-only "$url" -O "$output"
+        wget -q "$url" -O "$output"
     fi
 }
 
 test_speed() {
-    local url="$1" dld
+    local url="$1"
+    local dld
     dld=$(get_downloader)
 
     if [ "$dld" = "curl" ]; then
-        curl -sS --connect-timeout 3 -m 8 -w '%{speed_download}' -o /dev/null "$url" 2>/dev/null || echo "0"
+        # -L to follow redirects (GitHub uses 302)
+        curl -sSL --connect-timeout 3 -m 10 -w '%{speed_download}' -o /dev/null "$url" 2>/dev/null || echo "0"
     else
-        wget --spider --timeout=3 -q "$url" 2>/dev/null && echo "1000" || echo "0"
+        wget --spider --timeout=5 -q "$url" 2>/dev/null && echo "1000" || echo "0"
     fi
 }
 
 # --- Mirror selection ---
 
 select_mirror() {
-    local arch="$1" best="" best_speed=0 speed speed_kb
+    local arch="$1"
+    local best=""
+    local best_speed=0
+    local speed
+    local speed_kb
+    local url
 
     info "testing download sources..."
 
@@ -110,8 +120,15 @@ select_mirror() {
         fi
     done
 
-    speed_kb=$(awk "BEGIN {printf \"%.0f\", $best_speed/1024}")
-    info "selected: $best (${speed_kb} KB/s)"
+    # Default to github if all sources failed
+    if [ -z "$best" ] || [ "$best_speed" = "0" ]; then
+        warn "speed test failed, defaulting to github"
+        best="github"
+    else
+        speed_kb=$(awk "BEGIN {printf \"%.0f\", $best_speed/1024}")
+        info "selected: $best (${speed_kb} KB/s)"
+    fi
+
     echo "$best"
 }
 
@@ -125,7 +142,9 @@ main() {
 
     info "installing Nix..."
 
-    local arch base url
+    local arch
+    local base
+    local url
     arch=$(get_arch)
     info "architecture: $arch"
 
@@ -146,14 +165,29 @@ main() {
     fi
 
     # Download and run
-    local tmpdir bin
+    local tmpdir
+    local bin
     tmpdir=$(mktemp -d)
     bin="${tmpdir}/nix-installer"
     trap 'rm -rf "$tmpdir"' EXIT
 
     info "downloading: $url"
-    download "$url" "$bin" || die "download failed"
+    if ! download "$url" "$bin"; then
+        die "download failed"
+    fi
+
     chmod +x "$bin"
+
+    # Verify it's a valid ELF/Mach-O binary, not an error page
+    if ! head -c 4 "$bin" | grep -q -e 'ELF' -e '^\xCF\xFA'; then
+        warn "downloaded file is not a valid binary, trying github directly..."
+        url="${GITHUB_RELEASE}/nix-installer-${arch}"
+        info "downloading: $url"
+        if ! download "$url" "$bin"; then
+            die "download failed"
+        fi
+        chmod +x "$bin"
+    fi
 
     [ -x "$bin" ] || die "cannot execute $bin (try: export TMPDIR=~/tmp)"
 
