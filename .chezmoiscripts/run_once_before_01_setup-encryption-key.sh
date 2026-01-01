@@ -33,8 +33,8 @@ chmod 700 "$HOME/.ssh"
 
 # Try 1Password CLI
 if command -v op &>/dev/null; then
-    # Check: service account token, desktop app integration, or manual signin
-    if [[ -n "${OP_SERVICE_ACCOUNT_TOKEN:-}" ]] || op account list &>/dev/null; then
+    # Check: service account token or has configured accounts (not just command success)
+    if [[ -n "${OP_SERVICE_ACCOUNT_TOKEN:-}" ]] || [[ -n "$(op account list 2>/dev/null)" ]]; then
         echo "Fetching key from 1Password..."
         if op read "op://Personal/main/private key?ssh-format=openssh" 2>/dev/null | tr -d '\r' > "$KEY_FILE.tmp"; then
             mv "$KEY_FILE.tmp" "$KEY_FILE"
