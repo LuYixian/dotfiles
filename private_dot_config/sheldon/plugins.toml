@@ -35,9 +35,6 @@ github = 'zpm-zsh/clipboard'
 apply = ["defer"]
 github = 'MichaelAquilina/zsh-you-should-use'
 
-[plugins.zsh-autocomplete]
-github = 'marlonrichert/zsh-autocomplete'
-
 [plugins.enhancd]
 apply = ["defer"]
 github = "b4b4r07/enhancd"
@@ -56,5 +53,9 @@ remote = "https://github.com/BurntSushi/ripgrep/raw/master/crates/core/flags/com
 
 [plugins.zsh-syntax-highlighting]
 github = "zsh-users/zsh-syntax-highlighting"
+
+# zsh-autocomplete must load AFTER zsh-syntax-highlighting
+[plugins.zsh-autocomplete]
+github = 'marlonrichert/zsh-autocomplete'
 
 # Note: zsh-fzf-history-search removed - using atuin instead
