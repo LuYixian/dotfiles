@@ -1,4 +1,9 @@
 # shellcheck shell=bash
+
+# Terminal color support (ensure true color works over SSH)
+export TERM="${TERM:-xterm-256color}"
+export COLORTERM="${COLORTERM:-truecolor}"
+
 # Dracula color palette for consistent theming
 export DRACULA_BG="#282a36"
 export DRACULA_FG="#f8f8f2"
@@ -60,12 +65,6 @@ export FZF_CTRL_R_OPTS="
   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
   --header 'Press CTRL-Y to copy command'
 "
-
-# 1Password SSH Agent
-# Use 1Password's SSH agent for secure key management
-if [[ -S "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" ]]; then
-  export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-fi
 
 # AI commit message provider (claude, codex, gemini, auto)
 # Override in ~/.custom/local.sh if needed

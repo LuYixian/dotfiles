@@ -196,26 +196,41 @@ Return ONLY the commit message, nothing else."
     fi
 
     # Try providers in order
+    local error_output=""
     for p in "${providers[@]}"; do
         [[ -n "$message" ]] && break
         case "$p" in
             claude)
-                command -v claude &>/dev/null && \
-                    message=$(echo "$prompt" | claude --print 2>/dev/null | head -1)
+                if command -v claude &>/dev/null; then
+                    error_output=$(echo "$prompt" | claude --print 2>&1)
+                    message=$(echo "$error_output" | head -1)
+                    [[ "$error_output" == *"error"* || "$error_output" == *"auth"* || "$error_output" == *"login"* ]] && message=""
+                fi
                 ;;
             codex)
-                command -v codex &>/dev/null && \
-                    message=$(echo "$prompt" | codex --print 2>/dev/null | head -1)
+                if command -v codex &>/dev/null; then
+                    error_output=$(echo "$prompt" | codex --print 2>&1)
+                    message=$(echo "$error_output" | head -1)
+                    [[ "$error_output" == *"error"* || "$error_output" == *"auth"* || "$error_output" == *"login"* ]] && message=""
+                fi
                 ;;
             gemini)
-                command -v gemini &>/dev/null && \
-                    message=$(echo "$prompt" | gemini -o text 2>/dev/null | head -1)
+                if command -v gemini &>/dev/null; then
+                    error_output=$(echo "$prompt" | gemini -o text 2>&1)
+                    message=$(echo "$error_output" | head -1)
+                    [[ "$error_output" == *"error"* || "$error_output" == *"auth"* || "$error_output" == *"login"* ]] && message=""
+                fi
                 ;;
         esac
     done
 
     if [[ -z "$message" ]]; then
         echo "Failed to generate commit message with provider: $provider"
+        if [[ -n "$error_output" ]]; then
+            echo ""
+            echo "Error details:"
+            echo "$error_output" | head -5
+        fi
         return 1
     fi
 
