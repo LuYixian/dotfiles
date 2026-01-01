@@ -164,12 +164,11 @@ main() {
         url="${base}/nix-installer-${arch}"
     fi
 
-    # Download and run
-    local tmpdir
+    # Download and run (TMPDIR_CLEANUP is global for trap access)
+    TMPDIR_CLEANUP=$(mktemp -d)
+    trap 'rm -rf "$TMPDIR_CLEANUP"' EXIT
     local bin
-    tmpdir=$(mktemp -d)
-    bin="${tmpdir}/nix-installer"
-    trap 'rm -rf "$tmpdir"' EXIT
+    bin="${TMPDIR_CLEANUP}/nix-installer"
 
     info "downloading: $url"
     if ! download "$url" "$bin"; then
