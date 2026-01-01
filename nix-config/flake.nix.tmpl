@@ -2,25 +2,20 @@
   description = "YixianLu's system flake";
 
   inputs = {
-    # flake-utils
+    # Core
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
 
-    # nixpkgs
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
-    # flakey-profile (cross-platform package management)
+    # Cross-platform package management
     flakey-profile.url = "github:lf-/flakey-profile";
-{{ if eq .chezmoi.os "darwin" }}
-    # nix-darwin (macOS only)
+{{- if eq .chezmoi.os "darwin" }}
+
+    # macOS only
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # mac-app-util (macOS only)
     mac-app-util.url = "github:hraban/mac-app-util";
-
-    # nix-homebrew (macOS only)
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
@@ -34,56 +29,59 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
-{{ end -}}
+{{- end }}
   };
 
   outputs = inputs @ {
     self,
-    flake-utils,
     nixpkgs,
+    flake-utils,
     flakey-profile,
-{{ if eq .chezmoi.os "darwin" -}}
+{{- if eq .chezmoi.os "darwin" }}
     nix-darwin,
     mac-app-util,
     nix-homebrew,
     homebrew-core,
     homebrew-cask,
     homebrew-bundle,
-{{ end -}}
+{{- end }}
     ...
   }: let
-    {{ $arch := .chezmoi.arch -}}
+    # Architecture conversion: chezmoi arch → nix system
+    {{- $arch := .chezmoi.arch -}}
     {{- if eq $arch "arm64" -}}
       {{- $arch = "aarch64" -}}
-    {{- end -}}
+    {{- else if eq $arch "amd64" -}}
+      {{- $arch = "x86_64" -}}
+    {{- end }}
     system = "{{ $arch }}-{{ .chezmoi.os }}";
     hostname = "{{ .hostname }}";
     username = "{{ .chezmoi.username }}";
 
     pkgs = import nixpkgs {
       inherit system;
-      config = {
-        allowUnfree = true;
-      };
+      config.allowUnfree = true;
     };
 
+    # flakey-profile for user packages (cross-platform)
     myProfile = import ./modules/profile.nix {
       inherit pkgs flakey-profile;
     };
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
+
     specialArgs =
       inputs
       // {
         inherit username hostname;
       };
-{{ end -}}
+{{- end }}
   in {
-{{ if eq .chezmoi.os "darwin" }}
+{{- if eq .chezmoi.os "darwin" }}
     # ─────────────────────────────────────────────────────────────────────────
     # Darwin Configuration (macOS only)
-    # Build with: darwin-rebuild switch --flake .#<hostname>
+    # Usage: darwin-rebuild switch --flake .#<hostname>
     # ─────────────────────────────────────────────────────────────────────────
-    darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
+    darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
       inherit system specialArgs;
       modules = [
         ./modules/system.nix
@@ -100,14 +98,16 @@
         }
       ];
     };
-{{ end }}
+{{- end }}
+
     # ─────────────────────────────────────────────────────────────────────────
     # Package Profile (cross-platform)
-    # Install with: nix profile install .#<hostname>
+    # flakey-profile provides: .switch, .rollback, .pin
+    # Usage: nix run .#<hostname>.switch
     # ─────────────────────────────────────────────────────────────────────────
-    packages.${system}."${hostname}" = myProfile;
+    packages.${system}.${hostname} = myProfile;
 
-    # nix code formatter
-    formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
+    # Formatter
+    formatter.${system} = pkgs.alejandra;
   };
 }

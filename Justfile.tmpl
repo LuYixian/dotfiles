@@ -195,9 +195,9 @@ info:
     @echo "OS: $(uname -s)"
     @echo "Arch: $(uname -m)"
     @nix --version
-{{ if eq .chezmoi.os "darwin" -}}
+{{ if eq .chezmoi.os "darwin" }}
     @darwin-rebuild --version 2>/dev/null || true
-{{ end }}
+{{ end -}}
 # Run pre-commit checks
 [group('dev')]
 check:
