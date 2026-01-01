@@ -50,19 +50,50 @@ if command -v op &>/dev/null; then
     fi
 fi
 
+# Try interactive login if op is available
+if command -v op &>/dev/null; then
+    echo ""
+    echo "No 1Password session found. Would you like to sign in interactively? [y/N]"
+    read -r response
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+        # Add account if none configured
+        if [[ -z "$(op account list 2>/dev/null)" ]]; then
+            echo "No account configured. Adding account..."
+            op account add
+        fi
+
+        echo "Signing in to 1Password..."
+        if eval "$(op signin)"; then
+            echo "Fetching key from 1Password..."
+            if op read "op://Personal/main/private key?ssh-format=openssh" | tr -d '\r' > "$KEY_FILE.tmp"; then
+                mv "$KEY_FILE.tmp" "$KEY_FILE"
+                op read "op://Personal/main/public key" > "$KEY_PUB"
+                chmod 600 "$KEY_FILE"
+                chmod 644 "$KEY_PUB"
+                echo "✓ Key imported from 1Password"
+                exit 0
+            else
+                rm -f "$KEY_FILE.tmp"
+                echo "⚠ Failed to fetch from 1Password"
+            fi
+        else
+            echo "⚠ 1Password sign in failed"
+        fi
+    fi
+fi
+
 # Manual setup required
 echo ""
-echo "Please set up your encryption key using one of these methods:"
+echo "Please set up your encryption key:"
 echo ""
-echo "1. Copy manually:"
-echo "   scp ~/.ssh/main ~/.ssh/main.pub user@this-machine:~/.ssh/"
+echo "  Option 1: Copy from another machine"
+echo "    scp ~/.ssh/main ~/.ssh/main.pub $(whoami)@$(hostname):~/.ssh/"
 echo ""
-echo "2. Use 1Password desktop app integration:"
-echo "   Open 1Password → Settings → Developer → Enable CLI integration"
-echo "   Then run: chezmoi apply"
+if [[ "$OSTYPE" == darwin* ]]; then
+echo "  Option 2: Enable 1Password desktop integration"
+echo "    1Password → Settings → Developer → CLI integration"
 echo ""
-echo "3. Use 1Password service account (for servers):"
-echo "   export OP_SERVICE_ACCOUNT_TOKEN='your-token'"
-echo "   chezmoi apply"
+fi
+echo "Then run: chezmoi apply"
 echo ""
 exit 1
