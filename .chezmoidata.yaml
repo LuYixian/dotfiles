@@ -9,13 +9,7 @@ homebrew:
     shared:
       - "macos-trash"
     work:
-      - "poetry"
-      - "libomp"
-      - "cliclick"
-      - "md5sha1sum"
-      - "azure-cli"
-      - "azure-functions-core-tools@4"
-      - "aws-sam-cli"
+      - "cliclick" # macOS only - GUI automation
     private:
   casks:
     shared:
@@ -26,7 +20,6 @@ homebrew:
       - "keyboardcleantool"
       - "ghostty"
       - "input-source-pro"
-      - "iterm2"
       # - "mactex"
       - "mockoon"
       - "notion"
@@ -37,10 +30,10 @@ homebrew:
       - "rustdesk"
       - "slack"
       - "slidepilot"
-      - "steam"
       - "tailscale-app"
       - "karabiner-elements"
     work:
+      - "iterm2"
       - "obsidian"
       - "cursor"
     private:
@@ -150,9 +143,14 @@ homepkgs:
     - zstd
     - k9s
   work:
-    - google-cloud-sdk
     - awscli2
+    - aws-sam-cli
+    - azure-cli
+    - azure-functions-core-tools
+    - google-cloud-sdk
+    - llvmPackages.openmp # libomp replacement
     - mariadb
+    - poetry
     - postgresql
     - redis
     - tflint

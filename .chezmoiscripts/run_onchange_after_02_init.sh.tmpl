@@ -1,27 +1,27 @@
-{{ if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
-
-# next section is to trigger the script to run on change when the following files are modified
+{{ if eq .chezmoi.os "darwin" -}}
 {{ $homeDir := .chezmoi.homeDir -}}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Trigger re-run when nix config files change (darwin-only)
+# ─────────────────────────────────────────────────────────────────────────────
 # flake.nix hash: {{ include (printf "%s/nix-config/flake.nix" $homeDir) | sha256sum }}
 # flake.lock hash: {{ include (printf "%s/nix-config/flake.lock" $homeDir) | sha256sum }}
 # apps.nix hash: {{ include (printf "%s/nix-config/modules/apps.nix" $homeDir) | sha256sum }}
 # host-users.nix hash: {{ include (printf "%s/nix-config/modules/host-users.nix" $homeDir) | sha256sum }}
-# nix-core.nix hash: {{ include (printf "%s/nix-config/modules/nix-core.nix" $homeDir) | sha256sum }}
-# profile.nix hash: {{ include (printf "%s/nix-config/modules/profile.nix" $homeDir) | sha256sum }}
 # system.nix hash: {{ include (printf "%s/nix-config/modules/system.nix" $homeDir) | sha256sum }}
 
 set -eufo pipefail
 
-# Install and switch to the nix-darwin configuration
+# ─────────────────────────────────────────────────────────────────────────────
+# macOS: Install/update nix-darwin configuration
+# ─────────────────────────────────────────────────────────────────────────────
 if ! command -v darwin-version >/dev/null 2>&1; then
-    echo "📦 nix-darwin not installed. Installing."
-    echo "⚙️ Building and switching nix-darwin configuration for {{ .hostname }}."
-    sudo nix run nix-darwin/master#darwin-rebuild --extra-experimental-features "nix-command flakes"  -- switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
+    echo "📦 nix-darwin not installed. Installing..."
+    sudo nix run nix-darwin/master#darwin-rebuild --extra-experimental-features "nix-command flakes" -- switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
 else
     echo "📦 nix-darwin already installed."
-    echo "⚙️ Building and switching nix-darwin configuration for {{ .hostname }}."
+    echo "⚙️ Building and switching nix-darwin configuration for {{ .hostname }}..."
     sudo darwin-rebuild switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
 fi
-
 {{ end -}}

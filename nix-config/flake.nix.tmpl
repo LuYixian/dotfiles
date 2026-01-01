@@ -3,26 +3,25 @@
 
   inputs = {
     # flake-utils
-    flake-utils.url = github:numtide/flake-utils;
+    flake-utils.url = "github:numtide/flake-utils";
 
     # nixpkgs
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-    # nix-darwin
+    # flakey-profile (cross-platform package management)
+    flakey-profile.url = "github:lf-/flakey-profile";
+{{ if eq .chezmoi.os "darwin" }}
+    # nix-darwin (macOS only)
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # mac-app-util
+    # mac-app-util (macOS only)
     mac-app-util.url = "github:hraban/mac-app-util";
 
-    # flakey-profile
-    flakey-profile.url = "github:lf-/flakey-profile";
-
-    # nix-homebrew
+    # nix-homebrew (macOS only)
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    # Optional: Declarative tap management
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;
@@ -35,27 +34,29 @@
       url = "github:homebrew/homebrew-bundle";
       flake = false;
     };
+{{ end -}}
   };
 
   outputs = inputs @ {
     self,
     flake-utils,
     nixpkgs,
+    flakey-profile,
+{{ if eq .chezmoi.os "darwin" -}}
     nix-darwin,
     mac-app-util,
-    flakey-profile,
     nix-homebrew,
     homebrew-core,
     homebrew-cask,
     homebrew-bundle,
+{{ end -}}
     ...
   }: let
-    # TODO replace with your own username, system and hostname
-    {{ $arch := .chezmoi.arch }}
+    {{ $arch := .chezmoi.arch -}}
     {{- if eq $arch "arm64" -}}
       {{- $arch = "aarch64" -}}
     {{- end -}}
-    system = "{{ $arch }}-{{ .chezmoi.os }}"; # aarch64-darwin or x86_64-darwin
+    system = "{{ $arch }}-{{ .chezmoi.os }}";
     hostname = "{{ .hostname }}";
     username = "{{ .chezmoi.username }}";
 
@@ -69,20 +70,22 @@
     myProfile = import ./modules/profile.nix {
       inherit pkgs flakey-profile;
     };
-
+{{ if eq .chezmoi.os "darwin" }}
     specialArgs =
       inputs
       // {
         inherit username hostname;
       };
+{{ end -}}
   in {
-    # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#macbook
-
+{{ if eq .chezmoi.os "darwin" }}
+    # ─────────────────────────────────────────────────────────────────────────
+    # Darwin Configuration (macOS only)
+    # Build with: darwin-rebuild switch --flake .#<hostname>
+    # ─────────────────────────────────────────────────────────────────────────
     darwinConfigurations."${hostname}" = nix-darwin.lib.darwinSystem {
       inherit system specialArgs;
       modules = [
-        ./modules/nix-core.nix
         ./modules/system.nix
         ./modules/apps.nix
         ./modules/host-users.nix
@@ -90,17 +93,18 @@
         nix-homebrew.darwinModules.nix-homebrew
         {
           nix-homebrew = {
-            # Install Homebrew under the default prefix
             enable = true;
-            # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
             enableRosetta = system == "aarch64-darwin";
-            # User owning the Homebrew prefix
             user = username;
           };
         }
       ];
     };
-
+{{ end }}
+    # ─────────────────────────────────────────────────────────────────────────
+    # Package Profile (cross-platform)
+    # Install with: nix profile install .#<hostname>
+    # ─────────────────────────────────────────────────────────────────────────
     packages.${system}."${hostname}" = myProfile;
 
     # nix code formatter

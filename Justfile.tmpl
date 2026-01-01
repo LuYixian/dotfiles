@@ -2,7 +2,7 @@
 
 set shell := ['bash', '-euo', 'pipefail', '-c']
 
-# Hostname for nix-darwin builds
+# Hostname for nix builds
 hostname := `hostname -s`
 
 # List all the just commands
@@ -23,7 +23,7 @@ apply:
 # Edit chezmoi managed files
 [group('chezmoi')]
 edit file:
-    chezmoi edit {{file}}
+    chezmoi edit {{ "{{file}}" }}
 
 # Show chezmoi diff
 [group('chezmoi')]
@@ -39,7 +39,7 @@ update:
 [group('chezmoi')]
 re-add:
     chezmoi re-add
-
+{{ if eq .chezmoi.os "darwin" }}
 ############################################################################
 #
 #  Darwin related commands
@@ -49,16 +49,16 @@ re-add:
 # Build and switch nix-darwin configuration
 [group('darwin')]
 darwin:
-    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{hostname}}.system \
+    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{ "{{hostname}}" }}.system \
         --extra-experimental-features 'nix-command flakes'
-    cd "$HOME/nix-config" && sudo ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}}
+    cd "$HOME/nix-config" && sudo ./result/sw/bin/darwin-rebuild switch --flake .#{{ "{{hostname}}" }}
 
 # Build and switch with debug output
 [group('darwin')]
 darwin-debug:
-    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{hostname}}.system --show-trace --verbose \
+    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{ "{{hostname}}" }}.system --show-trace --verbose \
         --extra-experimental-features 'nix-command flakes'
-    cd "$HOME/nix-config" && sudo ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}} --show-trace --verbose
+    cd "$HOME/nix-config" && sudo ./result/sw/bin/darwin-rebuild switch --flake .#{{ "{{hostname}}" }} --show-trace --verbose
 
 # Check nix-darwin configuration without building
 [group('darwin')]
@@ -68,9 +68,9 @@ darwin-check:
 # Build darwin configuration without switching
 [group('darwin')]
 darwin-build:
-    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{hostname}}.system \
+    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{ "{{hostname}}" }}.system \
         --extra-experimental-features 'nix-command flakes'
-
+{{ end }}
 ############################################################################
 #
 #  Nix related commands
@@ -85,13 +85,13 @@ up:
 # Update specific flake input
 [group('nix')]
 upp input:
-    cd "$HOME/nix-config" && nix flake update {{input}}
-
+    cd "$HOME/nix-config" && nix flake update {{ "{{input}}" }}
+{{ if eq .chezmoi.os "darwin" }}
 # List all generations of the system profile
 [group('nix')]
 history:
     nix profile history --profile /nix/var/nix/profiles/system
-
+{{ end }}
 # Open a nix repl with nixpkgs
 [group('nix')]
 repl:
@@ -107,19 +107,19 @@ fmt:
 fmt-check:
     chezmoi apply
     cd "$HOME/nix-config" && nix fmt -- --check .
-
+{{ if eq .chezmoi.os "darwin" }}
 # Remove all generations older than 7 days
 [group('nix')]
 clean days='7':
-    sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than {{days}}d
-
+    sudo nix profile wipe-history --profile /nix/var/nix/profiles/system --older-than {{ "{{days}}" }}d
+{{ end }}
 # Garbage collect unused nix store entries
 [group('nix')]
 gc days='7':
     # Garbage collect system-wide
-    sudo nix-collect-garbage --delete-older-than {{days}}d
-    # Garbage collect user (home-manager)
-    nix-collect-garbage --delete-older-than {{days}}d
+    sudo nix-collect-garbage --delete-older-than {{ "{{days}}" }}d
+    # Garbage collect user
+    nix-collect-garbage --delete-older-than {{ "{{days}}" }}d
 
 # Verify all nix store entries
 [group('nix')]
@@ -129,7 +129,7 @@ verify:
 # Repair corrupted nix store entries
 [group('nix')]
 repair *paths:
-    nix store repair {{paths}}
+    nix store repair {{ "{{paths}}" }}
 
 # Show all auto gc roots in the nix store
 [group('nix')]
@@ -140,6 +140,11 @@ gcroot:
 [group('nix')]
 optimize:
     nix store optimise
+
+# Switch flakey-profile
+[group('nix')]
+switch:
+    nix run ~/nix-config#{{ "{{hostname}}" }}.switch
 
 ############################################################################
 #
@@ -165,7 +170,7 @@ gl:
 # Commit all changes with message
 [group('git')]
 cm message:
-    git add -A && git commit -m "{{message}}"
+    git add -A && git commit -m "{{ "{{message}}" }}"
 
 # Push to remote
 [group('git')]
@@ -186,17 +191,18 @@ pull:
 # Show system info
 [group('utils')]
 info:
-    @echo "Hostname: {{hostname}}"
+    @echo "Hostname: {{ "{{hostname}}" }}"
     @echo "OS: $(uname -s)"
     @echo "Arch: $(uname -m)"
     @nix --version
+{{ if eq .chezmoi.os "darwin" -}}
     @darwin-rebuild --version 2>/dev/null || true
-
+{{ end }}
 # Run pre-commit checks
 [group('dev')]
 check:
     pre-commit run --all-files
-
+{{ if eq .chezmoi.os "darwin" }}
 # Update all (flake + chezmoi + homebrew)
 [group('utils')]
 update-all: up
@@ -214,8 +220,8 @@ full-upgrade:
     @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     @echo "Step 2/7: Rebuilding nix-darwin..."
     @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{hostname}}.system --extra-experimental-features 'nix-command flakes'
-    cd "$HOME/nix-config" && sudo ./result/sw/bin/darwin-rebuild switch --flake .#{{hostname}}
+    cd "$HOME/nix-config" && nix build .#darwinConfigurations.{{ "{{hostname}}" }}.system --extra-experimental-features 'nix-command flakes'
+    cd "$HOME/nix-config" && sudo ./result/sw/bin/darwin-rebuild switch --flake .#{{ "{{hostname}}" }}
     @echo ""
     @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     @echo "Step 3/7: Updating chezmoi..."
@@ -248,3 +254,43 @@ full-upgrade:
 [group('utils')]
 clean-all: gc
     brew cleanup --prune=7
+{{ else }}
+# Update all (flake + chezmoi)
+[group('utils')]
+update-all: up
+    chezmoi update
+
+# Full system upgrade (updates + cleanup)
+[group('utils')]
+full-upgrade:
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 1/5: Updating nix flake inputs..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    cd "$HOME/nix-config" && nix flake update
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 2/5: Switching nix profile..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    nix run ~/nix-config#{{ "{{hostname}}" }}.switch
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 3/5: Updating chezmoi..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    chezmoi update || true
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 4/5: Updating mise tools..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    mise upgrade || true
+    @echo ""
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    @echo "Step 5/5: Updating sheldon plugins..."
+    @echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    sheldon lock --update || true
+    @echo ""
+    @echo "✓ Full upgrade complete!"
+
+# Clean all (nix gc)
+[group('utils')]
+clean-all: gc
+{{ end }}

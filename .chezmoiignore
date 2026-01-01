@@ -1,3 +1,6 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Always ignore (repo metadata)
+# ─────────────────────────────────────────────────────────────────────────────
 README.md
 README.ja.md
 README.zh-CN.md
@@ -7,3 +10,26 @@ README.zh-CN.md
 .pre-commit-config.yaml
 init.sh
 docs/
+
+# ─────────────────────────────────────────────────────────────────────────────
+# macOS-only exclusions
+# ─────────────────────────────────────────────────────────────────────────────
+{{- if ne .chezmoi.os "darwin" }}
+# macOS-specific nix modules (darwin-only)
+nix-config/modules/system.nix.tmpl
+nix-config/modules/apps.nix.tmpl
+nix-config/modules/host-users.nix
+
+# macOS-specific scripts
+.chezmoiscripts/run_onchange_after_02_init.sh.tmpl
+.chezmoiscripts/run_after_05_update_homebrew_packages.sh.tmpl
+.chezmoiscripts/run_onchange_after_03_install-paperlib.sh.tmpl
+{{- end }}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Headless/server exclusions (no GUI configs needed)
+# ─────────────────────────────────────────────────────────────────────────────
+{{- if .headless }}
+private_dot_config/aerospace/
+private_dot_config/karabiner/
+{{- end }}

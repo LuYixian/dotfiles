@@ -2,17 +2,18 @@
 
 ![header](https://capsule-render.vercel.app/api?type=waving&color=0:282a36,100:bd93f9&height=200&section=header&text=~/.dotfiles&fontSize=48&fontColor=f8f8f2&fontAlignY=30&desc=One%20command%20%C2%B7%20Full%20environment%20%C2%B7%20Zero%20hassle&descSize=16&descColor=8be9fd&descAlignY=55&animation=fadeIn)
 
-**chezmoi + nix-darwin · Reproducible macOS dev environment**
+**chezmoi + Nix · Cross-platform dev environment**
 
 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-[![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
+[![CI](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)
 [![nix-darwin](https://img.shields.io/badge/nix--darwin-24.11-5277C3)](https://github.com/LnL7/nix-darwin)
-![code size](https://img.shields.io/github/languages/code-size/LuYixian/dotfiles)
-![repo size](https://img.shields.io/github/repo-size/LuYixian/dotfiles)
-[![last commit](https://img.shields.io/github/last-commit/LuYixian/dotfiles)](https://github.com/LuYixian/dotfiles/commits/main)
+![code size](https://img.shields.io/github/languages/code-size/signalridge/dotfiles)
+![repo size](https://img.shields.io/github/repo-size/signalridge/dotfiles)
+[![last commit](https://img.shields.io/github/last-commit/signalridge/dotfiles)](https://github.com/signalridge/dotfiles/commits/main)
 
 [![zsh](https://img.shields.io/badge/zsh-5.9+-F15A24?logo=zsh&logoColor=white)](https://www.zsh.org/)
 [![chezmoi](https://img.shields.io/github/v/tag/twpayne/chezmoi?color=4B91E2&label=chezmoi&sort=semver)](https://github.com/twpayne/chezmoi)
@@ -22,10 +23,10 @@
 [![atuin](https://img.shields.io/github/v/tag/atuinsh/atuin?color=FF6B6B&label=atuin&sort=semver)](https://github.com/atuinsh/atuin)
 [![tmux](https://img.shields.io/github/v/tag/tmux/tmux?color=1BB91F&label=tmux&logo=tmux&logoColor=white&sort=semver)](https://github.com/tmux/tmux)
 
-*A modern, reproducible macOS development environment powered by nix-darwin and chezmoi*
+*A modern, reproducible development environment for macOS and Linux*
 </div>
 
-This repository provides a fully declarative system configuration that can bootstrap a new Mac in minutes, with all packages, settings, and dotfiles automatically applied. The entire setup is built around Rust-based CLI tools for blazing-fast performance, and supports multi-profile configurations to seamlessly switch between work and personal environments.
+This repository provides a fully declarative system configuration that can bootstrap a new machine in minutes, with all packages, settings, and dotfiles automatically applied. The entire setup is built around Rust-based CLI tools for blazing-fast performance, and supports multi-profile configurations to seamlessly switch between work and personal environments.
 
 ---
 
@@ -62,7 +63,8 @@ This repository provides a fully declarative system configuration that can boots
 Setting up a new development machine is tedious. You need to install dozens of packages, configure countless tools, and remember all those little tweaks you made over the years. This repository solves that problem by:
 
 - **Declarative Configuration** - Every package, setting, and configuration file is defined in code
-- **Reproducibility** - Run one command and get the exact same environment on any Mac
+- **Reproducibility** - Run one command and get the exact same environment on any machine
+- **Cross-Platform** - Works on both macOS and Linux with platform-specific optimizations
 - **Version Control** - Track changes to your system configuration over time
 - **Multi-Profile Support** - Different package sets for work vs personal machines
 
@@ -72,24 +74,38 @@ Setting up a new development machine is tedious. You need to install dozens of p
 
 ## 🚀 Quick Start
 
-### One-Line Installation
+### macOS
+
+#### One-Line Installation
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 ```
 
-### Manual Installation
+#### Manual Installation
 
 ```bash
 # Step 1: Install Nix using Determinate Systems installer
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Step 2: Install chezmoi and initialize with this repo
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 
 # Step 3: Build and activate nix-darwin configuration
 cd ~/.local/share/chezmoi
 nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwin
+```
+
+### Linux
+
+```bash
+# Step 1: Install Nix using Determinate Systems installer
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# Step 2: Install chezmoi and initialize with this repo
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+
+# Packages are automatically installed via flakey-profile on first apply
 ```
 
 After installation, restart your terminal to enjoy your new environment.
@@ -100,13 +116,27 @@ After installation, restart your terminal to enjoy your new environment.
 
 ## 🧩 Architecture
 
-This dotfiles setup combines two powerful tools:
+This dotfiles setup combines powerful tools for cross-platform configuration:
 
-**chezmoi** manages dotfiles across machines. It handles templating, secrets, and ensures your configuration files are always in sync. Files prefixed with `dot_` become dotfiles, and `.tmpl` files are processed as Go templates.
+**chezmoi** manages dotfiles across machines. It handles templating, secrets, and ensures your configuration files are always in sync. Files prefixed with `dot_` become dotfiles, and `.tmpl` files are processed as Go templates with platform-specific conditionals.
+
+### macOS Configuration
 
 **nix-darwin** provides declarative macOS system configuration. It manages system packages through Nix, Homebrew formulas and casks, and macOS system preferences. The entire system state is defined in Nix expressions and can be rebuilt atomically.
 
-The two tools complement each other: chezmoi handles user-level dotfiles while nix-darwin manages system-level configuration and package installation.
+### Linux Configuration
+
+**flakey-profile** provides declarative package management for Linux. It uses the same Nix flake as macOS but without system-level configuration, focusing on user packages that work across any Linux distribution.
+
+### How They Work Together
+
+| Component | macOS | Linux |
+|-----------|-------|-------|
+| Dotfiles | chezmoi | chezmoi |
+| System Config | nix-darwin | N/A |
+| User Packages | flakey-profile | flakey-profile |
+| GUI Apps | Homebrew Cask | N/A |
+| Mac App Store | mas | N/A |
 
 ---
 
@@ -173,7 +203,7 @@ The shell prompt is powered by **Starship**, a minimal and fast prompt written i
 
 **Claude Code** is integrated directly into the shell environment. The `aicommit` function generates conventional commit messages from staged changes using AI. The Starship prompt can optionally display Claude API usage stats.
 
-### Desktop Applications
+### Desktop Applications (macOS only)
 
 GUI applications are managed through Homebrew casks:
 
@@ -248,12 +278,12 @@ create_py_project   # Quick Python project setup with uv
 
 Packages are managed through multiple sources, each with its strengths:
 
-| Source            | Description                 | Examples                    |
-| ----------------- | --------------------------- | --------------------------- |
-| Nix packages      | Reproducible, rollback-able | ripgrep, bat, eza, starship |
-| Homebrew formulas | macOS-specific tools        | macos-trash, poetry         |
-| Homebrew casks    | GUI applications            | VS Code, Ghostty, Notion    |
-| Mac App Store     | App Store exclusives        | Magnet, WeChat, Office      |
+| Source            | Platform      | Description                 | Examples                    |
+| ----------------- | ------------- | --------------------------- | --------------------------- |
+| Nix packages      | macOS, Linux  | Reproducible, rollback-able | ripgrep, bat, eza, starship |
+| Homebrew formulas | macOS only    | macOS-specific tools        | macos-trash, cliclick       |
+| Homebrew casks    | macOS only    | GUI applications            | VS Code, Ghostty, Notion    |
+| Mac App Store     | macOS only    | App Store exclusives        | Magnet, WeChat, Office      |
 
 All package lists are defined in `.chezmoidata.yaml` with support for shared, work-only, and private-only packages.
 
@@ -267,7 +297,8 @@ All package lists are defined in `.chezmoidata.yaml` with support for shared, wo
 ~/.local/share/chezmoi/
 ├── .chezmoidata.yaml           # Package definitions for all profiles
 ├── .chezmoi.toml.tmpl          # Chezmoi configuration
-├── Justfile                    # Task runner for common operations
+├── .chezmoiignore              # Platform-specific file exclusions
+├── Justfile.tmpl               # Task runner (cross-platform)
 ├── .chezmoiscripts/            # Lifecycle scripts
 │   ├── run_once_before_*.sh    # Run once before first apply
 │   ├── run_onchange_after_*.sh # Run when specific files change
@@ -281,13 +312,13 @@ All package lists are defined in `.chezmoidata.yaml` with support for shared, wo
 ├── dot_local/bin/              # Custom scripts (~/.local/bin)
 │   ├── battery                 # Battery status for tmux/terminal
 │   └── wifi                    # WiFi signal strength display
-├── nix-config/                 # Nix-darwin configuration
-│   ├── flake.nix.tmpl          # Flake inputs and outputs
+├── nix-config/                 # Nix configuration
+│   ├── flake.nix.tmpl          # Flake inputs and outputs (cross-platform)
 │   └── modules/
-│       ├── apps.nix.tmpl       # Package installation
+│       ├── profile.nix.tmpl    # User packages (flakey-profile)
+│       ├── apps.nix.tmpl       # Package installation (macOS)
 │       ├── system.nix.tmpl     # macOS system preferences
-│       ├── nix-core.nix        # Nix daemon settings
-│       └── host-users.nix      # User configuration
+│       └── host-users.nix      # User configuration (macOS)
 └── private_dot_config/         # XDG config files
     ├── atuin/config.toml       # Shell history settings
     ├── gh-dash/config.yml      # GitHub dashboard TUI
@@ -308,7 +339,9 @@ All package lists are defined in `.chezmoidata.yaml` with support for shared, wo
 
 ## 🔄 Daily Operations
 
-All common operations are available through the Justfile (if you don't have `just` yet, run `nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- <task>`):
+All common operations are available through the Justfile (rendered from `Justfile.tmpl` to `~/Justfile`). If you don't have `just` yet, run `nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- <task>`:
+
+### Cross-Platform Commands
 
 ```bash
 # Chezmoi operations
@@ -316,22 +349,31 @@ just apply          # Apply dotfile changes
 just diff           # Show pending changes
 just re-add         # Re-add modified files
 
-# Nix-darwin operations
-just darwin         # Rebuild and switch configuration
-just darwin-debug   # Build with verbose output
-
-# Maintenance
+# Nix operations
 just up             # Update all flake inputs
-just gc             # Garbage collect old generations
-just clean          # Clean generations older than 7 days
+just switch         # Switch flakey-profile (rebuild packages)
+just gc             # Garbage collect unused nix store entries
 just optimize       # Optimize nix store (hard-link duplicates)
 
 # Development
 just check          # Run pre-commit checks
 
 # All-in-one
-just full-upgrade   # Complete system upgrade (7 steps)
-just update-all     # Update flake + chezmoi + homebrew
+just full-upgrade   # Complete system upgrade
+just update-all     # Update flake + chezmoi (+ homebrew on macOS)
+```
+
+### macOS-Only Commands
+
+```bash
+# Nix-darwin operations
+just darwin         # Rebuild and switch configuration
+just darwin-debug   # Build with verbose output
+
+# Maintenance
+just history        # List all generations of the system profile
+just clean          # Clean generations older than 7 days
+just clean-all      # Nix gc + brew cleanup
 ```
 
 ---
@@ -346,12 +388,17 @@ The setup supports different configurations for different machines. In `.chezmoi
 - **work** - Only installed on work machines (Azure CLI, Cursor, etc.)
 - **private** - Only installed on personal machines (1Password, gaming, etc.)
 
+`work` is the primary switch: `private` is enabled automatically when `work=false` (default). `headless=true` skips GUI configs like AeroSpace/Karabiner. If prompted for `hostname`, use `hostname -s` (used as the flake output name).
+
 ```bash
 # For work machines
-chezmoi init --data='{"work": true}'
+chezmoi init --apply --promptBool work=true signalridge
 
-# For personal machines
-chezmoi init --data='{"private": true}'
+# For personal machines (default: work=false -> private=true)
+chezmoi init --apply signalridge
+
+# For headless servers (no GUI configs)
+chezmoi init --apply --promptBool headless=true signalridge
 ```
 
 ---
@@ -399,6 +446,7 @@ This dotfiles setup is built on the shoulders of giants. Special thanks to:
 
 - [chezmoi](https://github.com/twpayne/chezmoi) by [@twpayne](https://github.com/twpayne) - The powerful dotfiles manager
 - [nix-darwin](https://github.com/LnL7/nix-darwin) by [@LnL7](https://github.com/LnL7) - Declarative macOS configuration with Nix
+- [flakey-profile](https://github.com/lf-/flakey-profile) by [@lf-](https://github.com/lf-) - Cross-platform Nix profile management
 - [Nix](https://nixos.org/) by [NixOS](https://github.com/NixOS) - The purely functional package manager
 - [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer) by [@DeterminateSystems](https://github.com/DeterminateSystems)
 - [Sheldon](https://github.com/rossmacarthur/sheldon) by [@rossmacarthur](https://github.com/rossmacarthur) - Fast zsh plugin manager

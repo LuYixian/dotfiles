@@ -2,17 +2,18 @@
 
 ![header](https://capsule-render.vercel.app/api?type=waving&color=0:282a36,100:bd93f9&height=200&section=header&text=~/.dotfiles&fontSize=48&fontColor=f8f8f2&fontAlignY=30&desc=One%20command%20%C2%B7%20Full%20environment%20%C2%B7%20Zero%20hassle&descSize=16&descColor=8be9fd&descAlignY=55&animation=fadeIn)
 
-**chezmoi + nix-darwin · 再現性の高い macOS 開発環境**
+**chezmoi + Nix · クロスプラットフォーム開発環境 (macOS / Linux)**
 
 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-[![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
+[![CI](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)
 [![nix-darwin](https://img.shields.io/badge/nix--darwin-24.11-5277C3)](https://github.com/LnL7/nix-darwin)
-![code size](https://img.shields.io/github/languages/code-size/LuYixian/dotfiles)
-![repo size](https://img.shields.io/github/repo-size/LuYixian/dotfiles)
-[![last commit](https://img.shields.io/github/last-commit/LuYixian/dotfiles)](https://github.com/LuYixian/dotfiles/commits/main)
+![code size](https://img.shields.io/github/languages/code-size/signalridge/dotfiles)
+![repo size](https://img.shields.io/github/repo-size/signalridge/dotfiles)
+[![last commit](https://img.shields.io/github/last-commit/signalridge/dotfiles)](https://github.com/signalridge/dotfiles/commits/main)
 
 [![zsh](https://img.shields.io/badge/zsh-5.9+-F15A24?logo=zsh&logoColor=white)](https://www.zsh.org/)
 [![chezmoi](https://img.shields.io/github/v/tag/twpayne/chezmoi?color=4B91E2&label=chezmoi&sort=semver)](https://github.com/twpayne/chezmoi)
@@ -22,10 +23,10 @@
 [![atuin](https://img.shields.io/github/v/tag/atuinsh/atuin?color=FF6B6B&label=atuin&sort=semver)](https://github.com/atuinsh/atuin)
 [![tmux](https://img.shields.io/github/v/tag/tmux/tmux?color=1BB91F&label=tmux&logo=tmux&logoColor=white&sort=semver)](https://github.com/tmux/tmux)
 
-*nix-darwin と chezmoi で構築する、モダンで再現性の高い macOS 開発環境*
+*Nix と chezmoi で構築する、モダンで再現性の高い開発環境（macOS / Linux 対応）*
 </div>
 
-このリポジトリは、システム構成を完全に宣言的に管理し、新しい Mac を数分で立ち上げられるようにします。パッケージ、設定、dotfiles を自動で適用し、Rust 製の高速 CLI ツール群を中心に設計されています。さらに、仕事用/個人用など複数プロファイルの切り替えにも対応しています。
+このリポジトリは、システム構成を完全に宣言的に管理し、新しいマシンを数分で立ち上げられるようにします。パッケージ、設定、dotfiles を自動で適用し、Rust 製の高速 CLI ツール群を中心に設計されています。さらに、仕事用/個人用など複数プロファイルの切り替えにも対応しています。
 
 ---
 
@@ -62,7 +63,8 @@
 新しい開発マシンのセットアップは面倒です。数十個のパッケージをインストールし、無数のツールを設定し、長年積み上げた細かな調整を思い出す必要があります。このリポジトリは次の点でそれを解決します：
 
 - **宣言的な設定** - すべてのパッケージ/設定/構成ファイルをコードとして定義
-- **再現性** - 1 コマンドで、どの Mac でも同じ環境を構築
+- **再現性** - 1 コマンドで、どのマシンでも同じ環境を構築
+- **クロスプラットフォーム** - macOS と Linux の両方に対応し、各プラットフォームに最適化
 - **バージョン管理** - システム設定の変更を履歴として追跡
 - **マルチプロファイル対応** - 仕事用/個人用でパッケージセットを切り替え
 
@@ -72,24 +74,38 @@
 
 ## 🚀 クイックスタート
 
-### ワンライナー
+### macOS
+
+#### ワンライナー
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 ```
 
-### 手動インストール
+#### 手動インストール
 
 ```bash
 # Step 1: Determinate Systems のインストーラで Nix をインストール
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # Step 2: chezmoi をインストールしてこのリポジトリで初期化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 
 # Step 3: nix-darwin 設定をビルドして有効化
 cd ~/.local/share/chezmoi
 nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwin
+```
+
+### Linux
+
+```bash
+# Step 1: Determinate Systems のインストーラで Nix をインストール
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# Step 2: chezmoi をインストールしてこのリポジトリで初期化
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+
+# 初回 apply 時に flakey-profile でパッケージが自動インストールされます
 ```
 
 インストール後、ターミナルを再起動すると新しい環境が使えます。
@@ -100,13 +116,27 @@ nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwi
 
 ## 🧩 アーキテクチャ
 
-この dotfiles セットアップは、2 つの強力なツールを組み合わせています：
+この dotfiles セットアップは、クロスプラットフォーム構成のために複数の強力なツールを組み合わせています：
 
-**chezmoi** は複数マシン間で dotfiles を管理します。テンプレートや secret に対応し、設定ファイルを常に同期できます。`dot_` プレフィックスのファイルは dotfile として配置され、`.tmpl` は Go テンプレートとして処理されます。
+**chezmoi** は複数マシン間で dotfiles を管理します。テンプレートや secret に対応し、設定ファイルを常に同期できます。`dot_` プレフィックスのファイルは dotfile として配置され、`.tmpl` は Go テンプレートとして処理され、プラットフォーム別の条件分岐もサポートします。
+
+### macOS 構成
 
 **nix-darwin** は macOS を宣言的に構成します。Nix と Homebrew（formula/cask）でシステムパッケージを管理し、macOS のシステム設定も含めて Nix 式で記述できます。システム状態は原子的にビルド/切り替え可能です。
 
-両者は補完関係にあり、chezmoi がユーザー層の dotfiles を、nix-darwin がシステム層の設定とパッケージ導入を担います。
+### Linux 構成
+
+**flakey-profile** は Linux 向けの宣言的パッケージ管理を提供します。macOS と同じ Nix flake を使用しますが、システムレベルの設定は行わず、ユーザーパッケージに焦点を当てています。あらゆる Linux ディストリビューションで動作します。
+
+### 連携方法
+
+| コンポーネント | macOS | Linux |
+| -------------- | ----- | ----- |
+| Dotfiles | chezmoi | chezmoi |
+| システム設定 | nix-darwin | N/A |
+| ユーザーパッケージ | flakey-profile | flakey-profile |
+| GUI アプリ | Homebrew Cask | N/A |
+| Mac App Store | mas | N/A |
 
 ---
 
@@ -173,7 +203,7 @@ nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwi
 
 **Claude Code** をシェル環境に統合しています。`aicommit` 関数は、ステージ済みの差分から Conventional Commits 形式のコミットメッセージを AI 生成します。Starship プロンプトで Claude API の使用状況を表示することもできます。
 
-### デスクトップアプリ
+### デスクトップアプリ（macOS のみ）
 
 GUI アプリは Homebrew cask で管理します：
 
@@ -248,12 +278,12 @@ create_py_project   # uv で Python プロジェクトを作成
 
 複数のソースを用途に応じて使い分けます：
 
-| ソース            | 説明                         | 例                               |
-| ----------------- | ---------------------------- | -------------------------------- |
-| Nix packages      | 再現性が高く、ロールバック可能 | ripgrep, bat, eza, starship      |
-| Homebrew formulas | macOS 向けツール              | macos-trash, poetry              |
-| Homebrew casks    | GUI アプリ                    | VS Code, Ghostty, Notion         |
-| Mac App Store     | App Store 限定                | Magnet, WeChat, Office           |
+| ソース            | プラットフォーム | 説明                         | 例                               |
+| ----------------- | ---------------- | ---------------------------- | -------------------------------- |
+| Nix packages      | macOS, Linux     | 再現性が高く、ロールバック可能 | ripgrep, bat, eza, starship      |
+| Homebrew formulas | macOS のみ       | macOS 向けツール              | macos-trash, cliclick            |
+| Homebrew casks    | macOS のみ       | GUI アプリ                    | VS Code, Ghostty, Notion         |
+| Mac App Store     | macOS のみ       | App Store 限定                | Magnet, WeChat, Office           |
 
 パッケージ一覧は `.chezmoidata.yaml` に定義され、shared / work-only / private-only の分類にも対応しています。
 
@@ -267,7 +297,8 @@ create_py_project   # uv で Python プロジェクトを作成
 ~/.local/share/chezmoi/
 ├── .chezmoidata.yaml           # 各プロファイルのパッケージ定義
 ├── .chezmoi.toml.tmpl          # Chezmoi 設定
-├── Justfile                    # よく使う操作のタスクランナー
+├── .chezmoiignore              # プラットフォーム別ファイル除外ルール
+├── Justfile.tmpl               # タスクランナー（クロスプラットフォーム）
 ├── .chezmoiscripts/            # ライフサイクルスクリプト
 │   ├── run_once_before_*.sh    # 初回 apply 前に 1 回だけ実行
 │   ├── run_onchange_after_*.sh # 対象ファイル変更時に実行
@@ -281,13 +312,13 @@ create_py_project   # uv で Python プロジェクトを作成
 ├── dot_local/bin/              # 自作スクリプト（~/.local/bin）
 │   ├── battery                 # tmux/ターミナル用バッテリー表示
 │   └── wifi                    # WiFi 信号強度表示
-├── nix-config/                 # Nix-darwin 設定
-│   ├── flake.nix.tmpl          # Flake 入力/出力
+├── nix-config/                 # Nix 設定
+│   ├── flake.nix.tmpl          # Flake 入力/出力（クロスプラットフォーム）
 │   └── modules/
-│       ├── apps.nix.tmpl       # パッケージ導入
+│       ├── profile.nix.tmpl    # ユーザーパッケージ（flakey-profile）
+│       ├── apps.nix.tmpl       # パッケージ導入（macOS）
 │       ├── system.nix.tmpl     # macOS システム設定
-│       ├── nix-core.nix        # Nix daemon 設定
-│       └── host-users.nix      # ユーザー設定
+│       └── host-users.nix      # ユーザー設定（macOS）
 └── private_dot_config/         # XDG 設定ファイル
     ├── atuin/config.toml       # シェル履歴設定
     ├── gh-dash/config.yml      # GitHub ダッシュボード TUI
@@ -308,7 +339,9 @@ create_py_project   # uv で Python プロジェクトを作成
 
 ## 🔄 日常操作
 
-よく使う操作は Justfile から実行できます（まだ `just` がない場合は `nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- <task>` で実行できます）：
+よく使う操作は Justfile から実行できます（`Justfile.tmpl` から `~/Justfile` にレンダリングされます）。まだ `just` がない場合は `nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- <task>` で実行できます：
+
+### クロスプラットフォームコマンド
 
 ```bash
 # Chezmoi 操作
@@ -316,22 +349,31 @@ just apply          # dotfiles 変更を適用
 just diff           # 未適用差分を表示
 just re-add         # 変更されたファイルを再追加
 
-# Nix-darwin 操作
-just darwin         # 設定を再ビルドして切り替え
-just darwin-debug   # 詳細出力でビルド
-
-# メンテナンス
+# Nix 操作
 just up             # flake 入力をすべて更新
-just gc             # 古い generation を削除
-just clean          # 7 日以上前の generation を削除
+just switch         # flakey-profile を切り替え（パッケージ再ビルド）
+just gc             # 未使用の nix store を削除
 just optimize       # nix store 最適化（重複ハードリンク）
 
 # 開発
 just check          # pre-commit を実行
 
 # オールインワン
-just full-upgrade   # 完全アップグレード（7 ステップ）
-just update-all     # flake + chezmoi + homebrew を更新
+just full-upgrade   # 完全アップグレード
+just update-all     # flake + chezmoi を更新（macOS は homebrew も）
+```
+
+### macOS 専用コマンド
+
+```bash
+# Nix-darwin 操作
+just darwin         # 設定を再ビルドして切り替え
+just darwin-debug   # 詳細出力でビルド
+
+# メンテナンス
+just history        # システム profile の generation 一覧
+just clean          # 7 日以上前の generation を削除
+just clean-all      # nix gc + brew cleanup
 ```
 
 ---
@@ -346,12 +388,17 @@ just update-all     # flake + chezmoi + homebrew を更新
 - **work** - 仕事用マシンのみ（Azure CLI、Cursor など）
 - **private** - 個人用マシンのみ（1Password、ゲーム関連など）
 
+`work` が主スイッチです。`work=false`（デフォルト）のとき `private=true` が自動で有効になります。`headless=true` で AeroSpace/Karabiner など GUI 設定をスキップします。`hostname` を聞かれたら `hostname -s` の値を入れてください（flake の名前に使います）。
+
 ```bash
 # 仕事用マシン
-chezmoi init --data='{"work": true}'
+chezmoi init --apply --promptBool work=true signalridge
 
-# 個人用マシン
-chezmoi init --data='{"private": true}'
+# 個人用マシン（デフォルト：work=false -> private=true）
+chezmoi init --apply signalridge
+
+# ヘッドレスサーバー（GUI 設定不要）
+chezmoi init --apply --promptBool headless=true signalridge
 ```
 
 ---
@@ -399,6 +446,7 @@ chezmoi init --data='{"private": true}'
 
 - [chezmoi](https://github.com/twpayne/chezmoi) by [@twpayne](https://github.com/twpayne) - 強力な dotfiles マネージャ
 - [nix-darwin](https://github.com/LnL7/nix-darwin) by [@LnL7](https://github.com/LnL7) - Nix による宣言的 macOS 設定
+- [flakey-profile](https://github.com/lf-/flakey-profile) by [@lf-](https://github.com/lf-) - クロスプラットフォーム Nix プロファイル管理
 - [Nix](https://nixos.org/) by [NixOS](https://github.com/NixOS) - 純粋関数型パッケージマネージャ
 - [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer) by [@DeterminateSystems](https://github.com/DeterminateSystems)
 - [Sheldon](https://github.com/rossmacarthur/sheldon) by [@rossmacarthur](https://github.com/rossmacarthur) - 高速な zsh プラグインマネージャ

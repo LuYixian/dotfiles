@@ -2,17 +2,18 @@
 
 ![header](https://capsule-render.vercel.app/api?type=waving&color=0:282a36,100:bd93f9&height=200&section=header&text=~/.dotfiles&fontSize=48&fontColor=f8f8f2&fontAlignY=30&desc=One%20command%20%C2%B7%20Full%20environment%20%C2%B7%20Zero%20hassle&descSize=16&descColor=8be9fd&descAlignY=55&animation=fadeIn)
 
-**chezmoi + nix-darwin · 可复现的 macOS 开发环境**
+**chezmoi + Nix · 跨平台开发环境 (macOS / Linux)**
 
 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-[![CI](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/LuYixian/dotfiles/actions/workflows/ci.yaml)
+[![CI](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml/badge.svg)](https://github.com/signalridge/dotfiles/actions/workflows/ci.yaml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)
 [![nix-darwin](https://img.shields.io/badge/nix--darwin-24.11-5277C3)](https://github.com/LnL7/nix-darwin)
-![code size](https://img.shields.io/github/languages/code-size/LuYixian/dotfiles)
-![repo size](https://img.shields.io/github/repo-size/LuYixian/dotfiles)
-[![last commit](https://img.shields.io/github/last-commit/LuYixian/dotfiles)](https://github.com/LuYixian/dotfiles/commits/main)
+![code size](https://img.shields.io/github/languages/code-size/signalridge/dotfiles)
+![repo size](https://img.shields.io/github/repo-size/signalridge/dotfiles)
+[![last commit](https://img.shields.io/github/last-commit/signalridge/dotfiles)](https://github.com/signalridge/dotfiles/commits/main)
 
 [![zsh](https://img.shields.io/badge/zsh-5.9+-F15A24?logo=zsh&logoColor=white)](https://www.zsh.org/)
 [![chezmoi](https://img.shields.io/github/v/tag/twpayne/chezmoi?color=4B91E2&label=chezmoi&sort=semver)](https://github.com/twpayne/chezmoi)
@@ -22,10 +23,10 @@
 [![atuin](https://img.shields.io/github/v/tag/atuinsh/atuin?color=FF6B6B&label=atuin&sort=semver)](https://github.com/atuinsh/atuin)
 [![tmux](https://img.shields.io/github/v/tag/tmux/tmux?color=1BB91F&label=tmux&logo=tmux&logoColor=white&sort=semver)](https://github.com/tmux/tmux)
 
-*基于 nix-darwin 与 chezmoi 的现代、可复现 macOS 开发环境*
+*基于 Nix 与 chezmoi 的现代、可复现开发环境，同时支持 macOS 与 Linux*
 </div>
 
-本仓库提供一套完全声明式的系统配置：能在几分钟内把一台全新的 Mac 引导到可用状态，并自动应用所有软件包、系统设置与 dotfiles。整套方案围绕 Rust 编写的 CLI 工具构建，追求极致性能，并支持多 Profile 配置，便于在工作与个人环境之间无缝切换。
+本仓库提供一套完全声明式的系统配置：能在几分钟内把一台全新的机器引导到可用状态，并自动应用所有软件包、系统设置与 dotfiles。整套方案围绕 Rust 编写的 CLI 工具构建，追求极致性能，并支持多 Profile 配置，便于在工作与个人环境之间无缝切换。
 
 ---
 
@@ -62,7 +63,8 @@
 搭建一台新的开发机器很繁琐：你需要安装几十个软件包、配置无数工具，并记住这些年积累下来的各种小调整。本仓库通过以下方式解决这个问题：
 
 - **声明式配置** - 所有软件包、设置与配置文件都以代码方式定义
-- **可复现** - 一条命令即可在任意 Mac 上获得完全一致的环境
+- **可复现** - 一条命令即可在任意机器上获得完全一致的环境
+- **跨平台** - 同时支持 macOS 与 Linux，并针对各平台进行优化
 - **版本控制** - 持续追踪系统配置的变更历史
 - **多 Profile 支持** - 为工作/个人机器提供不同的软件包集合
 
@@ -72,24 +74,38 @@
 
 ## 🚀 快速开始
 
-### 一行安装
+### macOS
+
+#### 一行安装
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 ```
 
-### 手动安装
+#### 手动安装
 
 ```bash
 # 第 1 步：使用 Determinate Systems 安装器安装 Nix
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
 # 第 2 步：安装 chezmoi 并用本仓库初始化
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LuYixian
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 
 # 第 3 步：构建并激活 nix-darwin 配置
 cd ~/.local/share/chezmoi
 nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwin
+```
+
+### Linux
+
+```bash
+# 第 1 步：使用 Determinate Systems 安装器安装 Nix
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+
+# 第 2 步：安装 chezmoi 并用本仓库初始化
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+
+# 首次 apply 时会通过 flakey-profile 自动安装软件包
 ```
 
 安装完成后，重启终端即可享受你的新环境。
@@ -100,13 +116,27 @@ nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- darwi
 
 ## 🧩 架构
 
-这套 dotfiles 方案将两款强大的工具组合在一起：
+这套 dotfiles 方案将多款强大的工具组合在一起，实现跨平台配置：
 
-**chezmoi** 用于跨机器管理 dotfiles，支持模板、secret，并确保配置文件始终保持同步。以 `dot_` 前缀命名的文件会生成对应的点文件（dotfile），`.tmpl` 文件会作为 Go 模板处理。
+**chezmoi** 用于跨机器管理 dotfiles，支持模板、secret，并确保配置文件始终保持同步。以 `dot_` 前缀命名的文件会生成对应的点文件（dotfile），`.tmpl` 文件会作为 Go 模板处理，支持平台条件判断。
+
+### macOS 配置
 
 **nix-darwin** 提供声明式的 macOS 系统配置：通过 Nix 与 Homebrew（formula/cask）管理系统软件包，并设置 macOS 系统偏好。整个系统状态由 Nix 表达式描述，可原子化地构建与切换。
 
-两者相辅相成：chezmoi 负责用户层的 dotfiles；nix-darwin 负责系统层配置与软件安装。
+### Linux 配置
+
+**flakey-profile** 为 Linux 提供声明式的包管理。它使用与 macOS 相同的 Nix flake，但不涉及系统级配置，专注于用户软件包，可在任何 Linux 发行版上使用。
+
+### 协同工作方式
+
+| 组件 | macOS | Linux |
+| ---- | ----- | ----- |
+| Dotfiles | chezmoi | chezmoi |
+| 系统配置 | nix-darwin | N/A |
+| 用户软件包 | flakey-profile | flakey-profile |
+| GUI 应用 | Homebrew Cask | N/A |
+| Mac App Store | mas | N/A |
 
 ---
 
@@ -173,7 +203,7 @@ Shell 提示符由 **Starship** 驱动：Rust 编写、轻量且快速。使用 
 
 **Claude Code** 已直接集成到 shell 环境中。`aicommit` 函数可根据已暂存的变更，通过 AI 生成 Conventional Commits 风格的提交信息。Starship 提示符也可选择显示 Claude API 使用统计。
 
-### 桌面应用
+### 桌面应用（仅 macOS）
 
 GUI 应用通过 Homebrew cask 管理：
 
@@ -248,12 +278,12 @@ create_py_project   # 使用 uv 快速初始化 Python 项目
 
 软件包来自多个来源，各有所长：
 
-| 来源            | 说明                   | 示例                             |
-| --------------- | ---------------------- | -------------------------------- |
-| Nix packages    | 可复现、可回滚         | ripgrep, bat, eza, starship      |
-| Homebrew formulas | macOS 特定工具          | macos-trash, poetry              |
-| Homebrew cask   | GUI 应用               | VS Code, Ghostty, Notion         |
-| Mac App Store   | App Store 独占应用     | Magnet, WeChat, Office           |
+| 来源              | 平台          | 说明                   | 示例                             |
+| ----------------- | ------------- | ---------------------- | -------------------------------- |
+| Nix packages      | macOS, Linux  | 可复现、可回滚         | ripgrep, bat, eza, starship      |
+| Homebrew formulas | 仅 macOS      | macOS 特定工具         | macos-trash, cliclick            |
+| Homebrew cask     | 仅 macOS      | GUI 应用               | VS Code, Ghostty, Notion         |
+| Mac App Store     | 仅 macOS      | App Store 独占应用     | Magnet, WeChat, Office           |
 
 所有软件包清单都在 `.chezmoidata.yaml` 中定义，并支持 shared / work-only / private-only 的分类管理。
 
@@ -267,7 +297,8 @@ create_py_project   # 使用 uv 快速初始化 Python 项目
 ~/.local/share/chezmoi/
 ├── .chezmoidata.yaml           # 各 Profile 的软件包定义
 ├── .chezmoi.toml.tmpl          # Chezmoi 配置
-├── Justfile                    # 常用操作的任务入口
+├── .chezmoiignore              # 平台相关的文件排除规则
+├── Justfile.tmpl               # 任务入口（跨平台）
 ├── .chezmoiscripts/            # 生命周期脚本
 │   ├── run_once_before_*.sh    # 首次 apply 前仅运行一次
 │   ├── run_onchange_after_*.sh # 指定文件变更时运行
@@ -281,13 +312,13 @@ create_py_project   # 使用 uv 快速初始化 Python 项目
 ├── dot_local/bin/              # 自定义脚本（~/.local/bin）
 │   ├── battery                 # tmux/终端电量显示
 │   └── wifi                    # WiFi 信号强度显示
-├── nix-config/                 # Nix-darwin 配置
-│   ├── flake.nix.tmpl          # Flake 输入与输出
+├── nix-config/                 # Nix 配置
+│   ├── flake.nix.tmpl          # Flake 输入与输出（跨平台）
 │   └── modules/
-│       ├── apps.nix.tmpl       # 安装软件包
+│       ├── profile.nix.tmpl    # 用户软件包（flakey-profile）
+│       ├── apps.nix.tmpl       # 安装软件包（macOS）
 │       ├── system.nix.tmpl     # macOS 系统偏好设置
-│       ├── nix-core.nix        # Nix daemon 设置
-│       └── host-users.nix      # 用户配置
+│       └── host-users.nix      # 用户配置（macOS）
 └── private_dot_config/         # XDG 配置文件
     ├── atuin/config.toml       # 命令历史设置
     ├── gh-dash/config.yml      # GitHub dashboard TUI
@@ -308,7 +339,9 @@ create_py_project   # 使用 uv 快速初始化 Python 项目
 
 ## 🔄 日常操作
 
-所有常用操作都通过 Justfile 统一入口（若本机还没有 `just`，可用 `nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- <task>` 直接运行）：
+所有常用操作都通过 Justfile 统一入口（由 `Justfile.tmpl` 渲染到 `~/Justfile`）。若本机还没有 `just`，可用 `nix run --extra-experimental-features 'nix-command flakes' nixpkgs#just -- <task>` 直接运行：
+
+### 跨平台命令
 
 ```bash
 # Chezmoi 操作
@@ -316,22 +349,31 @@ just apply          # 应用 dotfiles 变更
 just diff           # 查看待应用的差异
 just re-add         # 重新添加被修改的文件
 
-# Nix-darwin 操作
-just darwin         # 重建并切换配置
-just darwin-debug   # 以详细输出构建
-
-# 维护
+# Nix 操作
 just up             # 更新所有 flake 输入
-just gc             # 清理旧的 generation
-just clean          # 清理 7 天前的 generation
+just switch         # 切换 flakey-profile（重建软件包）
+just gc             # 清理未使用的 nix store
 just optimize       # 优化 nix store（硬链接去重）
 
 # 开发
 just check          # 运行 pre-commit 检查
 
 # 一键合集
-just full-upgrade   # 完整系统升级（7 步）
-just update-all     # 更新 flake + chezmoi + homebrew
+just full-upgrade   # 完整系统升级
+just update-all     # 更新 flake + chezmoi（macOS 还包括 homebrew）
+```
+
+### 仅 macOS 命令
+
+```bash
+# Nix-darwin 操作
+just darwin         # 重建并切换配置
+just darwin-debug   # 以详细输出构建
+
+# 维护
+just history        # 列出所有系统 profile generation
+just clean          # 清理 7 天前的 generation
+just clean-all      # nix gc + brew cleanup
 ```
 
 ---
@@ -346,12 +388,17 @@ just update-all     # 更新 flake + chezmoi + homebrew
 - **work** - 仅工作机器安装（Azure CLI、Cursor 等）
 - **private** - 仅个人机器安装（1Password、游戏相关等）
 
+`work` 是主要开关：当 `work=false`（默认）时会自动启用 `private=true`。`headless=true` 会跳过 AeroSpace/Karabiner 等 GUI 配置。若提示输入 `hostname`，请填写 `hostname -s` 的输出（会作为 flake 的名字使用）。
+
 ```bash
 # 工作机器
-chezmoi init --data='{"work": true}'
+chezmoi init --apply --promptBool work=true signalridge
 
-# 个人机器
-chezmoi init --data='{"private": true}'
+# 个人机器（默认：work=false -> private=true）
+chezmoi init --apply signalridge
+
+# 无头服务器（不需要 GUI 配置）
+chezmoi init --apply --promptBool headless=true signalridge
 ```
 
 ---
@@ -399,6 +446,7 @@ chezmoi init --data='{"private": true}'
 
 - [chezmoi](https://github.com/twpayne/chezmoi) by [@twpayne](https://github.com/twpayne) - 强大的 dotfiles 管理器
 - [nix-darwin](https://github.com/LnL7/nix-darwin) by [@LnL7](https://github.com/LnL7) - 基于 Nix 的声明式 macOS 配置
+- [flakey-profile](https://github.com/lf-/flakey-profile) by [@lf-](https://github.com/lf-) - 跨平台 Nix profile 管理
 - [Nix](https://nixos.org/) by [NixOS](https://github.com/NixOS) - 纯函数式包管理器
 - [Determinate Nix Installer](https://github.com/DeterminateSystems/nix-installer) by [@DeterminateSystems](https://github.com/DeterminateSystems)
 - [Sheldon](https://github.com/rossmacarthur/sheldon) by [@rossmacarthur](https://github.com/rossmacarthur) - 快速的 zsh 插件管理器
