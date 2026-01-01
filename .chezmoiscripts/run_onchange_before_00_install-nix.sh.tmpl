@@ -1,10 +1,28 @@
 #!/bin/sh
 # shellcheck shell=dash
 # Nix installer with automatic mirror selection for chezmoi
+# installer-version: {{ output "curl" "-fsSL" "https://api.github.com/repos/DeterminateSystems/nix-installer/releases/latest" | regexFind "\"tag_name\":\\s*\"([^\"]+)\"" }}
+# nix-version: {{ output "curl" "-fsSL" "https://api.github.com/repos/DeterminateSystems/nix/releases/latest" | regexFind "\"tag_name\":\\s*\"([^\"]+)\"" }}
 
 set -eu
 
-NIX_INSTALLER_VERSION="${NIX_INSTALLER_VERSION:-v3.15.1}"
+# --- Version detection ---
+
+get_latest_version() {
+    local version=""
+
+    # Try curl first, then wget
+    if command -v curl >/dev/null 2>&1; then
+        version=$(curl -fsSL "https://api.github.com/repos/DeterminateSystems/nix-installer/releases/latest" 2>/dev/null | grep '"tag_name"' | head -1 | sed 's/.*"tag_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+    elif command -v wget >/dev/null 2>&1; then
+        version=$(wget -qO- "https://api.github.com/repos/DeterminateSystems/nix-installer/releases/latest" 2>/dev/null | grep '"tag_name"' | head -1 | sed 's/.*"tag_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+    fi
+
+    # Fallback to known version if API fails
+    echo "${version:-v3.15.1}"
+}
+
+NIX_INSTALLER_VERSION="${NIX_INSTALLER_VERSION:-$(get_latest_version)}"
 GITHUB_RELEASE="https://github.com/DeterminateSystems/nix-installer/releases/download/${NIX_INSTALLER_VERSION}"
 GHPROXY_RELEASE="https://ghproxy.com/${GITHUB_RELEASE}"
 
@@ -137,6 +155,12 @@ select_mirror() {
 main() {
     if command -v nix >/dev/null 2>&1; then
         info "nix already installed"
+
+        # Check for updates
+        if command -v determinate-nixd >/dev/null 2>&1; then
+            info "checking for updates..."
+            sudo determinate-nixd upgrade || warn "upgrade failed"
+        fi
         return 0
     fi
 
@@ -178,7 +202,8 @@ main() {
     chmod +x "$bin"
 
     # Verify it's a valid ELF/Mach-O binary, not an error page
-    if ! head -c 4 "$bin" | grep -q -e 'ELF' -e '^\xCF\xFA'; then
+    # ELF starts with 0x7F 'E' 'L' 'F', Mach-O with 0xCF 0xFA
+    if ! head -c 4 "$bin" | od -An -tx1 | grep -qE '7f.*45.*4c.*46|cf.*fa'; then
         warn "downloaded file is not a valid binary, trying github directly..."
         url="${GITHUB_RELEASE}/nix-installer-${arch}"
         info "downloading: $url"
@@ -192,6 +217,12 @@ main() {
 
     info "running installer..."
     "$bin" install --no-confirm
+
+    # Verify installation
+    if command -v /nix/nix-installer >/dev/null 2>&1; then
+        info "running self-test..."
+        /nix/nix-installer self-test || warn "self-test failed"
+    fi
 }
 
 main
