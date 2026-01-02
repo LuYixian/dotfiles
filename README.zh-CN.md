@@ -34,6 +34,7 @@
 ## 📑 目录
 
 - [亮点](#highlights)
+- [项目优势](#project-advantages)
 - [动机](#motivation)
 - [快速开始](#quick-start)
 - [安全与加密](#security)
@@ -41,7 +42,6 @@
 - [工具链](#tool-chains)
 - [Shell 函数](#shell-functions)
 - [包管理](#package-management)
-- [目录结构](#directory-structure)
 - [日常操作](#daily-operations)
 - [多 Profile 配置](#multi-profile-configuration)
 - [键盘快捷键](#keyboard-shortcuts)
@@ -68,6 +68,20 @@
 - **私密文件**：使用 `age` 加密（可选通过 1Password 自动获取密钥）
 - **多 Profile**：`work` / `private` / `headless` 通过 `chezmoi init` 的交互提示（prompts）控制
 - **效率工具链**：现代 CLI、统一主题、以及 AI 辅助工具
+
+---
+
+<a id="project-advantages"></a>
+
+## 💡 项目优势
+
+- **一体化引导**：Nix 安装器自动测速选择 Determinate 镜像，chezmoi 统一渲染并应用模板
+- **Profile 全覆盖**：`.chezmoidata.yaml` 驱动 `shared/work/private` 软件包，贯穿 Nix、Homebrew、MAS
+- **macOS 体验打磨**：nix-darwin 系统偏好设置 + Homebrew/MAS 集成 + 应用后自动更新脚本
+- **安全优先的私密管理**：`age` 加密并结合 1Password 导入密钥，路径固定便于审计
+- **工作流护栏**：pre-commit（shellcheck/markdownlint/prettier/Nix 格式化与 lint）+ Claude Code hooks 阻止危险 git 操作并强制 `uv`
+- **效率自动化**：Justfile 升级/清理、fzf 导航增强、AI 生成提交信息
+- **CI 一致性**：CI 在 macOS + Linux 上渲染模板并执行 `nix flake check`
 
 ---
 
@@ -108,7 +122,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 
 ## 🔐 私密信息与加密
 
-本仓库使用 `age` 加密管理私密文件（例如 `private_dot_ssh/encrypted_config.age`）。`chezmoi` 会根据 `.chezmoi.toml.tmpl` 使用 `~/.ssh/main`（私钥）和 `~/.ssh/main.pub`（接收者/recipient）进行解密。
+本仓库使用 `age` 加密管理私密文件（例如 `private_dot_ssh/encrypted_private_config.tmpl.age`）。`chezmoi` 会根据 `.chezmoi.toml.tmpl` 使用 `~/.ssh/main`（私钥）和 `~/.ssh/main.pub`（接收者/recipient）进行解密。
 
 首次 apply 时，引导脚本会：
 
@@ -295,54 +309,6 @@ create_py_project   # 使用 uv 快速初始化 Python 项目
 | Mac App Store     | 仅 macOS      | App Store 独占应用     | Magnet, WeChat, Office           |
 
 所有软件包清单都在 `.chezmoidata.yaml` 中定义，并支持 shared / work-only / private-only 的分类管理。
-
----
-
-<a id="directory-structure"></a>
-
-## 📁 目录结构
-
-```text
-~/.local/share/chezmoi/
-├── .chezmoidata.yaml           # 各 Profile 的软件包定义
-├── .chezmoi.toml.tmpl          # Chezmoi 配置
-├── .chezmoiignore              # 平台相关的文件排除规则
-├── Justfile.tmpl               # 任务入口（跨平台）
-├── .chezmoiscripts/            # 生命周期脚本
-│   ├── run_once_before_*.sh    # 首次 apply 前仅运行一次
-│   ├── run_onchange_after_*.sh # 指定文件变更时运行
-│   └── run_after_*.sh          # 每次 apply 后运行
-├── dot_custom/                 # 自定义 shell 配置
-│   ├── alias.sh                # 别名（含全局别名）
-│   ├── eval.sh                 # 工具初始化
-│   ├── exports.sh              # 环境变量
-│   ├── functions.sh            # Shell 函数
-│   └── utils.sh                # 工具函数库
-├── dot_local/bin/              # 自定义脚本（~/.local/bin）
-│   ├── battery                 # tmux/终端电量显示
-│   └── wifi                    # WiFi 信号强度显示
-├── nix-config/                 # Nix 配置
-│   ├── flake.nix.tmpl          # Flake 输入与输出（跨平台）
-│   └── modules/
-│       ├── profile.nix.tmpl    # 用户软件包（flakey-profile）
-│       ├── apps.nix.tmpl       # 安装软件包（macOS）
-│       ├── system.nix.tmpl     # macOS 系统偏好设置
-│       └── host-users.nix      # 用户配置（macOS）
-├── private_dot_ssh/            # 加密的 SSH 配置/私密文件
-│   └── encrypted_config.age    # 解密后为 ~/.ssh/encrypted_config
-└── private_dot_config/         # XDG 配置文件
-    ├── atuin/config.toml       # 命令历史设置
-    ├── gh-dash/config.yml      # GitHub dashboard TUI
-    ├── git/config.tmpl         # Git 配置
-    ├── git/ignore              # 全局 gitignore
-    ├── ghostty/config          # 终端模拟器
-    ├── lazygit/config.yml      # Git TUI 设置
-    ├── mise/config.toml        # 运行时管理器
-    ├── sheldon/plugins.toml    # Zsh 插件
-    ├── starship.toml           # 提示符配置（Dracula 主题）
-    ├── tmux/tmux.conf          # 终端复用器
-    └── yazi/                   # 文件管理器
-```
 
 ---
 

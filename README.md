@@ -37,6 +37,7 @@ This repository provides a fully declarative system configuration that can boots
 
 - [📑 Table of Contents](#table-of-contents)
 - [✨ Highlights](#highlights)
+- [💡 Why This Repo](#why-this-repo)
 - [🎯 Motivation](#motivation)
 - [🚀 Quick Start](#quick-start)
 - [🔐 Security & Secrets](#security)
@@ -56,7 +57,6 @@ This repository provides a fully declarative system configuration that can boots
   - [System Utilities](#system-utilities)
   - [Environment Setup](#environment-setup)
 - [📦 Package Management](#package-management)
-- [📁 Directory Structure](#directory-structure)
 - [🔄 Daily Operations](#daily-operations)
   - [Cross-Platform Commands](#cross-platform-commands)
   - [macOS-Only Commands](#macos-only-commands)
@@ -85,6 +85,20 @@ This repository provides a fully declarative system configuration that can boots
 - **Secrets**: `age`-encrypted files with optional 1Password-backed key bootstrap
 - **Profiles**: `work` / `private` / `headless` switches via `chezmoi init` prompts
 - **Ergonomics**: modern CLI toolchain, consistent theming, and AI helpers
+
+---
+
+<a id="why-this-repo"></a>
+
+## 💡 Why This Repo
+
+- **End-to-end bootstrap**: the Nix installer selects the fastest Determinate mirror, then chezmoi renders and applies templates in one flow
+- **Profiles everywhere**: `.chezmoidata.yaml` drives `shared` / `work` / `private` packages across Nix, Homebrew, and MAS
+- **macOS polish**: nix-darwin defaults, Homebrew + MAS integration, and post-apply update scripts
+- **Security-first secrets**: `age` encryption with 1Password-assisted key bootstrapping and fixed key paths
+- **Workflow guardrails**: pre-commit (shellcheck, markdownlint, prettier, Nix format/lint) plus Claude Code hooks for safe git ops and `uv` enforcement
+- **DX automation**: Justfile upgrade/cleanup routines, fzf navigation helpers, and AI-assisted commit messages
+- **CI parity**: template rendering and `nix flake check` run on macOS + Linux in CI
 
 ---
 
@@ -125,7 +139,7 @@ After installation, restart your terminal. For macOS, run `just darwin` to activ
 
 ## 🔐 Security & Secrets
 
-This repo uses `age` encryption for private files (e.g. `private_dot_ssh/encrypted_config.age`). Chezmoi is configured to decrypt using `~/.ssh/main` (private key) and `~/.ssh/main.pub` (recipient) via `.chezmoi.toml.tmpl`.
+This repo uses `age` encryption for private files (e.g. `private_dot_ssh/encrypted_private_config.tmpl.age`). Chezmoi is configured to decrypt using `~/.ssh/main` (private key) and `~/.ssh/main.pub` (recipient) via `.chezmoi.toml.tmpl`.
 
 On first apply, the bootstrap scripts will:
 
@@ -312,56 +326,6 @@ Packages are managed through multiple sources, each with its strengths:
 | Mac App Store     | macOS only    | App Store exclusives        | Magnet, WeChat, Office      |
 
 All package lists are defined in `.chezmoidata.yaml` with support for shared, work-only, and private-only packages.
-
----
-
-<a id="directory-structure"></a>
-
-## 📁 Directory Structure
-
-```text
-~/.local/share/chezmoi/
-├── .chezmoidata.yaml           # Package definitions for all profiles
-├── .chezmoi.toml.tmpl          # Chezmoi configuration
-├── .chezmoiignore              # Platform-specific file exclusions
-├── Justfile.tmpl               # Task runner (cross-platform)
-├── .chezmoiscripts/            # Lifecycle scripts
-│   ├── run_once_before_*.sh    # Run once before first apply
-│   ├── run_onchange_after_*.sh # Run when specific files change
-│   └── run_after_*.sh          # Run after every apply
-├── dot_custom/                 # Custom shell configuration
-│   ├── alias.sh                # Aliases (including global aliases)
-│   ├── eval.sh                 # Tool initialization
-│   ├── exports.sh              # Environment variables
-│   ├── functions.sh            # Shell functions
-│   └── utils.sh                # Utility functions library
-├── dot_local/bin/              # Custom scripts (~/.local/bin)
-│   ├── battery                 # Battery status for tmux/terminal
-│   └── wifi                    # WiFi signal strength display
-├── nix-config/                 # Nix configuration
-│   ├── flake.nix.tmpl          # Flake inputs and outputs (cross-platform)
-│   └── modules/
-│       ├── profile.nix.tmpl    # User packages (flakey-profile)
-│       ├── apps.nix.tmpl       # Package installation (macOS)
-│       ├── system.nix.tmpl     # macOS system preferences
-│       └── host-users.nix      # User configuration (macOS)
-├── private_dot_ssh/            # Encrypted SSH configs/secrets
-│   └── encrypted_config.age    # Decrypted to ~/.ssh/encrypted_config
-└── private_dot_config/         # XDG config files
-    ├── atuin/config.toml       # Shell history settings
-    ├── gh-dash/config.yml      # GitHub dashboard TUI
-    ├── git/config.tmpl         # Git configuration
-    ├── git/ignore              # Global gitignore
-    ├── ghostty/config          # Terminal emulator
-    ├── lazygit/config.yml      # Git TUI settings
-    ├── mise/config.toml        # Runtime manager
-    ├── sheldon/plugins.toml    # Zsh plugins
-    ├── starship.toml           # Prompt configuration (Dracula theme)
-    ├── tmux/tmux.conf          # Terminal multiplexer
-    └── yazi/                   # File manager
-```
-
----
 
 <a id="daily-operations"></a>
 

@@ -34,6 +34,7 @@
 ## 📑 目次
 
 - [ハイライト](#highlights)
+- [このリポジトリの強み](#project-advantages)
 - [目的](#motivation)
 - [クイックスタート](#quick-start)
 - [セキュリティとシークレット](#security)
@@ -41,7 +42,6 @@
 - [ツールチェーン](#tool-chains)
 - [シェル関数](#shell-functions)
 - [パッケージ管理](#package-management)
-- [ディレクトリ構成](#directory-structure)
 - [日常操作](#daily-operations)
 - [マルチプロファイル設定](#multi-profile-configuration)
 - [キーボードショートカット](#keyboard-shortcuts)
@@ -68,6 +68,20 @@
 - **シークレット**：`age` 暗号化ファイル（必要に応じて 1Password で鍵を自動取得）
 - **プロファイル**：`work` / `private` / `headless` を `chezmoi init` の対話プロンプトで切り替え
 - **快適さ**：モダン CLI、統一テーマ、AI ヘルパーを同梱
+
+---
+
+<a id="project-advantages"></a>
+
+## 💡 このリポジトリの強み
+
+- **エンドツーエンドのブートストラップ**：Determinate Nix の高速ミラーを自動選択し、chezmoi がテンプレートを一括適用
+- **プロファイルを横断**：`.chezmoidata.yaml` の `shared/work/private` を Nix/Homebrew/MAS で共通利用
+- **macOS チューニング**：nix-darwin の defaults、Homebrew/MAS 統合、適用後の更新スクリプト
+- **セキュアなシークレット**：`age` 暗号化と 1Password 連携で鍵を導入し、固定パスで管理
+- **ワークフローのガードレール**：pre-commit（shellcheck/markdownlint/prettier/Nix フォーマット・lint）+ Claude Code hooks で危険な git 操作を抑止し `uv` を強制
+- **DX 自動化**：Justfile の更新/クリーンアップ、fzf ナビ、AI コミットメッセージ
+- **CI の一貫性**：macOS + Linux でテンプレートをレンダリングし `nix flake check` を実行
 
 ---
 
@@ -108,7 +122,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 
 ## 🔐 セキュリティとシークレット
 
-このリポジトリは `age` でシークレットを暗号化します（例：`private_dot_ssh/encrypted_config.age`）。`.chezmoi.toml.tmpl` で `~/.ssh/main`（秘密鍵）と `~/.ssh/main.pub`（受信者）を使って復号するよう設定しています。
+このリポジトリは `age` でシークレットを暗号化します（例：`private_dot_ssh/encrypted_private_config.tmpl.age`）。`.chezmoi.toml.tmpl` で `~/.ssh/main`（秘密鍵）と `~/.ssh/main.pub`（受信者）を使って復号するよう設定しています。
 
 初回 `apply` 時、ブートストラップスクリプトが：
 
@@ -295,54 +309,6 @@ create_py_project   # uv で Python プロジェクトを作成
 | Mac App Store     | macOS のみ       | App Store 限定                | Magnet, WeChat, Office           |
 
 パッケージ一覧は `.chezmoidata.yaml` に定義され、shared / work-only / private-only の分類にも対応しています。
-
----
-
-<a id="directory-structure"></a>
-
-## 📁 ディレクトリ構成
-
-```text
-~/.local/share/chezmoi/
-├── .chezmoidata.yaml           # 各プロファイルのパッケージ定義
-├── .chezmoi.toml.tmpl          # Chezmoi 設定
-├── .chezmoiignore              # プラットフォーム別ファイル除外ルール
-├── Justfile.tmpl               # タスクランナー（クロスプラットフォーム）
-├── .chezmoiscripts/            # ライフサイクルスクリプト
-│   ├── run_once_before_*.sh    # 初回 apply 前に 1 回だけ実行
-│   ├── run_onchange_after_*.sh # 対象ファイル変更時に実行
-│   └── run_after_*.sh          # 毎回 apply 後に実行
-├── dot_custom/                 # カスタムシェル設定
-│   ├── alias.sh                # エイリアス（グローバル含む）
-│   ├── eval.sh                 # ツール初期化
-│   ├── exports.sh              # 環境変数
-│   ├── functions.sh            # シェル関数
-│   └── utils.sh                # ユーティリティ関数群
-├── dot_local/bin/              # 自作スクリプト（~/.local/bin）
-│   ├── battery                 # tmux/ターミナル用バッテリー表示
-│   └── wifi                    # WiFi 信号強度表示
-├── nix-config/                 # Nix 設定
-│   ├── flake.nix.tmpl          # Flake 入力/出力（クロスプラットフォーム）
-│   └── modules/
-│       ├── profile.nix.tmpl    # ユーザーパッケージ（flakey-profile）
-│       ├── apps.nix.tmpl       # パッケージ導入（macOS）
-│       ├── system.nix.tmpl     # macOS システム設定
-│       └── host-users.nix      # ユーザー設定（macOS）
-├── private_dot_ssh/            # 暗号化された SSH 設定/シークレット
-│   └── encrypted_config.age    # 復号後は ~/.ssh/encrypted_config
-└── private_dot_config/         # XDG 設定ファイル
-    ├── atuin/config.toml       # シェル履歴設定
-    ├── gh-dash/config.yml      # GitHub ダッシュボード TUI
-    ├── git/config.tmpl         # Git 設定
-    ├── git/ignore              # グローバル gitignore
-    ├── ghostty/config          # ターミナルエミュレータ設定
-    ├── lazygit/config.yml      # Git TUI 設定
-    ├── mise/config.toml        # ランタイム管理
-    ├── sheldon/plugins.toml    # Zsh プラグイン
-    ├── starship.toml           # プロンプト設定（Dracula）
-    ├── tmux/tmux.conf          # ターミナルマルチプレクサ
-    └── yazi/                   # ファイルマネージャ
-```
 
 ---
 

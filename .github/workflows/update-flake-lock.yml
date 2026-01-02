@@ -32,7 +32,6 @@ jobs:
           timezone = "UTC"
           EOF
       - uses: DeterminateSystems/determinate-nix-action@v3
-      - uses: DeterminateSystems/magic-nix-cache-action@v8
       - name: Update flake.lock
         run: |
           # Render to temp directory (avoids Git tracking issues with flakes)

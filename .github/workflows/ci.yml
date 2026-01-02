@@ -55,7 +55,6 @@ jobs:
             [ -f "$f" ] && cp "$f" "$workdir/modules/"
           done
       - uses: DeterminateSystems/determinate-nix-action@v3
-      - uses: DeterminateSystems/magic-nix-cache-action@v8
       - name: Check Nix formatting (alejandra)
         run: |
           if ! nix run nixpkgs#alejandra -- --check "$WORKDIR"; then
