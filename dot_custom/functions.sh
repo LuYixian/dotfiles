@@ -140,8 +140,9 @@ alias take="mkcd"  # Alternative name
 
 # ─────────────────────────────────────────────────────────────
 # aicommit - Generate commit message with AI CLI
-# Usage: aicommit [--dry-run] [provider]
-# Config: AICOMMIT_PROVIDER env var (default: gemini)
+# Usage: aicommit [--dry-run|-n] [provider]
+# Providers: gemini (default), claude, codex, auto
+# Config: AICOMMIT_PROVIDER env var
 # ─────────────────────────────────────────────────────────────
 aicommit() {
     local dry_run=false
@@ -171,7 +172,9 @@ aicommit() {
         return 1
     fi
 
+    # Prompt template
     local prompt="Generate a concise git commit message following conventional commits format.
+
 Rules:
 - Use format: type(scope): description
 - Types: feat, fix, docs, style, refactor, perf, test, chore
@@ -186,61 +189,55 @@ $diff
 Return ONLY the commit message, nothing else."
 
     local message=""
-    local providers=()
+    local error_output=""
 
     # Determine provider order
+    local providers=()
     if [[ "$provider" == "auto" ]]; then
-        providers=(claude codex gemini)
+        providers=(gemini claude codex)
     else
         providers=("$provider")
     fi
 
     # Try providers in order
-    local error_output=""
     for p in "${providers[@]}"; do
         [[ -n "$message" ]] && break
         case "$p" in
             claude)
-                if command -v claude &>/dev/null; then
-                    error_output=$(echo "$prompt" | claude --print 2>&1)
-                    message=$(echo "$error_output" | head -1)
-                    [[ "$error_output" == *"error"* || "$error_output" == *"auth"* || "$error_output" == *"login"* ]] && message=""
-                fi
+                command -v claude &>/dev/null || continue
+                error_output=$(echo "$prompt" | claude --print 2>&1) || continue
+                [[ "$error_output" == *"error"* || "$error_output" == *"auth"* ]] && continue
+                message=$(echo "$error_output" | head -1)
                 ;;
             codex)
-                if command -v codex &>/dev/null; then
-                    error_output=$(echo "$prompt" | codex --print 2>&1)
-                    message=$(echo "$error_output" | head -1)
-                    [[ "$error_output" == *"error"* || "$error_output" == *"auth"* || "$error_output" == *"login"* ]] && message=""
-                fi
+                command -v codex &>/dev/null || continue
+                error_output=$(echo "$prompt" | codex --print 2>&1) || continue
+                [[ "$error_output" == *"error"* || "$error_output" == *"auth"* ]] && continue
+                message=$(echo "$error_output" | head -1)
                 ;;
             gemini)
-                if command -v gemini &>/dev/null; then
-                    error_output=$(gemini -m gemini-2.0-flash -o text -p "$prompt" 2>&1)
-                    message=$(echo "$error_output" | head -1)
-                    [[ "$error_output" == *"error"* || "$error_output" == *"auth"* || "$error_output" == *"login"* ]] && message=""
-                fi
+                command -v gemini &>/dev/null || continue
+                # gemini-2.5-flash: fast, 1M context window
+                error_output=$(echo "$prompt" | gemini -m gemini-2.5-flash -o text 2>&1) || continue
+                [[ "$error_output" == *"error"* || "$error_output" == *"Error"* ]] && continue
+                message=$(echo "$error_output" | head -1)
                 ;;
         esac
     done
 
     if [[ -z "$message" ]]; then
         echo "Failed to generate commit message with provider: $provider"
-        if [[ -n "$error_output" ]]; then
-            echo ""
-            echo "Error details:"
-            echo "$error_output" | head -5
-        fi
+        [[ -n "$error_output" ]] && echo -e "\nError: ${error_output:0:300}"
         return 1
     fi
 
-    # Clean up the message
-    message=$(echo "$message" | sed 's/^[[:space:]]*//;s/^[`'"'"'"]//;s/[`'"'"'"]$//')
+    # Clean up: remove quotes, backticks, leading/trailing whitespace
+    message=$(echo "$message" | sed -E 's/^[[:space:]`"'"'"']+//; s/[`"'"'"'[:space:]]+$//')
 
     if $dry_run; then
         echo "[$provider] $message"
     else
-        echo "Committing with message: $message"
+        echo "Committing: $message"
         git commit -m "$message"
     fi
 }
