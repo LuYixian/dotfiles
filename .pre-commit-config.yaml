@@ -47,4 +47,3 @@ repos:
         pass_filenames: false
 ci:
   autoupdate_schedule: monthly
-  skip: [check-nix]

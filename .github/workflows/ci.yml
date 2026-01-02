@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pre-commit/action@v3.0.1
+        env:
+          SKIP: check-nix # Nix checks run in the 'nix' job
   nix:
     name: Nix (${{ matrix.platform }})
     strategy:
