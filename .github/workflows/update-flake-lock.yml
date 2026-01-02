@@ -4,7 +4,6 @@ on:
     - cron: "0 4 * * 0" # Weekly on Sunday at 4:00 AM UTC
   workflow_dispatch:
 permissions:
-  id-token: write
   contents: write
   pull-requests: write
 jobs:
@@ -33,7 +32,12 @@ jobs:
           timezone = "UTC"
           EOF
       - uses: DeterminateSystems/determinate-nix-action@v3
-      - uses: DeterminateSystems/flakehub-cache-action@v2
+      - uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ matrix.platform }}-${{ hashFiles('nix-config/**') }}
+          restore-prefixes-first-match: nix-${{ matrix.platform }}-
+          # Only restore, don't save (this job just updates lock files)
+          save: false
       - name: Update flake.lock
         run: |
           # Render to temp directory (avoids Git tracking issues with flakes)

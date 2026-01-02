@@ -25,8 +25,8 @@ jobs:
             platform: linux
     runs-on: ${{ matrix.os }}
     permissions:
-      id-token: write
       contents: read
+      actions: write
     steps:
       - uses: actions/checkout@v4
       - name: Setup chezmoi
@@ -56,7 +56,17 @@ jobs:
             [ -f "$f" ] && cp "$f" "$workdir/modules/"
           done
       - uses: DeterminateSystems/determinate-nix-action@v3
-      - uses: DeterminateSystems/flakehub-cache-action@v2
+      - uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ matrix.platform }}-${{ hashFiles('nix-config/**') }}
+          restore-prefixes-first-match: nix-${{ matrix.platform }}-
+          # Limit store size to 1GB before saving
+          gc-max-store-size: 1G
+          # Purge old caches
+          purge: true
+          purge-prefixes: nix-${{ matrix.platform }}-
+          purge-created: 0
+          purge-last-accessed: P7D
       - name: Check Nix formatting (alejandra)
         run: |
           if ! nix run nixpkgs#alejandra -- --check "$WORKDIR"; then
