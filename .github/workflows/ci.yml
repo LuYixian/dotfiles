@@ -67,6 +67,7 @@ jobs:
           purge-prefixes: nix-${{ matrix.platform }}-
           purge-created: 0
           purge-last-accessed: P7D
+          purge-primary-key: never
       - name: Check Nix formatting (alejandra)
         run: |
           if ! nix run nixpkgs#alejandra -- --check "$WORKDIR"; then

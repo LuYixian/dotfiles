@@ -36,8 +36,7 @@ jobs:
         with:
           primary-key: nix-${{ matrix.platform }}-${{ hashFiles('nix-config/**') }}
           restore-prefixes-first-match: nix-${{ matrix.platform }}-
-          # Only restore, don't save (this job just updates lock files)
-          save: false
+          gc-max-store-size: 1G
       - name: Update flake.lock
         run: |
           # Render to temp directory (avoids Git tracking issues with flakes)
