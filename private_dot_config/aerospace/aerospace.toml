@@ -1,0 +1,115 @@
+# AeroSpace - i3-like tiling window manager for macOS
+# Docs: https://nikitabobko.github.io/AeroSpace/guide
+
+config-version = 2
+start-at-login = true
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+accordion-padding = 30
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+automatically-unhide-macos-hidden-apps = true
+
+[key-mapping]
+preset = 'qwerty'
+
+[gaps]
+inner.horizontal = 8
+inner.vertical = 8
+outer.left = 8
+outer.bottom = 8
+outer.top = 8
+outer.right = 8
+
+# Workspace to monitor assignment (by position: 1=left, 2=center, 3=right)
+[workspace-to-monitor-force-assignment]
+1 = 1
+2 = 1
+3 = 1
+4 = 2
+5 = 2
+6 = 2
+7 = 3
+8 = 3
+9 = 3
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Main Mode
+# ─────────────────────────────────────────────────────────────────────────────
+[mode.main.binding]
+# Layout
+alt-slash = 'layout tiles horizontal vertical'
+alt-comma = 'layout accordion horizontal vertical'
+alt-f = 'fullscreen'
+alt-shift-f = 'layout floating tiling'
+
+# Window actions
+alt-q = 'close'
+alt-b = 'balance-sizes'
+
+# Focus (ikjl: i=up, k=down, j=left, l=right)
+alt-j = 'focus left'
+alt-k = 'focus down'
+alt-i = 'focus up'
+alt-l = 'focus right'
+
+# Move window
+alt-shift-j = 'move left'
+alt-shift-k = 'move down'
+alt-shift-i = 'move up'
+alt-shift-l = 'move right'
+
+# Focus monitor
+alt-leftSquareBracket = 'focus-monitor --wrap-around prev'
+alt-rightSquareBracket = 'focus-monitor --wrap-around next'
+
+# Resize
+alt-minus = 'resize width -50'
+alt-equal = 'resize width +50'
+alt-shift-minus = 'resize height -50'
+alt-shift-equal = 'resize height +50'
+
+# Workspaces (1-9)
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+
+# Move window to workspace
+alt-shift-1 = 'move-node-to-workspace 1'
+alt-shift-2 = 'move-node-to-workspace 2'
+alt-shift-3 = 'move-node-to-workspace 3'
+alt-shift-4 = 'move-node-to-workspace 4'
+alt-shift-5 = 'move-node-to-workspace 5'
+alt-shift-6 = 'move-node-to-workspace 6'
+alt-shift-7 = 'move-node-to-workspace 7'
+alt-shift-8 = 'move-node-to-workspace 8'
+alt-shift-9 = 'move-node-to-workspace 9'
+
+# Workspace navigation
+alt-tab = 'workspace-back-and-forth'
+alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
+# Enter service mode
+alt-s = 'mode service'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Service Mode (alt-shift-;)
+# ─────────────────────────────────────────────────────────────────────────────
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+r = ['flatten-workspace-tree', 'mode main']
+f = ['layout floating tiling', 'mode main']
+backspace = ['close-all-windows-but-current', 'mode main']
+
+# Join with adjacent window (ikjl)
+alt-shift-j = ['join-with left', 'mode main']
+alt-shift-k = ['join-with down', 'mode main']
+alt-shift-i = ['join-with up', 'mode main']
+alt-shift-l = ['join-with right', 'mode main']

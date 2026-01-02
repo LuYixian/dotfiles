@@ -141,12 +141,12 @@ alias take="mkcd"  # Alternative name
 # ─────────────────────────────────────────────────────────────
 # aicommit - Generate commit message with AI CLI
 # Usage: aicommit [--dry-run|-n] [provider]
-# Providers: gemini (default), claude, codex, auto
+# Providers: codex (default), gemini, claude, auto
 # Config: AICOMMIT_PROVIDER env var
 # ─────────────────────────────────────────────────────────────
 aicommit() {
     local dry_run=false
-    local provider="${AICOMMIT_PROVIDER:-gemini}"
+    local provider="${AICOMMIT_PROVIDER:-codex}"
 
     # Parse arguments
     for arg in "$@"; do
@@ -484,3 +484,41 @@ up() {
     done
     cd "$path" || return 1
 }
+
+# ─────────────────────────────────────────────────────────────
+# AeroSpace Utilities (macOS only)
+# ─────────────────────────────────────────────────────────────
+
+if [[ "$OSTYPE" == darwin* ]] && command -v aerospace &>/dev/null; then
+    # wsrun - Run command in specified workspace
+    # Usage: wsrun <workspace> <command> [args...]
+    # Examples:
+    #   wsrun 5 code .              # Open VS Code in workspace 5
+    #   wsrun 4 code ~/project      # Open project in workspace 4
+    #   wsrun 6 open -a Safari      # Open Safari in workspace 6
+    #   wsrun 3 open ~/Documents    # Open Finder in workspace 3
+    wsrun() {
+        if [[ $# -lt 2 ]]; then
+            echo "Usage: wsrun <workspace> <command> [args...]"
+            echo "Examples:"
+            echo "  wsrun 5 code .          # VS Code in workspace 5"
+            echo "  wsrun 4 open -a Safari  # Safari in workspace 4"
+            return 1
+        fi
+        local workspace="$1"
+        shift
+        aerospace workspace "$workspace" && "$@"
+    }
+
+    # ws - Quick workspace switch
+    # Usage: ws <number>
+    ws() {
+        aerospace workspace "${1:-1}"
+    }
+
+    # wsm - Move current window to workspace
+    # Usage: wsm <number>
+    wsm() {
+        aerospace move-node-to-workspace "${1:-1}"
+    }
+fi
