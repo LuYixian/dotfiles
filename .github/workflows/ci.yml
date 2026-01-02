@@ -1,0 +1,54 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pre-commit/action@v3.0.1
+  check-flake:
+    name: Check Flake (${{ matrix.platform }})
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            platform: darwin
+          - os: ubuntu-latest
+            platform: linux
+    runs-on: ${{ matrix.os }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup chezmoi
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+          mkdir -p ~/.config/chezmoi
+          echo '[data]' > ~/.config/chezmoi/chezmoi.toml
+          echo 'hostname = "ci-host"' >> ~/.config/chezmoi/chezmoi.toml
+      - name: Render templates
+        run: |
+          mkdir -p rendered/modules
+          chezmoi execute-template < nix-config/flake.nix.tmpl > rendered/flake.nix
+          cp nix-config/.flake-${{ matrix.platform }}.lock rendered/flake.lock
+          for f in nix-config/modules/*.tmpl; do
+            chezmoi execute-template < "$f" > "rendered/modules/$(basename "${f%.tmpl}")"
+          done
+          for f in nix-config/modules/*.nix; do
+            [ -f "$f" ] && cp "$f" rendered/modules/
+          done
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - name: Check flake
+        working-directory: rendered
+        run: nix flake check --no-build
+      - uses: DeterminateSystems/flake-checker-action@v9
+        with:
+          flake-lock-path: rendered/flake.lock

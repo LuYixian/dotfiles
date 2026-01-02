@@ -1,0 +1,54 @@
+name: Update flake.lock
+on:
+  schedule:
+    - cron: "0 4 * * 0" # Weekly on Sunday at 4:00 AM UTC
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+jobs:
+  update:
+    name: Update (${{ matrix.platform }})
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            platform: darwin
+          - os: ubuntu-latest
+            platform: linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup chezmoi
+        run: |
+          sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+          mkdir -p ~/.config/chezmoi
+          echo '[data]' > ~/.config/chezmoi/chezmoi.toml
+          echo 'hostname = "ci-host"' >> ~/.config/chezmoi/chezmoi.toml
+      - uses: DeterminateSystems/determinate-nix-action@v3
+      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - name: Update flake.lock
+        run: |
+          # Render to temp directory (avoids Git tracking issues with flakes)
+          workdir=$(mktemp -d)
+          chezmoi execute-template < nix-config/flake.nix.tmpl > "$workdir/flake.nix"
+          cp nix-config/.flake-${{ matrix.platform }}.lock "$workdir/flake.lock"
+
+          # Update lock file
+          nix flake update --flake "$workdir"
+
+          # Copy updated lock back to repo
+          cp "$workdir/flake.lock" nix-config/.flake-${{ matrix.platform }}.lock
+          rm -rf "$workdir"
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore(nix): update flake.lock for ${{ matrix.platform }}"
+          title: "chore(nix): update flake.lock for ${{ matrix.platform }}"
+          branch: update-flake-lock-${{ matrix.platform }}
+          labels: dependencies,nix,${{ matrix.platform }}
+          body: |
+            Automated flake.lock update for ${{ matrix.platform }}.
+
+            Updates all flake inputs to their latest versions.
