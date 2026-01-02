@@ -4,6 +4,7 @@ on:
     - cron: "0 4 * * 0" # Weekly on Sunday at 4:00 AM UTC
   workflow_dispatch:
 permissions:
+  id-token: write
   contents: write
   pull-requests: write
 jobs:
@@ -18,7 +19,7 @@ jobs:
             platform: linux
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup chezmoi
         run: |
           sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
@@ -31,7 +32,12 @@ jobs:
           private = false
           timezone = "UTC"
           EOF
-      - uses: DeterminateSystems/determinate-nix-action@v3
+      - uses: DeterminateSystems/determinate-nix-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+        with:
+          use-gha-cache: true
+          upstream-cache: https://cache.nixos.org
+          diagnostic-endpoint: ""
       - name: Update flake.lock
         run: |
           # Render to temp directory (avoids Git tracking issues with flakes)
@@ -53,7 +59,7 @@ jobs:
           cp "$workdir/flake.lock" nix-config/.flake-${{ matrix.platform }}.lock
           rm -rf "$workdir"
       - name: Create PR
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "chore(nix): update flake.lock for ${{ matrix.platform }}"
           title: "chore(nix): update flake.lock for ${{ matrix.platform }}"
