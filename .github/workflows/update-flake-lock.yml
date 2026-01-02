@@ -32,11 +32,7 @@ jobs:
           timezone = "UTC"
           EOF
       - uses: DeterminateSystems/determinate-nix-action@v3
-      - uses: nix-community/cache-nix-action@v6
-        with:
-          primary-key: nix-${{ matrix.platform }}-${{ hashFiles('nix-config/**') }}
-          restore-prefixes-first-match: nix-${{ matrix.platform }}-
-          gc-max-store-size: 1G
+      - uses: DeterminateSystems/magic-nix-cache-action@v8
       - name: Update flake.lock
         run: |
           # Render to temp directory (avoids Git tracking issues with flakes)
