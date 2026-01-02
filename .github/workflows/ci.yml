@@ -52,7 +52,17 @@ jobs:
       - uses: DeterminateSystems/determinate-nix-action@v3
       - uses: DeterminateSystems/flakehub-cache-action@v1
       - name: Check Nix formatting (alejandra)
-        run: nix run nixpkgs#alejandra -- --check rendered/
+        run: |
+          if ! nix run nixpkgs#alejandra -- --check rendered/; then
+            echo "::group::Alejandra formatting diff"
+            for f in rendered/*.nix rendered/modules/*.nix; do
+              [ -f "$f" ] || continue
+              cp "$f" "$f.orig"
+              nix run nixpkgs#alejandra -- "$f"
+              diff "$f.orig" "$f" || true
+            done
+            exit 1
+          fi
       - name: Lint Nix code (statix)
         run: nix run nixpkgs#statix -- check rendered/
       - name: Check flake

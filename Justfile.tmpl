@@ -39,7 +39,7 @@ update:
 [group('chezmoi')]
 re-add:
     chezmoi re-add
-{{ if eq .chezmoi.os "darwin" }}
+{{ if eq .platform "darwin" }}
 ############################################################################
 #
 #  Darwin related commands
@@ -86,7 +86,7 @@ up:
 [group('nix')]
 upp input:
     cd "$HOME/nix-config" && nix flake update {{ "{{input}}" }}
-{{ if eq .chezmoi.os "darwin" }}
+{{ if eq .platform "darwin" }}
 # List all generations of the system profile
 [group('nix')]
 history:
@@ -107,7 +107,7 @@ fmt:
 fmt-check:
     chezmoi apply
     cd "$HOME/nix-config" && nix fmt -- --check .
-{{ if eq .chezmoi.os "darwin" }}
+{{ if eq .platform "darwin" }}
 # Remove all generations older than 7 days
 [group('nix')]
 clean days='7':
@@ -195,14 +195,14 @@ info:
     @echo "OS: $(uname -s)"
     @echo "Arch: $(uname -m)"
     @nix --version
-{{ if eq .chezmoi.os "darwin" }}
+{{ if eq .platform "darwin" }}
     @darwin-rebuild --version 2>/dev/null || true
 {{ end -}}
 # Run pre-commit checks
 [group('dev')]
 check:
     pre-commit run --all-files
-{{ if eq .chezmoi.os "darwin" }}
+{{ if eq .platform "darwin" }}
 # Update all (flake + chezmoi + homebrew)
 [group('utils')]
 update-all: up

@@ -16,7 +16,7 @@ flakey-profile.lib.mkProfile {
     {{- end }}
     {{- if .private }}
     {{- range .homepkgs.private }}
-    {{- if or (ne . "mas") (eq $.chezmoi.os "darwin") }}
+    {{- if or (ne . "mas") (eq $.platform "darwin") }}
     {{ . }}
     {{- end }}
     {{- end }}
