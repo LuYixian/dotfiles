@@ -36,6 +36,15 @@ repos:
       - id: markdownlint
         args: [--disable, MD013, MD033, MD041, MD036, --]
         exclude: \.tmpl$
+  # Nix (render templates + check all with alejandra/statix)
+  - repo: local
+    hooks:
+      - id: check-nix
+        name: Check Nix (alejandra + statix)
+        entry: bash -c 'set -e; tmpdir=$(mktemp -d); trap "rm -rf $tmpdir" EXIT; mkdir -p "$tmpdir/modules"; chezmoi execute-template --source . < nix-config/flake.nix.tmpl > "$tmpdir/flake.nix"; for f in nix-config/modules/*.tmpl; do chezmoi execute-template --source . < "$f" > "$tmpdir/modules/$(basename "${f%.tmpl}")"; done; for f in nix-config/modules/*.nix; do [ -f "$f" ] && cp "$f" "$tmpdir/modules/"; done; echo "Checking format (alejandra)..."; nix run nixpkgs#alejandra -- --check "$tmpdir"; echo "Linting (statix)..."; nix run nixpkgs#statix -- check "$tmpdir"'
+        language: system
+        files: \.nix(\.tmpl)?$
+        pass_filenames: false
 ci:
   autoupdate_schedule: monthly
-  skip: [shellcheck, nixpkgs-fmt]
+  skip: [check-nix]

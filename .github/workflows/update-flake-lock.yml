@@ -29,6 +29,7 @@ jobs:
           hostname = "ci-host"
           work = false
           private = false
+          timezone = "UTC"
           EOF
       - uses: DeterminateSystems/determinate-nix-action@v3
       - uses: DeterminateSystems/flakehub-cache-action@v1
