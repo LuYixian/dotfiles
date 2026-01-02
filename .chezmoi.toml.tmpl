@@ -16,9 +16,9 @@ encryption = "age"
 {{- $gitUsername := promptStringOnce . "gitUsername" "GitHub username" -}}{{/* set the github username */}}
 {{- $gitEmail := promptStringOnce . "gitEmail" "GitHub useremail" -}}{{/* set the github useremail */}}
 
-{{- $osID := .platform -}}
-{{- if (and (eq .platform "linux") (hasKey .chezmoi.osRelease "id")) -}}
-{{-   $osID = printf "%s-%s" .platform .chezmoi.osRelease.id -}}
+{{- $osID := .chezmoi.os -}}
+{{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
+{{-   $osID = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
 {{- end -}}
 
 {{/* detect GitHub codespaces, VSCode remote containers, Docker containers, Multipass VMs, and Vagrant boxes */}}
@@ -36,9 +36,9 @@ encryption = "age"
 {{/* timezone: prefer local config, fallback to ip-api.com */}}
 {{- $timezone := "" -}}
 
-{{- if eq .platform "darwin" -}}
+{{- if eq .chezmoi.os "darwin" -}}
 {{-   $timezone = (output "sh" "-c" "readlink /etc/localtime 2>/dev/null | sed -E 's#.*/zoneinfo/##' || true") | trim -}}
-{{- else if eq .platform "linux" -}}
+{{- else if eq .chezmoi.os "linux" -}}
 {{-   $timezone = (output "sh" "-c" "cat /etc/timezone 2>/dev/null || true") | trim -}}
 {{-   if eq $timezone "" -}}
 {{-     $timezone = (output "sh" "-c" "readlink /etc/localtime 2>/dev/null | sed -E 's#.*/zoneinfo/##' || true") | trim -}}
@@ -56,7 +56,7 @@ encryption = "age"
 
 [data]
 hostname = {{ $hostname | quote }}
-platform = {{ .platform | quote }}
+platform = {{ .chezmoi.os | quote }}
 useremail = {{ $useremail | quote }}
 gitUsername = {{ $gitUsername | quote }}
 gitEmail = {{ $gitEmail | quote }}

@@ -216,7 +216,7 @@ Return ONLY the commit message, nothing else."
                 ;;
             gemini)
                 if command -v gemini &>/dev/null; then
-                    error_output=$(echo "$prompt" | gemini -o text 2>&1)
+                    error_output=$(gemini -m gemini-2.0-flash -o text -p "$prompt" 2>&1)
                     message=$(echo "$error_output" | head -1)
                     [[ "$error_output" == *"error"* || "$error_output" == *"auth"* || "$error_output" == *"login"* ]] && message=""
                 fi

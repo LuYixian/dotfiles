@@ -54,7 +54,7 @@ jobs:
           for f in nix-config/modules/*.nix; do
             [ -f "$f" ] && cp "$f" "$workdir/modules/"
           done
-      - uses: DeterminateSystems/determinate-nix-action@v3
+      - uses: DeterminateSystems/nix-installer-action@main
       - name: Check Nix formatting (alejandra)
         run: |
           if ! nix run nixpkgs#alejandra -- --check "$WORKDIR"; then

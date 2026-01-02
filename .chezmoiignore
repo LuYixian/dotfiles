@@ -19,7 +19,7 @@ node_modules/
 # ─────────────────────────────────────────────────────────────────────────────
 # macOS-only exclusions
 # ─────────────────────────────────────────────────────────────────────────────
-{{- if ne .platform "darwin" }}
+{{- if ne .chezmoi.os "darwin" }}
 # macOS-specific nix modules (darwin-only)
 nix-config/modules/system.nix.tmpl
 nix-config/modules/apps.nix.tmpl
