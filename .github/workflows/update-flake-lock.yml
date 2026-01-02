@@ -33,13 +33,20 @@ jobs:
           timezone = "UTC"
           EOF
       - uses: DeterminateSystems/determinate-nix-action@v3
-      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - uses: DeterminateSystems/flakehub-cache-action@v2
       - name: Update flake.lock
         run: |
           # Render to temp directory (avoids Git tracking issues with flakes)
           workdir=$(mktemp -d)
+          mkdir -p "$workdir/modules"
           chezmoi execute-template --source . < nix-config/flake.nix.tmpl > "$workdir/flake.nix"
           cp nix-config/.flake-${{ matrix.platform }}.lock "$workdir/flake.lock"
+          for f in nix-config/modules/*.tmpl; do
+            chezmoi execute-template --source . < "$f" > "$workdir/modules/$(basename "${f%.tmpl}")"
+          done
+          for f in nix-config/modules/*.nix; do
+            [ -f "$f" ] && cp "$f" "$workdir/modules/"
+          done
 
           # Update lock file
           nix flake update --flake "$workdir"

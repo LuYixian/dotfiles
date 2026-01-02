@@ -43,22 +43,25 @@ jobs:
           EOF
       - name: Render templates
         run: |
-          mkdir -p rendered/modules
-          chezmoi execute-template --source . < nix-config/flake.nix.tmpl > rendered/flake.nix
-          cp nix-config/.flake-${{ matrix.platform }}.lock rendered/flake.lock
+          # Render to temp directory (avoids Git tracking issues with flakes)
+          workdir=$(mktemp -d)
+          echo "WORKDIR=$workdir" >> $GITHUB_ENV
+          mkdir -p "$workdir/modules"
+          chezmoi execute-template --source . < nix-config/flake.nix.tmpl > "$workdir/flake.nix"
+          cp nix-config/.flake-${{ matrix.platform }}.lock "$workdir/flake.lock"
           for f in nix-config/modules/*.tmpl; do
-            chezmoi execute-template --source . < "$f" > "rendered/modules/$(basename "${f%.tmpl}")"
+            chezmoi execute-template --source . < "$f" > "$workdir/modules/$(basename "${f%.tmpl}")"
           done
           for f in nix-config/modules/*.nix; do
-            [ -f "$f" ] && cp "$f" rendered/modules/
+            [ -f "$f" ] && cp "$f" "$workdir/modules/"
           done
       - uses: DeterminateSystems/determinate-nix-action@v3
-      - uses: DeterminateSystems/flakehub-cache-action@v1
+      - uses: DeterminateSystems/flakehub-cache-action@v2
       - name: Check Nix formatting (alejandra)
         run: |
-          if ! nix run nixpkgs#alejandra -- --check rendered/; then
+          if ! nix run nixpkgs#alejandra -- --check "$WORKDIR"; then
             echo "::group::Alejandra formatting diff"
-            for f in rendered/*.nix rendered/modules/*.nix; do
+            for f in "$WORKDIR"/*.nix "$WORKDIR"/modules/*.nix; do
               [ -f "$f" ] || continue
               cp "$f" "$f.orig"
               nix run nixpkgs#alejandra -- "$f"
@@ -67,10 +70,9 @@ jobs:
             exit 1
           fi
       - name: Lint Nix code (statix)
-        run: nix run nixpkgs#statix -- check rendered/
+        run: nix run nixpkgs#statix -- check "$WORKDIR"
       - name: Check flake
-        working-directory: rendered
-        run: nix flake check --no-build
+        run: nix flake check --no-build "$WORKDIR"
       - uses: DeterminateSystems/flake-checker-action@v9
         with:
-          flake-lock-path: rendered/flake.lock
+          flake-lock-path: ${{ env.WORKDIR }}/flake.lock
