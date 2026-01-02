@@ -24,9 +24,10 @@ jobs:
         run: |
           sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
           mkdir -p ~/.config/chezmoi
-          cat > ~/.config/chezmoi/chezmoi.toml << 'EOF'
+          cat > ~/.config/chezmoi/chezmoi.toml << EOF
           [data]
           hostname = "ci-host"
+          platform = "${{ matrix.platform }}"
           work = false
           private = false
           timezone = "UTC"
