@@ -27,8 +27,8 @@ nix-config/modules/host-users.nix
 
 # macOS-specific scripts
 .chezmoiscripts/run_onchange_after_02_init.sh.tmpl
-.chezmoiscripts/run_after_05_update_homebrew_packages.sh.tmpl
-.chezmoiscripts/run_onchange_after_03_install-paperlib.sh.tmpl
+.chezmoiscripts/run_after_04_update_homebrew_packages.sh
+.chezmoiscripts/run_onchange_after_07_install-paperlib.sh.tmpl
 {{- end }}
 
 # ─────────────────────────────────────────────────────────────────────────────

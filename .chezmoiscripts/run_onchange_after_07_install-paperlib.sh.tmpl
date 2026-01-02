@@ -1,0 +1,24 @@
+{{- $arch := "arm" -}}
+{{- if eq .chezmoi.arch "amd64" -}}{{- $arch = "x64" -}}{{- end -}}
+{{- $etag := output "curl" "-sIL" (printf "https://distribution.paperlib.app/electron-mac-%s/latest.dmg" $arch) | regexFind "etag: [^\r\n]+" | trim -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+# Paperlib version: {{ $etag }}
+
+echo ":: [07] Installing Paperlib"
+
+DMG_URL="https://distribution.paperlib.app/electron-mac-{{ $arch }}/latest.dmg"
+TEMP_DMG="/tmp/latest.dmg"
+
+curl -sL "$DMG_URL" -o "$TEMP_DMG"
+
+VOLUME=$(hdiutil attach "$TEMP_DMG" | grep Volumes | awk '{print $3,$4,$5,$6}' | sed 's/ *$//')
+APP_NAME=$(ls "$VOLUME" | grep '\.app$' | head -n 1)
+
+echo "    Installing $APP_NAME to /Applications"
+cp -R "$VOLUME/$APP_NAME" /Applications/
+
+hdiutil detach "$VOLUME" -quiet
+rm "$TEMP_DMG"

@@ -4,7 +4,6 @@ on:
     - cron: "0 4 * * 0" # Weekly on Sunday at 4:00 AM UTC
   workflow_dispatch:
 permissions:
-  id-token: write
   contents: write
   pull-requests: write
 jobs:
@@ -32,13 +31,11 @@ jobs:
           private = false
           timezone = "UTC"
           EOF
-      - uses: DeterminateSystems/determinate-nix-action@main
+      - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
         with:
           use-flakehub: false
           use-gha-cache: true
-          upstream-cache: https://cache.nixos.org
-          diagnostic-endpoint: ""
       - name: Update flake.lock
         run: |
           # Render to temp directory (avoids Git tracking issues with flakes)

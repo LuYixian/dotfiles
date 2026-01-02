@@ -2,6 +2,8 @@
 # Setup encryption key before chezmoi can decrypt files
 set -euo pipefail
 
+echo ":: [01] Setting up encryption key"
+
 # Source nix environment
 if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
     . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh

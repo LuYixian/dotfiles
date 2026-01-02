@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -eufo pipefail
+
+# profile.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/profile.nix") | trim }}
+# flake.lock: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.lock") | trim }}
+
+echo ":: [03] Switching Nix profile"
+nix run ~/nix-config#{{ .hostname }}.switch

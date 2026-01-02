@@ -1,27 +1,21 @@
-#!/bin/bash
 {{ if eq .platform "darwin" -}}
-{{ $homeDir := .chezmoi.homeDir -}}
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Trigger re-run when nix config files change (darwin-only)
-# ─────────────────────────────────────────────────────────────────────────────
-# flake.nix hash: {{ include (printf "%s/nix-config/flake.nix" $homeDir) | sha256sum }}
-# flake.lock hash: {{ include (printf "%s/nix-config/flake.lock" $homeDir) | sha256sum }}
-# apps.nix hash: {{ include (printf "%s/nix-config/modules/apps.nix" $homeDir) | sha256sum }}
-# host-users.nix hash: {{ include (printf "%s/nix-config/modules/host-users.nix" $homeDir) | sha256sum }}
-# system.nix hash: {{ include (printf "%s/nix-config/modules/system.nix" $homeDir) | sha256sum }}
+#!/bin/bash
 
 set -eufo pipefail
 
-# ─────────────────────────────────────────────────────────────────────────────
-# macOS: Install/update nix-darwin configuration
-# ─────────────────────────────────────────────────────────────────────────────
+# flake.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.nix") | trim }}
+# flake.lock: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.lock") | trim }}
+# apps.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/apps.nix") | trim }}
+# system.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/system.nix") | trim }}
+# host-users.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/host-users.nix") | trim }}
+
+echo ":: [02] Configuring nix-darwin"
+
 if ! command -v darwin-version >/dev/null 2>&1; then
-    echo "📦 nix-darwin not installed. Installing..."
+    echo "    Installing nix-darwin..."
     sudo nix run nix-darwin/master#darwin-rebuild --extra-experimental-features "nix-command flakes" -- switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
 else
-    echo "📦 nix-darwin already installed."
-    echo "⚙️ Building and switching nix-darwin configuration for {{ .hostname }}..."
+    echo "    Switching nix-darwin configuration..."
     sudo darwin-rebuild switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
 fi
 {{ end -}}

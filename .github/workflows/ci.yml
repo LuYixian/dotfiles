@@ -25,7 +25,6 @@ jobs:
             platform: linux
     runs-on: ${{ matrix.os }}
     permissions:
-      id-token: write
       contents: read
     steps:
       - uses: actions/checkout@v6
@@ -55,13 +54,11 @@ jobs:
           for f in nix-config/modules/*.nix; do
             [ -f "$f" ] && cp "$f" "$workdir/modules/"
           done
-      - uses: DeterminateSystems/determinate-nix-action@main
+      - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
         with:
           use-flakehub: false
           use-gha-cache: true
-          upstream-cache: https://cache.nixos.org
-          diagnostic-endpoint: ""
       - name: Check Nix formatting (alejandra)
         run: |
           if ! nix run nixpkgs#alejandra -- --check "$WORKDIR"; then

@@ -1,0 +1,30 @@
+{{- $version := output "curl" "-sfL" "https://api.github.com/repos/nix-community/nix-index-database/releases/latest" | fromJson | dig "tag_name" "" | trim -}}
+{{ if lookPath "nix-locate" -}}
+#!/bin/bash
+
+set -eufo pipefail
+
+# Download pre-built nix-index database from nix-community
+# Source: https://github.com/nix-community/nix-index-database
+# Release: {{ $version }}
+
+echo ":: [06] Downloading nix-index database"
+
+arch=$(uname -m | sed 's/^arm64$/aarch64/')
+os=$(uname | tr '[:upper:]' '[:lower:]')
+filename="index-${arch}-${os}"
+
+mkdir -p ~/.cache/nix-index
+cd ~/.cache/nix-index
+
+if command -v wget &>/dev/null; then
+    wget -q -N "https://github.com/nix-community/nix-index-database/releases/latest/download/${filename}"
+elif command -v curl &>/dev/null; then
+    curl -sSLO "https://github.com/nix-community/nix-index-database/releases/latest/download/${filename}"
+else
+    echo "    Skipped (no wget or curl)"
+    exit 0
+fi
+
+ln -sf "${filename}" files
+{{ end -}}

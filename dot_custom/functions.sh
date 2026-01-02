@@ -211,16 +211,21 @@ Return ONLY the commit message, nothing else."
                 ;;
             codex)
                 command -v codex &>/dev/null || continue
-                error_output=$(echo "$prompt" | codex --print 2>&1) || continue
-                [[ "$error_output" == *"error"* || "$error_output" == *"auth"* ]] && continue
-                message=$(echo "$error_output" | head -1)
+                local tmp_out
+                tmp_out=$(mktemp)
+                # Use codex exec for non-interactive mode, output to temp file
+                codex exec -o "$tmp_out" --skip-git-repo-check "$prompt" &>/dev/null || { rm -f "$tmp_out"; continue; }
+                message=$(head -1 "$tmp_out" 2>/dev/null)
+                rm -f "$tmp_out"
+                [[ -z "$message" ]] && continue
                 ;;
             gemini)
                 command -v gemini &>/dev/null || continue
-                # gemini-2.5-flash: fast, 1M context window
-                error_output=$(echo "$prompt" | gemini -m gemini-2.5-flash -o text 2>&1) || continue
+                # gemini-2.5-flash: fast, 1M context; --sandbox disables agentic mode
+                error_output=$(gemini -m gemini-2.5-flash -o text --sandbox "$prompt" 2>&1) || continue
                 [[ "$error_output" == *"error"* || "$error_output" == *"Error"* ]] && continue
-                message=$(echo "$error_output" | head -1)
+                # Skip "Loaded cached credentials" line
+                message=$(echo "$error_output" | grep -v "^Loaded" | head -1)
                 ;;
         esac
     done
