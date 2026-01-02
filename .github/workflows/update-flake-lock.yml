@@ -24,15 +24,19 @@ jobs:
         run: |
           sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
           mkdir -p ~/.config/chezmoi
-          echo '[data]' > ~/.config/chezmoi/chezmoi.toml
-          echo 'hostname = "ci-host"' >> ~/.config/chezmoi/chezmoi.toml
+          cat > ~/.config/chezmoi/chezmoi.toml << 'EOF'
+          [data]
+          hostname = "ci-host"
+          work = false
+          private = false
+          EOF
       - uses: DeterminateSystems/determinate-nix-action@v3
       - uses: DeterminateSystems/flakehub-cache-action@v1
       - name: Update flake.lock
         run: |
           # Render to temp directory (avoids Git tracking issues with flakes)
           workdir=$(mktemp -d)
-          chezmoi execute-template < nix-config/flake.nix.tmpl > "$workdir/flake.nix"
+          chezmoi execute-template --source . < nix-config/flake.nix.tmpl > "$workdir/flake.nix"
           cp nix-config/.flake-${{ matrix.platform }}.lock "$workdir/flake.lock"
 
           # Update lock file

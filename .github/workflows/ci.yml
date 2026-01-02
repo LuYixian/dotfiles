@@ -31,15 +31,19 @@ jobs:
         run: |
           sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
           mkdir -p ~/.config/chezmoi
-          echo '[data]' > ~/.config/chezmoi/chezmoi.toml
-          echo 'hostname = "ci-host"' >> ~/.config/chezmoi/chezmoi.toml
+          cat > ~/.config/chezmoi/chezmoi.toml << 'EOF'
+          [data]
+          hostname = "ci-host"
+          work = false
+          private = false
+          EOF
       - name: Render templates
         run: |
           mkdir -p rendered/modules
-          chezmoi execute-template < nix-config/flake.nix.tmpl > rendered/flake.nix
+          chezmoi execute-template --source . < nix-config/flake.nix.tmpl > rendered/flake.nix
           cp nix-config/.flake-${{ matrix.platform }}.lock rendered/flake.lock
           for f in nix-config/modules/*.tmpl; do
-            chezmoi execute-template < "$f" > "rendered/modules/$(basename "${f%.tmpl}")"
+            chezmoi execute-template --source . < "$f" > "rendered/modules/$(basename "${f%.tmpl}")"
           done
           for f in nix-config/modules/*.nix; do
             [ -f "$f" ] && cp "$f" rendered/modules/
