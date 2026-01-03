@@ -120,11 +120,26 @@ Setting up a new development machine is tedious. You need to install dozens of p
 
 ## 🚀 Quick Start
 
+**Option 1: Run init script directly from GitHub (recommended)**
+
+```bash
+curl -fsLS https://raw.githubusercontent.com/signalridge/dotfiles/main/init.sh | sh
+```
+
+**Option 2: Install chezmoi and init**
+
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
 ```
 
-This single command will automatically:
+**Option 3: Clone and run locally**
+
+```bash
+git clone https://github.com/signalridge/dotfiles.git
+cd dotfiles && ./init.sh
+```
+
+This will automatically:
 
 1. Install Nix (Determinate Systems installer)
 2. Install `age` and `1password-cli` for secrets decryption
