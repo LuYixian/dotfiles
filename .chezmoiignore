@@ -17,10 +17,10 @@ docs/
 node_modules/
 
 # ─────────────────────────────────────────────────────────────────────────────
-# macOS-only exclusions
+# macOS-only exclusions (skip on Linux)
 # ─────────────────────────────────────────────────────────────────────────────
 {{- if ne .chezmoi.os "darwin" }}
-# macOS-specific nix modules (darwin-only)
+# macOS-specific nix modules
 nix-config/modules/system.nix.tmpl
 nix-config/modules/apps.nix.tmpl
 nix-config/modules/host-users.nix
@@ -29,12 +29,19 @@ nix-config/modules/host-users.nix
 .chezmoiscripts/run_onchange_after_02_init.sh.tmpl
 .chezmoiscripts/run_after_04_update_homebrew_packages.sh
 .chezmoiscripts/run_onchange_after_07_install-paperlib.sh.tmpl
+
+# macOS-only GUI apps
+private_dot_config/aerospace/
+private_dot_config/private_karabiner/
+private_dot_config/ghostty/
 {{- end }}
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Headless/server exclusions (no GUI configs needed)
+# Headless/server exclusions (no GUI, reserved for future use)
 # ─────────────────────────────────────────────────────────────────────────────
 {{- if .headless }}
-private_dot_config/aerospace/
-private_dot_config/karabiner/
+# GUI apps (uncomment as needed)
+# private_dot_config/aerospace/
+# private_dot_config/private_karabiner/
+# private_dot_config/ghostty/
 {{- end }}

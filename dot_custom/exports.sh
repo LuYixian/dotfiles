@@ -66,6 +66,6 @@ export FZF_CTRL_R_OPTS="
   --header 'Press CTRL-Y to copy command'
 "
 
-# AI commit message provider (claude, codex, gemini, auto)
+# AI commit message provider (codex, gemini, claude, auto)
 # Override in ~/.custom/local.sh if needed
-export AICOMMIT_PROVIDER="${AICOMMIT_PROVIDER:-gemini}"
+export AICOMMIT_PROVIDER="${AICOMMIT_PROVIDER:-codex}"
