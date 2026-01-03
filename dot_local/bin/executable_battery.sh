@@ -53,6 +53,7 @@ get_remain() {
 }
 
 # Color output for terminal (ANSI)
+# shellcheck disable=SC2120
 battery_color_ansi() {
     local percentage="${1:-$(get_battery)}"
     local level="${percentage%%%*}"
@@ -67,6 +68,7 @@ battery_color_ansi() {
 }
 
 # Color output for tmux
+# shellcheck disable=SC2120
 battery_color_tmux() {
     local percentage="${1:-$(get_battery)}"
     local level="${percentage%%%*}"

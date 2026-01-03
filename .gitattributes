@@ -1,2 +1,35 @@
-*.nix.tmpl linguist-language=Nix
+# Shell
+*.sh linguist-language=Shell
 *.sh.tmpl linguist-language=Shell
+dot_zshrc linguist-language=Shell
+dot_zshenv.tmpl linguist-language=Shell
+dot_zprofile.tmpl linguist-language=Shell
+*.conf linguist-language=Shell
+
+# Nix
+*.nix linguist-language=Nix
+*.nix.tmpl linguist-language=Nix
+
+# TOML
+*.toml linguist-language=TOML
+*.toml.tmpl linguist-language=TOML
+
+# YAML
+*.yml linguist-language=YAML
+*.yml.tmpl linguist-language=YAML
+*.yaml linguist-language=YAML
+
+# JSON
+*.json linguist-language=JSON
+
+# Other
+Justfile.tmpl linguist-language=Makefile
+**/config.tmpl linguist-language=INI
+private_dot_config/bat/config linguist-language=Shell
+private_dot_config/ghostty/config linguist-language=INI
+private_dot_config/git/ignore linguist-language=Git-Ignore
+private_dot_config/git/message linguist-documentation
+
+# Exclude from stats
+*.md linguist-documentation
+*.lock linguist-generated
