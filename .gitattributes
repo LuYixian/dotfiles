@@ -10,17 +10,17 @@ dot_zprofile.tmpl linguist-language=Shell
 *.nix linguist-language=Nix
 *.nix.tmpl linguist-language=Nix
 
-# TOML
-*.toml linguist-language=TOML
-*.toml.tmpl linguist-language=TOML
+# TOML (data type, need detectable to show in stats)
+*.toml linguist-language=TOML linguist-detectable=true
+*.toml.tmpl linguist-language=TOML linguist-detectable=true
 
-# YAML
-*.yml linguist-language=YAML
-*.yml.tmpl linguist-language=YAML
-*.yaml linguist-language=YAML
+# YAML (data type, need detectable to show in stats)
+*.yml linguist-language=YAML linguist-detectable=true
+*.yml.tmpl linguist-language=YAML linguist-detectable=true
+*.yaml linguist-language=YAML linguist-detectable=true
 
-# JSON
-*.json linguist-language=JSON
+# JSON (data type, need detectable to show in stats)
+*.json linguist-language=JSON linguist-detectable=true
 
 # Other
 Justfile.tmpl linguist-language=Makefile
