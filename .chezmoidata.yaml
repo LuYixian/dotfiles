@@ -126,6 +126,7 @@ homepkgs:
     - ripgrep
     - ripgrep-all
     - sd
+    - sesh
     - skim
     - sheldon
     - sniffnet
