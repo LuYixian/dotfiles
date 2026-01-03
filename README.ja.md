@@ -6,23 +6,19 @@
 
 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
 
-[![CI](https://github.com/signalridge/dotfiles/actions/workflows/ci.yml/badge.svg)](https://github.com/signalridge/dotfiles/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![macOS](https://img.shields.io/badge/macOS-Sonoma+-000000?logo=apple&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-supported-FCC624?logo=linux&logoColor=black)
-[![nix-darwin](https://img.shields.io/badge/nix--darwin-24.11-5277C3)](https://github.com/LnL7/nix-darwin)
+<p>
+  <a href="https://github.com/signalridge/dotfiles/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/signalridge/dotfiles/ci.yml?style=for-the-badge&logo=github&label=CI"></a>&nbsp;
+  <a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge"></a>&nbsp;
+  <img alt="macOS" src="https://img.shields.io/badge/macOS-Sonoma+-000000?style=for-the-badge&logo=apple&logoColor=white">&nbsp;
+  <img alt="Linux" src="https://img.shields.io/badge/Linux-supported-FCC624?style=for-the-badge&logo=linux&logoColor=black">
+</p>
 
-![code size](https://img.shields.io/github/languages/code-size/signalridge/dotfiles)
-![repo size](https://img.shields.io/github/repo-size/signalridge/dotfiles)
-[![last commit](https://img.shields.io/github/last-commit/signalridge/dotfiles)](https://github.com/signalridge/dotfiles/commits/main)
-[![zsh](https://img.shields.io/badge/zsh-5.9+-F15A24?logo=zsh&logoColor=white)](https://www.zsh.org/)
-[![chezmoi](https://img.shields.io/github/v/tag/twpayne/chezmoi?color=4B91E2&label=chezmoi&sort=semver)](https://github.com/twpayne/chezmoi)
-
-[![starship](https://img.shields.io/github/v/tag/starship/starship?color=DD0B78&label=starship&logo=starship&logoColor=white&sort=semver)](https://github.com/starship/starship)
-[![sheldon](https://img.shields.io/github/v/tag/rossmacarthur/sheldon?color=5C5C5C&label=sheldon&sort=semver)](https://github.com/rossmacarthur/sheldon)
-[![mise](https://img.shields.io/github/v/tag/jdx/mise?color=5C4EE5&label=mise&sort=semver)](https://github.com/jdx/mise)
-[![atuin](https://img.shields.io/github/v/tag/atuinsh/atuin?color=FF6B6B&label=atuin&sort=semver)](https://github.com/atuinsh/atuin)
-[![tmux](https://img.shields.io/github/v/tag/tmux/tmux?color=1BB91F&label=tmux&logo=tmux&logoColor=white&sort=semver)](https://github.com/tmux/tmux)
+<p>
+  <a href="https://github.com/twpayne/chezmoi"><img alt="chezmoi" src="https://img.shields.io/badge/chezmoi-4B91E2?style=for-the-badge&logo=chezmoi&logoColor=white"></a>&nbsp;
+  <a href="https://github.com/LnL7/nix-darwin"><img alt="nix-darwin" src="https://img.shields.io/badge/nix--darwin-5277C3?style=for-the-badge&logo=nixos&logoColor=white"></a>&nbsp;
+  <a href="https://www.zsh.org/"><img alt="zsh" src="https://img.shields.io/badge/zsh-F15A24?style=for-the-badge&logo=zsh&logoColor=white"></a>&nbsp;
+  <a href="https://brew.sh/"><img alt="Homebrew" src="https://img.shields.io/badge/Homebrew-FBB040?style=for-the-badge&logo=homebrew&logoColor=black"></a>
+</p>
 
 *Nix と chezmoi で構築する、モダンで再現性の高い開発環境（macOS / Linux 対応）*
 </div>
