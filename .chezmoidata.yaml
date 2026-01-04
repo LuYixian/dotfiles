@@ -10,6 +10,10 @@ homebrew:
       - "macos-trash"
     work:
       - "cliclick" # macOS only - GUI automation
+      - "awscli"
+      - "aws-sam-cli"
+      - "azure-cli"
+      - "azure-functions-core-tools"
     private:
       - "mas" # Required for masApps installation
   casks:
@@ -34,9 +38,9 @@ homebrew:
       - "tailscale-app"
       - "karabiner-elements"
     work:
-      - "iterm2"
       - "obsidian"
       - "cursor"
+      - "gcloud-cli"
     private:
       - "1password"
       - "adguard"
@@ -143,11 +147,6 @@ homepkgs:
     - zstd
     - k9s
   work:
-    - awscli2
-    - aws-sam-cli
-    - azure-cli
-    - azure-functions-core-tools
-    - google-cloud-sdk
     - llvmPackages.openmp # libomp replacement
     - mariadb
     - poetry

@@ -6,4 +6,4 @@ set -eufo pipefail
 # flake.lock: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.lock") | trim }}
 
 echo ":: [03] Switching Nix profile"
-nix run ~/nix-config#{{ .hostname }}.switch
+nix run --extra-experimental-features 'nix-command flakes' ~/nix-config#{{ .hostname }}.switch

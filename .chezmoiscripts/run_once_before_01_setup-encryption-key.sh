@@ -12,13 +12,13 @@ fi
 # Install age if not available (required for chezmoi to decrypt .age files)
 if ! command -v age &>/dev/null; then
     echo "📦 Installing age..."
-    nix profile add nixpkgs#age
+    nix --extra-experimental-features 'nix-command flakes' profile add nixpkgs#age
 fi
 
 # Install 1password-cli if not available (unfree license)
 if ! command -v op &>/dev/null; then
     echo "📦 Installing 1password-cli..."
-    NIXPKGS_ALLOW_UNFREE=1 nix profile add nixpkgs#_1password-cli --impure
+    NIXPKGS_ALLOW_UNFREE=1 nix --extra-experimental-features 'nix-command flakes' profile add nixpkgs#_1password-cli --impure
 fi
 
 KEY_FILE="$HOME/.ssh/main"
