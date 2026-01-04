@@ -44,6 +44,7 @@ homebrew:
       - "bob-app"
       - "chatgpt"
       - "cleanmymac"
+      - "discord"
       - "grammarly-desktop"
       - "iina" # video player
       - "logseq"
@@ -53,7 +54,6 @@ homebrew:
       - "soundsource"
       - "surge"
       - "telegram"
-      - "discord"
       - "zoom"
   masApps:
     shared:

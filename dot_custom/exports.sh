@@ -69,3 +69,12 @@ export FZF_CTRL_R_OPTS="
 # AI commit message provider (codex, gemini, claude, auto)
 # Override in ~/.custom/local.sh if needed
 export AICOMMIT_PROVIDER="${AICOMMIT_PROVIDER:-codex}"
+
+# ─────────────────────────────────────────────────────────────
+# TMux plugin configuration (ohmyzsh/plugins/tmux)
+# Must be set before sheldon loads the plugin
+# ─────────────────────────────────────────────────────────────
+export ZSH_TMUX_AUTOSTART=true
+export ZSH_TMUX_AUTOCONNECT=true
+export ZSH_TMUX_AUTOQUIT=true
+export ZSH_TMUX_DEFAULT_SESSION_NAME="main"
