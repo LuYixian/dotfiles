@@ -74,7 +74,14 @@ export AICOMMIT_PROVIDER="${AICOMMIT_PROVIDER:-codex}"
 # TMux plugin configuration (ohmyzsh/plugins/tmux)
 # Must be set before sheldon loads the plugin
 # ─────────────────────────────────────────────────────────────
-export ZSH_TMUX_AUTOSTART=true
-export ZSH_TMUX_AUTOCONNECT=true
-export ZSH_TMUX_AUTOQUIT=true
+export ZSH_TMUX_CONFIG="$HOME/.config/tmux/tmux.conf"
+# Disable tmux autostart in VSCode (avoids status bar stacking with Claude CLI)
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+  export ZSH_TMUX_AUTOSTART=false
+  export ZSH_TMUX_AUTOCONNECT=false
+else
+  export ZSH_TMUX_AUTOSTART=true
+  export ZSH_TMUX_AUTOCONNECT=true
+fi
+export ZSH_TMUX_AUTOQUIT=false
 export ZSH_TMUX_DEFAULT_SESSION_NAME="main"
