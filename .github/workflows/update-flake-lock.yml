@@ -56,11 +56,14 @@ jobs:
           # Copy updated lock back to repo
           cp "$workdir/flake.lock" nix-config/.flake-${{ matrix.platform }}.lock
           rm -rf "$workdir"
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
       - name: Create PR
         uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "chore(nix): update flake.lock for ${{ matrix.platform }}"
-          title: "chore(nix): update flake.lock for ${{ matrix.platform }}"
+          title: "chore(nix): update flake.lock for ${{ matrix.platform }} (${{ steps.date.outputs.date }})"
           branch: update-flake-lock-${{ matrix.platform }}
           labels: dependencies,nix,${{ matrix.platform }}
           body: |
