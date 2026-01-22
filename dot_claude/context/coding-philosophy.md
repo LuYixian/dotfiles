@@ -2,16 +2,14 @@
 
 ## Core Beliefs
 
-- **Pursue good taste** - Eliminate edge cases to make code logic natural and elegant
+- **Pursue good taste** - Eliminate edge cases to make code logic natural
 - **Embrace extreme simplicity** - Complexity is the root of all evil
-- **Be pragmatic** - Code must solve real-world problems, not hypothetical ones
-- **Data structures first** - Bad programmers worry about code; good programmers worry about data structures
-- **Never break backward compatibility** - Existing functionality is sacred and inviolable
-- **Incremental progress over big bangs** - Small changes that compile and pass tests
-- **Learning from existing code** - Study and plan before implementing
+- **Be pragmatic** - Solve real problems, not hypothetical ones
+- **Data structures first** - Good programmers worry about data structures
+- **Never break backward compatibility** - Existing functionality is sacred
+- **Incremental progress** - Small changes that compile and pass tests
+- **Learn from existing code** - Study before implementing
 - **Clear intent over clever code** - Be boring and obvious
-- **Follow existing code style** - Match import patterns, naming conventions, and formatting of existing codebase
-- **Minimize changes** - Only modify what's directly required; avoid refactoring, adding features, or "improving" code beyond the request
 
 ## Simplicity Means
 
@@ -22,51 +20,58 @@
 
 ## Fix, Don't Hide
 
-**Solve problems, don't silence symptoms** - Skipped tests, `@ts-ignore`, empty catch, `as any`, excessive timeouts = hiding bugs, not fixing them
+**Solve problems, don't silence symptoms:**
 
-**NEVER**:
+❌ `@ts-ignore`, `skip`, `ignore`, empty catch, `as any`, excessive timeouts
 
-- Make assumptions - verify with existing code
-- Generate reports, summaries, or documentation files without explicit user request
-- Use suppression mechanisms (`skip`, `ignore`, `disable`) without fixing root cause
-
-**ALWAYS**:
-
-- Plan complex tasks thoroughly before implementation
-- Generate task decomposition for multi-module work (>3 modules or >5 subtasks)
-- Track progress using TODO checklists for complex tasks
-- Validate planning documents before starting development
-- Commit working code incrementally
-- Update plan documentation and progress tracking as you go
-- Learn from existing implementations
-- Stop after 3 failed attempts and reassess
-- **Edit fallback**: When Edit tool fails 2+ times on same file, try Bash sed/awk first, then Write to recreate if still failing
+✅ Fix the root cause
 
 ## Learning the Codebase
 
-- Find 3 similar features/components
-- Identify common patterns and conventions
-- Use same libraries/utilities when possible
-- Follow existing test patterns
+Before implementing:
 
-## Tooling
+1. Find 3+ similar features/components
+2. Identify common patterns and conventions
+3. Use same libraries/utilities when possible
+4. Follow existing test patterns
+
+## Tooling Rules
 
 - Use project's existing build system
 - Use project's test framework
 - Use project's formatter/linter settings
 - Don't introduce new tools without strong justification
 
-## Content Uniqueness Rules
+## Content Uniqueness
 
-- **Each layer owns its abstraction level** - no content sharing between layers
-- **Reference, don't duplicate** - point to other layers, never copy content
-- **Maintain perspective** - each layer sees the system at its appropriate scale
-- **Avoid implementation creep** - higher layers stay architectural
+- Each layer owns its abstraction level
+- Reference, don't duplicate
+- Maintain perspective at appropriate scale
+- Higher layers stay architectural
 
-## Context Requirements
+## Collaboration Boundaries
 
-Before implementation, always:
+**AI autonomy zone (proceed without asking):**
 
-- Identify 3+ existing similar patterns
-- Map dependencies and integration points
-- Understand testing framework and coding conventions
+- Implementation details within approved direction
+- Standard formatting and style choices
+- Obvious bug fixes with clear solutions
+- Exploratory mode experiments (L1-L2)
+
+**Human decision zone (escalate):**
+
+- Architectural choices with multiple valid approaches
+- Trade-offs between competing requirements
+- Changes with wide, hard-to-reverse impact
+- Novel patterns not established in codebase
+
+## Execution Rules
+
+**ALWAYS:**
+
+- Plan complex tasks before implementation
+- Track progress with TodoWrite for L3+ tasks
+- Stop after 5 consecutive failures and request guidance
+- Report guardrail changes (see `guardrails.md`)
+
+**Edit fallback:** When Edit fails 2+ times → try sed/awk → then Write

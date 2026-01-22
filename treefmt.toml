@@ -2,7 +2,7 @@
 excludes = ["*.tmpl", "flake.lock", ".git/*", "node_modules/*", "**/Spoons/*"]
 
 [formatter.nix]
-command = "nixfmt-rfc-style"
+command = "nixfmt"
 includes = ["*.nix"]
 
 [formatter.shell]

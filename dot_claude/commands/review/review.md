@@ -1,54 +1,42 @@
 # /review - Code Review
 
-Perform a structured code review with security, correctness, and maintainability checks.
-
-## Checklist
-
-### Security (Critical)
-
-- [ ] No hardcoded secrets, API keys, or passwords
-- [ ] Input validation (SQL injection, XSS, command injection)
-- [ ] Proper authentication/authorization checks
-- [ ] Sensitive data handling (encryption, secure storage)
-- [ ] No dangerous functions (eval, exec without sanitization)
-
-### Correctness (High)
-
-- [ ] Edge cases handled (null, empty, boundary values)
-- [ ] Error handling is complete and appropriate
-- [ ] Type safety maintained
-- [ ] Logic matches requirements
-- [ ] No obvious bugs or typos
-
-### Performance (Medium)
-
-- [ ] No N+1 query problems
-- [ ] Appropriate data structures used
-- [ ] No unnecessary computations in loops
-- [ ] Resources properly released (connections, files)
-
-### Maintainability (Medium)
-
-- [ ] Clear, descriptive naming
-- [ ] Functions have single responsibility
-- [ ] Appropriate abstraction level
-- [ ] No code duplication (DRY)
-- [ ] Comments explain WHY, not WHAT
-
-### Testing
-
-- [ ] Tests cover the changes
-- [ ] Edge cases tested
-- [ ] No flaky tests introduced
+Perform a structured code review using the review-code skill.
 
 ## Usage
 
 ```
 /review                     # Review staged/uncommitted changes
 /review path/to/file.py     # Review specific file
-/review --security          # Focus on security only
+/review --security          # Focus on security (uses security-review skill)
 /review --quick             # Quick pass, critical issues only
 ```
+
+## Workflow
+
+1. **Identify scope**
+   ```bash
+   git diff --name-only HEAD
+   git diff --cached --name-only
+   ```
+
+2. **Apply review skill**
+   - Load `skills/review-code/` for full review
+   - Or `skills/security-review/` for `--security` flag
+
+3. **Generate report** using skill's output format
+
+## Review Dimensions
+
+See `skills/review-code/SKILL.md` for complete rules:
+
+| Dimension | Prefix | Focus |
+|-----------|--------|-------|
+| Security | SEC | XSS, injection, credentials |
+| Architecture | ARCH | Coupling, SRP, abstractions |
+| Correctness | CORR | Null checks, error handling |
+| Performance | PERF | Algorithms, I/O, memory |
+| Readability | READ | Naming, complexity |
+| Testing | TEST | Coverage, assertions |
 
 ## Output Format
 
@@ -56,51 +44,17 @@ Perform a structured code review with security, correctness, and maintainability
 ## Code Review: [filename]
 
 ### Critical Issues
+- [SEC-001] [line:123] Description
 
-- [line:123] Description of critical issue
-
-### Suggestions
-
-- [line:45] Suggestion for improvement
-
-### Good Practices
-
-- Well-structured error handling
-- Clear variable naming
+### High Priority
+- [ARCH-002] [line:45] Description
 
 ### Summary
-
-[Overall assessment and recommendation]
+- Critical: X | High: Y | Medium: Z
 ```
 
-## Severity Levels
+## Related
 
-| Level      | Meaning                       | Action                |
-| ---------- | ----------------------------- | --------------------- |
-| Critical   | Security flaw, data loss risk | Must fix before merge |
-| Warning    | Potential bug, bad practice   | Should fix            |
-| Suggestion | Could be improved             | Nice to have          |
-| Info       | Style, minor optimization     | Optional              |
-
-## Common Issues to Watch
-
-### Python
-
-- Mutable default arguments
-- Missing `__init__.py`
-- Bare `except:` clauses
-- String formatting with `%` (use f-strings)
-
-### JavaScript/TypeScript
-
-- Missing null checks
-- Async/await without try-catch
-- Memory leaks in event listeners
-- Implicit type coercion
-
-### General
-
-- TODO/FIXME left in production code
-- Commented-out code
-- Magic numbers without explanation
-- Overly complex conditionals
+- **Skill:** `skills/review-code/` - Full rule definitions
+- **Agent:** `agents/review/code-auditor` - For comprehensive audits
+- **Quick:** `/review --quick` for fast checks

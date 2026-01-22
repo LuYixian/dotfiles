@@ -201,14 +201,14 @@ Solution: Review dependencies, may need sequential execution
 
 **Best Practices**
 
-✅ **Start with `--dry-run`** to preview assignments  
-✅ **Begin with 2-3 agents** for new projects  
-✅ **Use `--auto-assign`** for standard workflows  
-✅ **Monitor system resources** during execution  
+✅ **Start with `--dry-run`** to preview assignments
+✅ **Begin with 2-3 agents** for new projects
+✅ **Use `--auto-assign`** for standard workflows
+✅ **Monitor system resources** during execution
 ✅ **Validate results** with integration tests
 
-❌ **Avoid** for sequential dependency chains  
-❌ **Avoid** for shared critical files  
+❌ **Avoid** for sequential dependency chains
+❌ **Avoid** for shared critical files
 ❌ **Avoid** for single complex tasks that can't be subdivided
 
 **Usage by Scenario**

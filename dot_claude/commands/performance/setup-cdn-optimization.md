@@ -394,26 +394,26 @@ Configure CDN for optimal delivery
      static generatePictureElement(imageName, alt, className = "") {
        return `
          <picture class="${className}">
-           <source media="(min-width: 1024px)" 
-                   srcset="/images/${imageName}-xl.webp" 
+           <source media="(min-width: 1024px)"
+                   srcset="/images/${imageName}-xl.webp"
                    type="image/webp">
-           <source media="(min-width: 1024px)" 
-                   srcset="/images/${imageName}-xl.jpeg" 
+           <source media="(min-width: 1024px)"
+                   srcset="/images/${imageName}-xl.jpeg"
                    type="image/jpeg">
-           <source media="(min-width: 640px)" 
-                   srcset="/images/${imageName}-lg.webp" 
+           <source media="(min-width: 640px)"
+                   srcset="/images/${imageName}-lg.webp"
                    type="image/webp">
-           <source media="(min-width: 640px)" 
-                   srcset="/images/${imageName}-lg.jpeg" 
+           <source media="(min-width: 640px)"
+                   srcset="/images/${imageName}-lg.jpeg"
                    type="image/jpeg">
-           <source media="(min-width: 320px)" 
-                   srcset="/images/${imageName}-md.webp" 
+           <source media="(min-width: 320px)"
+                   srcset="/images/${imageName}-md.webp"
                    type="image/webp">
-           <source media="(min-width: 320px)" 
-                   srcset="/images/${imageName}-md.jpeg" 
+           <source media="(min-width: 320px)"
+                   srcset="/images/${imageName}-md.jpeg"
                    type="image/jpeg">
-           <img src="/images/${imageName}-sm.jpeg" 
-                alt="${alt}" 
+           <img src="/images/${imageName}-sm.jpeg"
+                alt="${alt}"
                 loading="lazy"
                 decoding="async">
          </picture>
@@ -606,18 +606,18 @@ Configure CDN for optimal delivery
          addEventListener('fetch', event => {
            event.respondWith(handleRequest(event.request));
          });
-   
+
          async function handleRequest(request) {
            const url = new URL(request.url);
            const referer = request.headers.get('Referer');
-           
+
            // Allow requests from your domain and direct access
            const allowedDomains = ['example.com', 'www.example.com'];
-           
+
            if (!referer || allowedDomains.some(domain => referer.includes(domain))) {
              return fetch(request);
            }
-           
+
            // Block hotlinking
            return new Response('Hotlinking not allowed', { status: 403 });
          }

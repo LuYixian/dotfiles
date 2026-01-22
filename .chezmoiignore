@@ -17,6 +17,7 @@ docs/
 node_modules/
 selene.toml
 stylua.toml
+treefmt.toml
 
 # ─────────────────────────────────────────────────────────────────────────────
 # macOS-only exclusions (skip on Linux)

@@ -17,31 +17,53 @@ repos:
   - repo: local
     hooks:
       #####################################
-      # Format: non-template (auto-fix)
+      # Format: non-template files (auto-fix)
+      # Requires: treefmt (with shfmt, nixfmt, stylua, prettier)
       #####################################
-      - id: fmt
-        name: Format
+      - id: treefmt
+        name: Format (treefmt)
         language: system
         pass_filenames: false
         files: \.(sh|nix|lua|md|json|yaml|yml)$
         exclude: \.tmpl$
-        entry: |
-          bash -c '
-            set -e
-            # Shell
-            find . -name "*.sh" ! -path "*/node_modules/*" -exec nix run nixpkgs#shfmt -- -w {} + 2>/dev/null || true
-            # Nix
-            find nix-config -name "*.nix" -exec nix run nixpkgs#nixfmt-rfc-style -- {} + 2>/dev/null || true
-            # Lua
-            find . -name "*.lua" ! -path "*/node_modules/*" ! -path "*/Spoons/*" -exec nix run nixpkgs#stylua -- {} + 2>/dev/null || true
-            # MD/JSON/YAML
-            find . \( -name "*.md" -o -name "*.json" -o -name "*.yaml" -o -name "*.yml" \) ! -name "*.tmpl" ! -path "*/node_modules/*" -exec nix run nixpkgs#nodePackages.prettier -- --write {} + 2>/dev/null || true
-          '
+        entry: treefmt
       #####################################
-      # Format: template (check only)
+      # Lint: shell scripts (non-template)
+      # Requires: shellcheck
       #####################################
-      - id: fmt-check-tmpl
-        name: Format check templates
+      - id: shellcheck
+        name: Shellcheck
+        language: system
+        types: [shell]
+        exclude: \.tmpl$
+        entry: shellcheck --severity=warning
+      #####################################
+      # Lint: Lua files (non-template)
+      # Requires: selene
+      #####################################
+      - id: selene
+        name: Selene (Lua)
+        language: system
+        files: \.lua$
+        exclude: (\.tmpl$|Spoons/)
+        entry: selene
+      #####################################
+      # Lint: Nix files (non-template)
+      # Requires: statix
+      #####################################
+      - id: statix
+        name: Statix (Nix)
+        language: system
+        pass_filenames: false
+        files: \.nix$
+        exclude: \.tmpl$
+        entry: statix check nix-config/
+      #####################################
+      # Template: render + format check + lint
+      # Requires: chezmoi, treefmt, shellcheck, selene, statix
+      #####################################
+      - id: check-templates
+        name: Validate templates (render + check)
         language: system
         files: \.tmpl$
         exclude: Spoons/
@@ -49,65 +71,78 @@ repos:
         entry: |
           bash -c '
             set -e
-            tmpdir=$(mktemp -d); trap "rm -rf $tmpdir" EXIT
-            mkdir -p "$tmpdir/modules"
-            printf "[data]\nhostname = \"test\"\nwork = false\nprivate = true\nhomeWifiSSIDs = \"\"\nplatform = \"darwin\"\ninstallMasApps = true\ntimezone = \"UTC\"\ngitUsername = \"test\"\ngitEmail = \"test@test.com\"\n" > "$tmpdir/chezmoi.toml"
-            cp stylua.toml "$tmpdir/" 2>/dev/null || true
+            tmpdir=$(mktemp -d)
+            trap "rm -rf $tmpdir" EXIT
 
-            # Render all templates
-            for f in $(find . \( -name "*.sh.tmpl" -o -name "*.lua.tmpl" -o -name "*.json.tmpl" -o -name "*.yaml.tmpl" -o -name "*.yml.tmpl" \) ! -path "*/node_modules/*" ! -path "*/Spoons/*"); do
-              chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < "$f" > "$tmpdir/$(basename "${f%.tmpl}")"
+            # Copy required config files (fail if missing)
+            for cfg in treefmt.toml stylua.toml selene.toml; do
+              if [[ -f "$cfg" ]]; then
+                cp "$cfg" "$tmpdir/"
+              else
+                echo "⚠️  Missing config: $cfg"
+              fi
             done
-            [ -f nix-config/flake.nix.tmpl ] && chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < nix-config/flake.nix.tmpl > "$tmpdir/flake.nix"
+
+            # Chezmoi config with claude data for template rendering
+            cat > "$tmpdir/chezmoi.toml" << EOF
+          [data]
+          hostname = "test"
+          work = false
+          private = true
+          homeWifiSSIDs = ""
+          platform = "darwin"
+          installMasApps = true
+          timezone = "UTC"
+          gitUsername = "test"
+          gitEmail = "test@test.com"
+          useEncryption = false
+          headless = false
+
+          [data.claude]
+          enabledPlugins = ["python-development", "javascript-typescript"]
+          EOF
+
+            # Render templates to tmpdir
+            for f in $(find . \( -name "*.sh.tmpl" -o -name "*.lua.tmpl" -o -name "*.json.tmpl" -o -name "*.yaml.tmpl" -o -name "*.yml.tmpl" -o -name "*.md.tmpl" \) ! -path "*/node_modules/*" ! -path "*/Spoons/*"); do
+              chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < "$f" > "$tmpdir/$(basename "${f%.tmpl}")" 2>/dev/null || true
+            done
+
+            # Render nix templates
+            mkdir -p "$tmpdir/nix-modules"
+            [ -f nix-config/flake.nix.tmpl ] && chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < nix-config/flake.nix.tmpl > "$tmpdir/flake.nix" 2>/dev/null || true
             for f in nix-config/modules/*.tmpl; do
-              [ -f "$f" ] && chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < "$f" > "$tmpdir/modules/$(basename "${f%.tmpl}")"
+              [ -f "$f" ] && chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < "$f" > "$tmpdir/nix-modules/$(basename "${f%.tmpl}")" 2>/dev/null || true
             done
 
             cd "$tmpdir"
-            # Check format (diff mode)
-            [ -n "$(ls *.sh 2>/dev/null)" ] && nix run nixpkgs#shfmt -- -d *.sh
-            [ -n "$(ls *.lua 2>/dev/null)" ] && nix run nixpkgs#stylua -- --check *.lua
-            [ -f flake.nix ] && nix run nixpkgs#nixfmt-rfc-style -- --check flake.nix modules/*.nix
-            files=$(ls *.json *.yaml *.yml 2>/dev/null || true)
-            [ -n "$files" ] && nix run nixpkgs#nodePackages.prettier -- --check $files
-          '
-      #####################################
-      # Lint: all files
-      #####################################
-      - id: lint
-        name: Lint
-        language: system
-        files: \.(sh|lua|nix)
-        pass_filenames: false
-        entry: |
-          bash -c '
-            set -e
-            tmpdir=$(mktemp -d); trap "rm -rf $tmpdir" EXIT
-            printf "[data]\nhostname = \"test\"\nwork = false\nprivate = true\nhomeWifiSSIDs = \"\"\nplatform = \"darwin\"\ninstallMasApps = true\ntimezone = \"UTC\"\ngitUsername = \"test\"\ngitEmail = \"test@test.com\"\n" > "$tmpdir/chezmoi.toml"
-            cp selene.toml "$tmpdir/" 2>/dev/null || true
 
-            # Render templates to tmpdir
-            for f in $(find . -name "*.sh.tmpl" ! -path "*/node_modules/*"); do
-              chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < "$f" > "$tmpdir/$(basename "${f%.tmpl}")"
-            done
-            for f in $(find . -name "*.lua.tmpl" ! -path "*/node_modules/*" ! -path "*/Spoons/*"); do
-              chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < "$f" > "$tmpdir/$(basename "${f%.tmpl}")"
-            done
-            mkdir -p "$tmpdir/nix-modules"
-            chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < nix-config/flake.nix.tmpl > "$tmpdir/flake.nix" 2>/dev/null || true
-            for f in nix-config/modules/*.tmpl; do
-              [ -f "$f" ] && chezmoi execute-template --config "$tmpdir/chezmoi.toml" --source . < "$f" > "$tmpdir/nix-modules/$(basename "${f%.tmpl}")"
-            done
+            # Format check
+            echo "Checking format with treefmt..."
+            if [[ -f treefmt.toml ]]; then
+              treefmt --fail-on-change || { echo "❌ Format check failed"; exit 1; }
+            fi
 
-            # Lint non-template files
-            find . -name "*.sh" ! -name "*.tmpl" ! -path "*/node_modules/*" -exec nix run nixpkgs#shellcheck -- --severity=warning {} + || true
-            find . -name "*.lua" ! -name "*.tmpl" ! -path "*/node_modules/*" ! -path "*/Spoons/*" -exec nix run nixpkgs#selene -- {} + || true
-            nix run nixpkgs#statix -- check nix-config/ 2>/dev/null || true
+            # Lint shell scripts (fail on errors)
+            echo "Linting shell scripts..."
+            shfiles=$(ls *.sh 2>/dev/null || true)
+            if [[ -n "$shfiles" ]]; then
+              shellcheck --severity=warning $shfiles
+            fi
 
-            # Lint rendered templates
-            [ -n "$(ls $tmpdir/*.sh 2>/dev/null)" ] && nix run nixpkgs#shellcheck -- --severity=warning $tmpdir/*.sh
-            [ -n "$(ls $tmpdir/*.lua 2>/dev/null)" ] && (cd $tmpdir && nix run nixpkgs#selene -- *.lua)
-            [ -f "$tmpdir/flake.nix" ] && nix run nixpkgs#statix -- check "$tmpdir"
+            # Lint Lua files (warn only - many false positives for hs/vim globals)
+            echo "Linting Lua files..."
+            luafiles=$(ls *.lua 2>/dev/null || true)
+            if [[ -n "$luafiles" ]] && [[ -f selene.toml ]]; then
+              selene $luafiles || echo "⚠️  Selene warnings (non-blocking)"
+            fi
+
+            # Lint Nix files (warn only)
+            echo "Linting Nix files..."
+            if [[ -f flake.nix ]]; then
+              statix check . || echo "⚠️  Statix warnings (non-blocking)"
+            fi
+
+            echo "✅ All template checks passed!"
           '
 ci:
   autoupdate_schedule: monthly

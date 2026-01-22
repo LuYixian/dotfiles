@@ -42,11 +42,11 @@ Create and manage database migrations
            rollback_sql TEXT,
            batch_number INTEGER
          );
-         
-         CREATE INDEX IF NOT EXISTS idx_schema_migrations_version 
+
+         CREATE INDEX IF NOT EXISTS idx_schema_migrations_version
          ON schema_migrations(version);
-         
-         CREATE INDEX IF NOT EXISTS idx_schema_migrations_batch 
+
+         CREATE INDEX IF NOT EXISTS idx_schema_migrations_batch
          ON schema_migrations(batch_number);
        `);
 
@@ -59,9 +59,9 @@ Create and manage database migrations
            locked_by VARCHAR(255),
            CHECK (id = 1)
          );
-         
-         INSERT INTO migration_lock (id, is_locked) 
-         VALUES (1, FALSE) 
+
+         INSERT INTO migration_lock (id, is_locked)
+         VALUES (1, FALSE)
          ON CONFLICT (id) DO NOTHING;
        `);
      }
@@ -71,7 +71,7 @@ Create and manage database migrations
        try {
          const result = await client.query(
            `
-           UPDATE migration_lock 
+           UPDATE migration_lock
            SET is_locked = TRUE, locked_at = CURRENT_TIMESTAMP, locked_by = $1
            WHERE id = 1 AND (is_locked = FALSE OR locked_at < CURRENT_TIMESTAMP - INTERVAL '${this.lockTimeout} milliseconds')
            RETURNING is_locked;
@@ -95,8 +95,8 @@ Create and manage database migrations
      async releaseLock(client) {
        try {
          await client.query(`
-           UPDATE migration_lock 
-           SET is_locked = FALSE, locked_at = NULL, locked_by = NULL 
+           UPDATE migration_lock
+           SET is_locked = FALSE, locked_at = NULL, locked_by = NULL
            WHERE id = 1;
          `);
        } finally {
@@ -268,8 +268,8 @@ Create and manage database migrations
        try {
          const lastMigrations = await this.pool.query(
            `
-           SELECT * FROM schema_migrations 
-           ORDER BY executed_at DESC, version DESC 
+           SELECT * FROM schema_migrations
+           ORDER BY executed_at DESC, version DESC
            LIMIT $1
          `,
            [steps],
@@ -388,7 +388,7 @@ Create and manage database migrations
            value JSONB NOT NULL DEFAULT '{}',
            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-           
+
            UNIQUE(user_id, category, key)
          );
        `);
@@ -433,7 +433,7 @@ Create and manage database migrations
 
        // Step 1: Create temporary backup
        await client.query(`
-         CREATE TABLE user_settings_backup AS 
+         CREATE TABLE user_settings_backup AS
          SELECT * FROM users WHERE settings IS NOT NULL;
        `);
 
@@ -447,10 +447,10 @@ Create and manage database migrations
        while (true) {
          const result = await client.query(
            `
-           SELECT id, settings 
-           FROM users 
-           WHERE settings IS NOT NULL 
-           ORDER BY id 
+           SELECT id, settings
+           FROM users
+           WHERE settings IS NOT NULL
+           ORDER BY id
            LIMIT $1 OFFSET $2
          `,
            [batchSize, offset],
@@ -550,7 +550,7 @@ Create and manage database migrations
 
        // Restore from backup
        await client.query(`
-         UPDATE users 
+         UPDATE users
          SET settings = backup.settings
          FROM user_settings_backup backup
          WHERE users.id = backup.id;
@@ -995,12 +995,12 @@ Create and manage database migrations
      async checkTableLocks(migrationFile) {
        // Check for long-running transactions that might block migration
        const longTransactions = await this.pool.query(`
-         SELECT 
+         SELECT
            pid,
            now() - pg_stat_activity.query_start AS duration,
            query,
            state
-         FROM pg_stat_activity 
+         FROM pg_stat_activity
          WHERE (now() - pg_stat_activity.query_start) > interval '5 minutes'
          AND state IN ('active', 'idle in transaction');
        `);
@@ -1020,12 +1020,12 @@ Create and manage database migrations
      async checkDataSize(migrationFile) {
        // Estimate migration impact based on data size
        const tableSizes = await this.pool.query(`
-         SELECT 
+         SELECT
            schemaname,
            tablename,
            pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size,
            pg_total_relation_size(schemaname||'.'||tablename) as size_bytes
-         FROM pg_tables 
+         FROM pg_tables
          WHERE schemaname = 'public'
          ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
        `);
@@ -1046,11 +1046,11 @@ Create and manage database migrations
      async checkDependencies(migrationFile) {
        // Check for dependent applications or services
        const activeConnections = await this.pool.query(`
-         SELECT 
+         SELECT
            application_name,
            COUNT(*) as connection_count,
            COUNT(*) FILTER (WHERE state = 'active') as active_count
-         FROM pg_stat_activity 
+         FROM pg_stat_activity
          WHERE datname = current_database()
          AND application_name IS NOT NULL
          GROUP BY application_name
@@ -1076,7 +1076,7 @@ Create and manage database migrations
      async checkBackupStatus(migrationFile) {
        // Verify recent backup exists
        const lastBackup = await this.pool.query(`
-         SELECT 
+         SELECT
            pg_last_wal_receive_lsn(),
            pg_last_wal_replay_lsn(),
            EXTRACT(EPOCH FROM (now() - pg_stat_file('base/backup_label', true).modification))::int as backup_age_seconds

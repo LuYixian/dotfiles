@@ -1,119 +1,57 @@
-# /security-scan - Security Analysis
+# /security-scan - Quick Security Scan
 
-Perform security analysis on code changes or entire codebase.
+Fast security analysis for immediate feedback.
 
-## Quick Scan (Current Changes)
+## Usage
 
-### Step 1: Identify Changed Files
-
-```bash
-git diff --name-only HEAD~1  # Or relevant commit range
+```
+/security-scan                    # Scan recent changes
+/security-scan path/to/file.py    # Scan specific file
 ```
 
-### Step 2: Check for Common Issues
+## Workflow
 
-#### Secrets Detection
-
-Look for:
-
-- API keys, tokens, passwords in code
-- Hardcoded credentials
-- Private keys or certificates
-- Connection strings with credentials
+### 1. Identify Scope
 
 ```bash
-# Pattern search for potential secrets
-grep -rn "password\|secret\|api_key\|token\|private_key" --include="*.py" --include="*.js" --include="*.ts"
+git diff --name-only HEAD~1
 ```
 
-#### Injection Vulnerabilities
-
-- SQL: String concatenation in queries
-- Command: User input in shell commands
-- XSS: Unescaped user input in HTML
-- Path traversal: User input in file paths
-
-#### Authentication/Authorization
-
-- Missing auth checks on endpoints
-- Hardcoded credentials
-- Weak password requirements
-- Session management issues
-
-### Step 3: Dependency Vulnerabilities
+### 2. Quick Checks
 
 ```bash
-# Python
-uv pip audit
+# Secrets detection
+grep -rn "password\|secret\|api_key\|token" --include="*.py" --include="*.js"
 
-# Node.js
-npm audit
+# Dependency audit
+uv pip audit        # Python
+npm audit           # Node.js
 ```
 
-## Full Scan Checklist
+### 3. Apply Security Skill
 
-### OWASP Top 10 Review
+Load `skills/security-review/SKILL.md` checklist for:
+- OWASP Top 10
+- Language-specific patterns
+- Common vulnerabilities
 
-- [ ] **Injection**: SQL, NoSQL, OS, LDAP injection
-- [ ] **Broken Auth**: Weak passwords, session issues
-- [ ] **Sensitive Data**: Encryption, data exposure
-- [ ] **XXE**: XML external entity processing
-- [ ] **Broken Access Control**: Missing authorization
-- [ ] **Misconfig**: Default credentials, verbose errors
-- [ ] **XSS**: Reflected, stored, DOM-based
-- [ ] **Insecure Deserialization**: Pickle, eval, exec
-- [ ] **Vulnerable Components**: Outdated dependencies
-- [ ] **Insufficient Logging**: Missing audit trails
-
-### Python-Specific
-
-- [ ] `eval()`, `exec()`, `compile()` with user input
-- [ ] `pickle.loads()` on untrusted data
-- [ ] `subprocess` with `shell=True`
-- [ ] `os.system()` calls
-- [ ] SQL string formatting (use parameterized queries)
-- [ ] `yaml.load()` without `Loader=SafeLoader`
-
-### Web-Specific
-
-- [ ] CORS misconfiguration
-- [ ] Missing CSRF protection
-- [ ] Insecure cookies (missing HttpOnly, Secure)
-- [ ] Missing Content-Security-Policy
-- [ ] Sensitive data in URLs
-
-## Report Format
+## Output
 
 ```markdown
-## Security Scan Report
+## Security Scan: [scope]
 
-### Summary
+### Quick Results
+- Secrets found: X locations
+- Dependency issues: X packages
+- Code patterns: X concerns
 
-- Critical: X
-- High: X
-- Medium: X
-- Low: X
-
-### Findings
-
-#### [CRITICAL] Finding Title
-
-- **Location**: `file.py:123`
-- **Issue**: Description
-- **Impact**: What could happen
-- **Remediation**: How to fix
-
-[Repeat for each finding]
+### Action Required
+1. [Critical issue]
+2. [High issue]
 ```
 
-## Automated Tools
+## Related
 
-```bash
-# Python static analysis
-bandit -r src/            # Security linter
-semgrep --config auto .   # Pattern matching
-
-# Secrets scanning
-gitleaks detect           # Git history scan
-trufflehog git file://.   # Alternative
-```
+- **Deep analysis:** `/security-review-deep` for thorough review
+- **Skill:** `skills/security-review/` - Full OWASP checklist
+- **Tools:** `bandit`, `semgrep`, `gitleaks` for automation

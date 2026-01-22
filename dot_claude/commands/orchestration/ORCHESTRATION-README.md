@@ -123,10 +123,10 @@ The system helps you make professional commits:
 
 Your tasks are organized like a filing cabinet:
 
-📁 **todos/** - Tasks ready to start  
-📁 **in_progress/** - What you're working on now  
-📁 **qa/** - Finished but needs testing  
-📁 **completed/** - All done!  
+📁 **todos/** - Tasks ready to start
+📁 **in_progress/** - What you're working on now
+📁 **qa/** - Finished but needs testing
+📁 **completed/** - All done!
 📁 **on_hold/** - Waiting for something
 
 ## Complete Command Reference

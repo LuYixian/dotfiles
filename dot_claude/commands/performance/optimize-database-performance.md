@@ -108,13 +108,13 @@ Optimize database queries and performance
    class IndexAnalyzer {
      static async analyzeUnusedIndexes() {
        const query = `
-         SELECT 
+         SELECT
            schemaname,
            tablename,
            indexname,
            idx_scan,
            pg_size_pretty(pg_relation_size(indexrelid)) as size
-         FROM pg_stat_user_indexes 
+         FROM pg_stat_user_indexes
          WHERE idx_scan = 0
          AND schemaname = 'public'
          ORDER BY pg_relation_size(indexrelid) DESC;
@@ -127,12 +127,12 @@ Optimize database queries and performance
 
      static async suggestIndexes() {
        const query = `
-         SELECT 
+         SELECT
            query,
            calls,
            total_time,
            mean_time
-         FROM pg_stat_statements 
+         FROM pg_stat_statements
          WHERE mean_time > 100
          AND query NOT LIKE '%pg_%'
          ORDER BY total_time DESC
@@ -376,24 +376,24 @@ Optimize database queries and performance
          },
          {
            name: "long_running_queries",
-           query: `SELECT pid, now() - pg_stat_activity.query_start AS duration, query 
-                   FROM pg_stat_activity 
+           query: `SELECT pid, now() - pg_stat_activity.query_start AS duration, query
+                   FROM pg_stat_activity
                    WHERE (now() - pg_stat_activity.query_start) > interval '5 minutes';`,
          },
          {
            name: "table_sizes",
-           query: `SELECT relname AS table_name, 
+           query: `SELECT relname AS table_name,
                           pg_size_pretty(pg_total_relation_size(relid)) AS size
-                   FROM pg_catalog.pg_statio_user_tables 
+                   FROM pg_catalog.pg_statio_user_tables
                    ORDER BY pg_total_relation_size(relid) DESC LIMIT 10;`,
          },
          {
            name: "index_usage",
-           query: `SELECT relname AS table_name, 
+           query: `SELECT relname AS table_name,
                           indexrelname AS index_name,
                           idx_scan AS index_scans,
                           seq_scan AS sequential_scans
-                   FROM pg_stat_user_indexes 
+                   FROM pg_stat_user_indexes
                    WHERE seq_scan > idx_scan;`,
          },
        ];
@@ -414,9 +414,9 @@ Optimize database queries and performance
      static async alertOnSlowQueries() {
        const slowQueries = await pool.query(`
          SELECT query, calls, total_time, mean_time, stddev_time
-         FROM pg_stat_statements 
-         WHERE mean_time > 1000 
-         ORDER BY mean_time DESC 
+         FROM pg_stat_statements
+         WHERE mean_time > 1000
+         ORDER BY mean_time DESC
          LIMIT 10;
        `);
 
@@ -525,17 +525,17 @@ Optimize database queries and performance
    class MaintenanceMonitor {
      static async checkTableBloat() {
        const query = `
-         SELECT 
+         SELECT
            tablename,
            pg_size_pretty(pg_total_relation_size(tablename::regclass)) as size,
            n_dead_tup,
            n_live_tup,
-           CASE 
-             WHEN n_live_tup > 0 
-             THEN round(n_dead_tup::numeric / n_live_tup::numeric, 2) 
-             ELSE 0 
+           CASE
+             WHEN n_live_tup > 0
+             THEN round(n_dead_tup::numeric / n_live_tup::numeric, 2)
+             ELSE 0
            END as dead_ratio
-         FROM pg_stat_user_tables 
+         FROM pg_stat_user_tables
          WHERE n_dead_tup > 1000
          ORDER BY dead_ratio DESC;
        `;
@@ -556,8 +556,8 @@ Optimize database queries and performance
 
      static async reindexIfNeeded() {
        const bloatedIndexes = await pool.query(`
-         SELECT indexname, tablename 
-         FROM pg_stat_user_indexes 
+         SELECT indexname, tablename
+         FROM pg_stat_user_indexes
          WHERE idx_scan = 0 AND pg_relation_size(indexrelid) > 10485760; -- > 10MB
        `);
 
@@ -638,9 +638,9 @@ Optimize database queries and performance
       console.log("Simple query benchmark:", simpleQuery);
 
       const complexQuery = await DatabaseLoadTester.benchmarkQuery(
-        `SELECT p.*, c.name as category 
-         FROM products p 
-         JOIN categories c ON p.category_id = c.id 
+        `SELECT p.*, c.name as category
+         FROM products p
+         JOIN categories c ON p.category_id = c.id
          ORDER BY p.created_at DESC LIMIT 50`,
       );
       console.log("Complex query benchmark:", complexQuery);
