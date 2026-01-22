@@ -5,7 +5,6 @@ Containerize application for deployment
 ## Instructions
 
 1. **Application Analysis and Containerization Strategy**
-
    - Analyze application architecture and runtime requirements
    - Identify application dependencies and external services
    - Determine optimal base image and runtime environment
@@ -13,7 +12,6 @@ Containerize application for deployment
    - Assess security requirements and compliance needs
 
 2. **Dockerfile Creation and Optimization**
-
    - Create comprehensive Dockerfile with multi-stage builds
    - Select minimal base images (Alpine, distroless, or slim variants)
    - Configure proper layer caching and build optimization
@@ -21,7 +19,6 @@ Containerize application for deployment
    - Set up proper file permissions and ownership
 
 3. **Build Process Configuration**
-
    - Configure .dockerignore file to exclude unnecessary files
    - Set up build arguments and environment variables
    - Implement build-time dependency installation and cleanup
@@ -29,7 +26,6 @@ Containerize application for deployment
    - Set up proper build context and file structure
 
 4. **Runtime Configuration**
-
    - Configure application startup and health checks
    - Set up proper signal handling and graceful shutdown
    - Configure logging and output redirection
@@ -37,7 +33,6 @@ Containerize application for deployment
    - Configure resource limits and performance tuning
 
 5. **Security Hardening**
-
    - Run application as non-root user with minimal privileges
    - Configure security scanning and vulnerability assessment
    - Implement secrets management and secure credential handling
@@ -45,7 +40,6 @@ Containerize application for deployment
    - Configure security policies and access controls
 
 6. **Docker Compose Configuration**
-
    - Create docker-compose.yml for local development
    - Configure service dependencies and networking
    - Set up volume mounting and data persistence
@@ -53,7 +47,6 @@ Containerize application for deployment
    - Set up development vs production configurations
 
 7. **Container Orchestration Preparation**
-
    - Prepare configurations for Kubernetes deployment
    - Create deployment manifests and service definitions
    - Configure ingress and load balancing
@@ -61,7 +54,6 @@ Containerize application for deployment
    - Configure auto-scaling and resource management
 
 8. **Monitoring and Observability**
-
    - Configure application metrics and health endpoints
    - Set up logging aggregation and centralized logging
    - Configure distributed tracing and monitoring
@@ -69,7 +61,6 @@ Containerize application for deployment
    - Configure performance monitoring and profiling
 
 9. **CI/CD Integration**
-
    - Configure automated Docker image building
    - Set up image scanning and security validation
    - Configure image registry and artifact management

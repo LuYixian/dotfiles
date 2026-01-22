@@ -7,7 +7,6 @@ Analyze and report test coverage
 Follow this systematic approach to analyze and improve test coverage: **$ARGUMENTS**
 
 1. **Coverage Tool Setup**
-
    - Identify and configure appropriate coverage tools:
      - JavaScript/Node.js: Jest, NYC, Istanbul
      - Python: Coverage.py, pytest-cov
@@ -18,7 +17,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
    - Set up coverage thresholds and quality gates
 
 2. **Baseline Coverage Analysis**
-
    - Run existing tests with coverage reporting
    - Generate comprehensive coverage reports
    - Document current coverage percentages:
@@ -29,7 +27,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
    - Identify uncovered code areas
 
 3. **Coverage Report Analysis**
-
    - Review detailed coverage reports by file and directory
    - Identify critical uncovered code paths
    - Analyze branch coverage for conditional logic
@@ -37,7 +34,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
    - Examine coverage trends over time
 
 4. **Critical Path Identification**
-
    - Identify business-critical code that lacks coverage
    - Prioritize high-risk, low-coverage areas
    - Focus on public APIs and interfaces
@@ -45,7 +41,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
    - Examine security-sensitive code paths
 
 5. **Test Gap Analysis**
-
    - Categorize uncovered code:
      - Business logic requiring immediate testing
      - Error handling and exception paths
@@ -54,7 +49,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
      - Dead or obsolete code to remove
 
 6. **Strategic Test Writing**
-
    - Write unit tests for uncovered business logic
    - Add integration tests for uncovered workflows
    - Create tests for error conditions and edge cases
@@ -62,7 +56,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
    - Add regression tests for bug-prone areas
 
 7. **Branch Coverage Improvement**
-
    - Identify uncovered conditional branches
    - Test both true and false conditions
    - Cover all switch/case statements
@@ -70,7 +63,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
    - Verify loop conditions and iterations
 
 8. **Edge Case Testing**
-
    - Test boundary conditions and limits
    - Test null, empty, and invalid inputs
    - Test timeout and network failure scenarios
@@ -78,7 +70,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
    - Test concurrent access and race conditions
 
 9. **Mock and Stub Strategy**
-
    - Mock external dependencies for better isolation
    - Stub complex operations to focus on logic
    - Use dependency injection for testability
@@ -86,7 +77,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
    - Implement proper cleanup for test resources
 
 10. **Performance Impact Assessment**
-
     - Measure test execution time with new tests
     - Optimize slow tests without losing coverage
     - Parallelize test execution where possible
@@ -94,7 +84,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
     - Consider test categorization (fast/slow, unit/integration)
 
 11. **Coverage Quality Assessment**
-
     - Ensure tests actually verify behavior, not just execution
     - Check for meaningful assertions in tests
     - Avoid testing implementation details
@@ -104,28 +93,24 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
 12. **Framework-Specific Coverage Enhancement**
 
     **For Web Applications:**
-
     - Test API endpoints and HTTP status codes
     - Test form validation and user input handling
     - Test authentication and authorization flows
     - Test error pages and user feedback
 
     **For Mobile Applications:**
-
     - Test device-specific functionality
     - Test different screen sizes and orientations
     - Test offline and network connectivity scenarios
     - Test platform-specific features
 
     **For Backend Services:**
-
     - Test database operations and transactions
     - Test message queue processing
     - Test caching and performance optimizations
     - Test service integrations and API calls
 
 13. **Continuous Coverage Monitoring**
-
     - Set up automated coverage reporting in CI/CD
     - Configure coverage thresholds to prevent regression
     - Generate coverage badges and reports
@@ -133,7 +118,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
     - Alert on significant coverage decreases
 
 14. **Coverage Exclusion Management**
-
     - Properly exclude auto-generated code
     - Exclude third-party libraries and dependencies
     - Document reasons for coverage exclusions
@@ -141,7 +125,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
     - Avoid excluding code that should be tested
 
 15. **Team Coverage Goals**
-
     - Set realistic coverage targets based on project needs
     - Establish minimum coverage requirements for new code
     - Create coverage improvement roadmap
@@ -149,7 +132,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
     - Celebrate coverage milestones and improvements
 
 16. **Coverage Reporting and Communication**
-
     - Generate clear, actionable coverage reports
     - Create coverage dashboards for stakeholders
     - Document coverage improvement strategies
@@ -157,7 +139,6 @@ Follow this systematic approach to analyze and improve test coverage: **$ARGUMEN
     - Integrate coverage into project health metrics
 
 17. **Mutation Testing (Advanced)**
-
     - Implement mutation testing to validate test quality
     - Identify tests that don't catch actual bugs
     - Improve test assertions and edge case coverage

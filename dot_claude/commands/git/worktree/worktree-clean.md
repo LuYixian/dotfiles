@@ -56,7 +56,6 @@ git worktree prune --dry-run
 ### Safe to Remove (Merged)
 
 - /project-worktrees/feature-auth [feature/auth]
-
   - Merged to main on 2024-01-15
   - PR #123 closed
 

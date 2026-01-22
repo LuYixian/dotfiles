@@ -63,13 +63,11 @@ allowed-tools: [Tool1, Tool2] # Only if restricting tools
 Clear, step-by-step guidance for Claude to follow:
 
 1. **[Step Category]**
-
    - [Specific action]: [Clear description]
    - [Expected outcome]: [What should happen]
    - [Example]: \`command or code\`
 
 2. **[Next Step Category]**
-
    - [Detailed sub-step 1]
    - [Detailed sub-step 2]
    - [Error handling guidance]
@@ -610,17 +608,14 @@ Before finalizing, verify:
 ### Writing Style
 
 1. **Be Direct**
-
    - ❌ "You might want to consider possibly using..."
    - ✅ "Use X when Y"
 
 2. **Be Specific**
-
    - ❌ "Configure the settings appropriately"
    - ✅ "Set timeout to 30 seconds"
 
 3. **Be Active**
-
    - ❌ "The file can be processed by..."
    - ✅ "Process the file with..."
 
@@ -632,13 +627,11 @@ Before finalizing, verify:
 ### Example Quality
 
 1. **Real-World Examples**
-
    - Use realistic data
    - Show actual use cases
    - Include context
 
 2. **Progressive Complexity**
-
    - Start simple
    - Build up gradually
    - Don't assume knowledge
@@ -651,7 +644,6 @@ Before finalizing, verify:
 ### Code Documentation
 
 1. **Inline Comments**
-
    - Explain the "why" not the "what"
    - Highlight non-obvious behavior
    - Warn about gotchas

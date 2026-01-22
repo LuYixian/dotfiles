@@ -5,14 +5,12 @@ Create a new epic following the Product as Code specification with guided workfl
 ## Instructions
 
 1. **Validate PAC Configuration**
-
    - Check if `.pac/` directory exists
    - Verify PAC configuration file exists at `.pac/pac.config.yaml`
    - If not configured, suggest running `/project:pac-configure` first
    - Parse arguments: `$ARGUMENTS`
 
 2. **Epic Information Gathering**
-
    - If arguments provided, parse:
      - `--name <name>`: Epic name
      - `--description <desc>`: Epic description
@@ -27,7 +25,6 @@ Create a new epic following the Product as Code specification with guided workfl
      - Success criteria (at least 2-3 items)
 
 3. **Generate Epic ID**
-
    - If not provided, generate from epic name:
      - Convert to lowercase
      - Replace spaces with hyphens
@@ -36,7 +33,6 @@ Create a new epic following the Product as Code specification with guided workfl
    - Validate uniqueness against existing epics
 
 4. **Create Epic Structure**
-
    - Generate epic YAML following PAC v0.1.0 specification:
 
      ```yaml
@@ -73,7 +69,6 @@ Create a new epic following the Product as Code specification with guided workfl
      ```
 
 5. **Validate Epic Content**
-
    - Check all required fields are present
    - Validate apiVersion matches specification
    - Ensure metadata has required identifiers
@@ -81,7 +76,6 @@ Create a new epic following the Product as Code specification with guided workfl
    - Check YAML syntax is valid
 
 6. **Save Epic File**
-
    - Determine filename: `.pac/epics/[epic-id].yaml`
    - Check if file already exists
    - If exists, ask user to confirm overwrite
@@ -89,13 +83,11 @@ Create a new epic following the Product as Code specification with guided workfl
    - Set appropriate file permissions
 
 7. **Create Epic Directory Structure**
-
    - Create `.pac/epics/[epic-id]/` directory for epic-specific docs
    - Add `.pac/epics/[epic-id]/README.md` with epic overview
    - Create `.pac/epics/[epic-id]/tickets/` for future ticket links
 
 8. **Update PAC Index**
-
    - If `.pac/index.yaml` exists, add epic entry:
      ```yaml
      epics:
@@ -107,9 +99,7 @@ Create a new epic following the Product as Code specification with guided workfl
      ```
 
 9. **Git Integration**
-
    - If in git repository:
-
      - Add new epic file to git
      - Create branch `pac/[epic-id]` for epic work
      - Prepare commit message:

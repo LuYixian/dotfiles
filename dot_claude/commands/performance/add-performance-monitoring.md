@@ -5,7 +5,6 @@ Setup application performance monitoring
 ## Instructions
 
 1. **Performance Monitoring Strategy**
-
    - Define key performance indicators (KPIs) and service level objectives (SLOs)
    - Identify critical user journeys and performance bottlenecks
    - Plan monitoring architecture and data collection strategy
@@ -13,7 +12,6 @@ Setup application performance monitoring
    - Define alerting thresholds and escalation procedures
 
 2. **Application Performance Monitoring (APM)**
-
    - Set up comprehensive APM monitoring:
 
    **Node.js APM with New Relic:**
@@ -150,7 +148,6 @@ Setup application performance monitoring
    ```
 
 3. **Real User Monitoring (RUM)**
-
    - Implement client-side performance tracking:
 
    **Web Vitals Monitoring:**
@@ -334,7 +331,6 @@ Setup application performance monitoring
    ```
 
 4. **Server Performance Monitoring**
-
    - Monitor server-side performance metrics:
 
    **System Metrics Collection:**
@@ -494,7 +490,6 @@ Setup application performance monitoring
    ```
 
 5. **Database Performance Monitoring**
-
    - Monitor database query performance:
 
    **Query Performance Tracking:**
@@ -632,7 +627,6 @@ Setup application performance monitoring
    ```
 
 6. **Error Tracking and Monitoring**
-
    - Implement comprehensive error monitoring:
 
    **Error Tracking Setup:**
@@ -739,7 +733,6 @@ Setup application performance monitoring
    ```
 
 7. **Custom Metrics and Dashboards**
-
    - Create custom performance dashboards:
 
    **Prometheus Metrics:**
@@ -839,7 +832,6 @@ Setup application performance monitoring
    ```
 
 8. **Alerting and Notification System**
-
    - Set up intelligent alerting:
 
    **Alert Manager:**
@@ -1000,7 +992,6 @@ Setup application performance monitoring
    ```
 
 9. **Performance Testing Integration**
-
    - Integrate with performance testing:
 
    **Load Test Monitoring:**
@@ -1112,7 +1103,6 @@ Setup application performance monitoring
    ```
 
 10. **Performance Optimization Recommendations**
-
     - Generate actionable performance insights:
 
     **Performance Analyzer:**

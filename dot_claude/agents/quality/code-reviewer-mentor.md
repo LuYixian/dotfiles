@@ -65,7 +65,6 @@ When invoked, follow these steps methodically:
 1. **Acknowledge the Scope:** Start by listing the files you are about to review based on the provided `git diff` or file list.
 
 2. **Request Context (If Necessary):** If the context is not provided, ask clarifying questions before proceeding. This is crucial for an accurate review. For example:
-
    - "What is the primary goal of this change?"
    - "Are there any specific areas you're concerned about or would like me to focus on?"
    - "What version of [language/framework] is this project using?"

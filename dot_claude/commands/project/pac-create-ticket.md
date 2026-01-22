@@ -5,14 +5,12 @@ Create a new ticket within an epic following the Product as Code specification
 ## Instructions
 
 1. **Validate PAC Environment**
-
    - Verify `.pac/` directory exists
    - Check PAC configuration at `.pac/pac.config.yaml`
    - If not configured, suggest running `/project:pac-configure`
    - Parse arguments from: `$ARGUMENTS`
 
 2. **Epic Selection**
-
    - If `--epic <epic-id>` provided, validate epic exists
    - Otherwise, list available epics from `.pac/epics/`:
      - Show epic ID, name, and ticket count
@@ -20,7 +18,6 @@ Create a new ticket within an epic following the Product as Code specification
    - Load selected epic to understand context
 
 3. **Ticket Information Gathering**
-
    - Parse command arguments:
      - `--name <name>`: Ticket name
      - `--type <type>`: feature/bug/task/spike
@@ -36,14 +33,12 @@ Create a new ticket within an epic following the Product as Code specification
      - Initial status (default: backlog)
 
 4. **Generate Ticket ID**
-
    - Create ID format: `ticket-[epic-short-name]-[sequence]`
    - Example: `ticket-auth-001`, `ticket-auth-002`
    - Check existing tickets in epic to determine sequence
    - Ensure uniqueness across all tickets
 
 5. **Define Acceptance Criteria**
-
    - Prompt for acceptance criteria (at least 2 items)
    - Format as checkbox list:
      ```yaml
@@ -54,7 +49,6 @@ Create a new ticket within an epic following the Product as Code specification
      ```
 
 6. **Define Implementation Tasks**
-
    - Prompt for implementation tasks
    - Break down work into actionable items:
      ```yaml
@@ -67,7 +61,6 @@ Create a new ticket within an epic following the Product as Code specification
      ```
 
 7. **Create Ticket Structure**
-
    - Generate ticket YAML following PAC v0.1.0:
 
      ```yaml
@@ -108,7 +101,6 @@ Create a new ticket within an epic following the Product as Code specification
      ```
 
 8. **Estimate Effort**
-
    - Prompt for effort estimation:
      - Story points (1, 2, 3, 5, 8, 13)
      - T-shirt size (XS, S, M, L, XL)
@@ -116,7 +108,6 @@ Create a new ticket within an epic following the Product as Code specification
    - Add to metadata labels
 
 9. **Link to Epic**
-
    - Update parent epic file to include ticket reference:
      ```yaml
      spec:
@@ -128,14 +119,12 @@ Create a new ticket within an epic following the Product as Code specification
      ```
 
 10. **Save Ticket File**
-
     - Save to: `.pac/tickets/[ticket-id].yaml`
     - Create symbolic link in epic directory:
       `.pac/epics/[epic-id]/tickets/[ticket-id].yaml`
     - Validate file was created successfully
 
 11. **Create Branch (Optional)**
-
     - If `--create-branch` flag or git integration enabled:
       - Create branch: `feature/[ticket-id]`
       - Include branch name in ticket metadata

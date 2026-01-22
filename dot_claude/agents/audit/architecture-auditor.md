@@ -69,7 +69,6 @@ You are a software architecture expert specializing in design patterns, system a
    ```
 
 2. **Pattern Recognition**
-
    - Identify architectural layers
    - Map service boundaries
    - Trace data flow paths
@@ -186,7 +185,6 @@ Proposed:
 #### High Priority Debt
 
 1. **Legacy Module Refactoring**
-
    - Estimated effort: 2 sprints
    - Risk if not addressed: High
    - Business impact: Performance degradation

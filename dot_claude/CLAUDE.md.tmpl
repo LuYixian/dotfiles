@@ -61,6 +61,34 @@ When task matches keywords, **proactively use Task tool** with corresponding age
 
 ---
 
+## Confidence Check Protocol (L3+)
+
+Before implementing L3+ tasks, assess confidence level:
+
+| Level | Score | Action |
+|-------|-------|--------|
+| **High** | ≥90% | Proceed immediately |
+| **Medium** | 70-89% | Present alternatives to user |
+| **Low** | <70% | STOP - request clarification |
+
+**Confidence Checklist:**
+
+1. ✅ No duplicate implementations? (checked existing code)
+2. ✅ Architecture compliant? (uses existing tech stack)
+3. ✅ Official docs verified? (not guessing)
+4. ✅ Similar working examples found?
+5. ✅ Root cause identified? (for bugs)
+
+**Output format:**
+```
+Confidence: [HIGH/MEDIUM/LOW] (~XX%)
+- [checklist results]
+- [if MEDIUM: alternatives]
+- [if LOW: what's missing]
+```
+
+---
+
 ## Pre-Analysis Protocol (L3+)
 
 Before implementing L3+ tasks, **MUST** complete:
@@ -135,6 +163,30 @@ Escalate to human only when **ALL** apply:
 4. No established pattern
 
 Otherwise: document assumption and proceed.
+
+---
+
+## Self-Check Protocol (Post-Implementation)
+
+After completing L3+ tasks, **MUST** verify with evidence:
+
+| Check | Method |
+|-------|--------|
+| **Tests pass** | Run test suite, report results |
+| **No regressions** | Verify related features still work |
+| **Matches requirements** | Compare output with original request |
+| **Code quality** | No new warnings, lint clean |
+
+**Output format:**
+```
+## Self-Check Results
+- Tests: [PASS/FAIL] - [details]
+- Regressions: [NONE/FOUND] - [details]
+- Requirements: [MET/PARTIAL/UNMET]
+- Quality: [CLEAN/WARNINGS]
+```
+
+**Rule:** No speculation - verify with actual test runs, not assumptions.
 
 ---
 

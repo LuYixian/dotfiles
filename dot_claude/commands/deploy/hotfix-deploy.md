@@ -7,7 +7,6 @@ Deploy critical hotfixes quickly
 Follow this emergency hotfix deployment process: **$ARGUMENTS**
 
 1. **Emergency Assessment and Triage**
-
    - Assess the severity and impact of the issue
    - Determine if a hotfix is necessary or if it can wait
    - Identify affected systems and user impact
@@ -15,7 +14,6 @@ Follow this emergency hotfix deployment process: **$ARGUMENTS**
    - Document the incident and decision rationale
 
 2. **Incident Response Setup**
-
    - Create incident tracking in your incident management system
    - Set up war room or communication channel
    - Notify stakeholders and on-call team members
@@ -37,7 +35,6 @@ Follow this emergency hotfix deployment process: **$ARGUMENTS**
    ```
 
 4. **Rapid Development Process**
-
    - Keep changes minimal and focused on the critical issue only
    - Avoid refactoring, optimization, or unrelated improvements
    - Use well-tested patterns and established approaches
@@ -59,7 +56,6 @@ Follow this emergency hotfix deployment process: **$ARGUMENTS**
    ```
 
 6. **Fast-Track Code Review**
-
    - Get expedited review from senior team member
    - Focus review on security and correctness
    - Use pair programming if available and time permits
@@ -187,7 +183,6 @@ Follow this emergency hotfix deployment process: **$ARGUMENTS**
     ```
 
 13. **Communication and Status Updates**
-
     - Provide regular status updates to stakeholders
     - Use consistent communication channels
     - Document deployment progress and results
@@ -216,7 +211,6 @@ Follow this emergency hotfix deployment process: **$ARGUMENTS**
     ```
 
 15. **Post-Deployment Monitoring Period**
-
     - Monitor system for 2-4 hours after deployment
     - Watch error rates and performance metrics closely
     - Check user feedback and support ticket volume
@@ -224,7 +218,6 @@ Follow this emergency hotfix deployment process: **$ARGUMENTS**
     - Document any issues or unexpected behaviors
 
 16. **Documentation and Incident Reporting**
-
     - Document the complete hotfix process and timeline
     - Record lessons learned and process improvements
     - Update incident management systems with resolution

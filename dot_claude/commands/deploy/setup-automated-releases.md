@@ -7,14 +7,12 @@ Setup automated release workflows
 Set up automated releases following industry best practices:
 
 1. **Analyze Repository Structure**
-
    - Detect project type (Node.js, Python, Go, etc.)
    - Check for existing CI/CD workflows
    - Identify current versioning approach
    - Review existing release processes
 
 2. **Create Version Tracking**
-
    - For Node.js: Use package.json version field
    - For Python: Use **version** in **init**.py or pyproject.toml
    - For Go: Use version in go.mod
@@ -22,7 +20,6 @@ Set up automated releases following industry best practices:
    - Ensure version follows semantic versioning (MAJOR.MINOR.PATCH)
 
 3. **Set Up Conventional Commits**
-
    - Create CONTRIBUTING.md with commit conventions:
      - `feat:` for new features (minor bump)
      - `fix:` for bug fixes (patch bump)
@@ -31,14 +28,12 @@ Set up automated releases following industry best practices:
    - Include examples and guidelines for each type
 
 4. **Create Pull Request Template**
-
    - Add `.github/pull_request_template.md`
    - Include conventional commit reminder
    - Add checklist for common requirements
    - Reference contributing guidelines
 
 5. **Create Release Workflow**
-
    - Add `.github/workflows/release.yml`:
      - Trigger on push to main branch
      - Analyze commits since last release
@@ -52,7 +47,6 @@ Set up automated releases following industry best practices:
    - Include manual trigger option for forced releases
 
 6. **Create PR Validation Workflow**
-
    - Add `.github/workflows/pr-check.yml`:
      - Validate PR title follows conventional format
      - Check commit messages
@@ -60,14 +54,12 @@ Set up automated releases following industry best practices:
      - Run tests and quality checks
 
 7. **Configure GitHub Release Notes**
-
    - Create `.github/release.yml`
    - Define categories for different change types
    - Configure changelog exclusions
    - Set up contributor recognition
 
 8. **Update Documentation**
-
    - Add release badges to README:
      - Current version badge
      - Latest release badge
@@ -77,14 +69,12 @@ Set up automated releases following industry best practices:
    - Explain version bump rules
 
 9. **Set Up Changelog Management**
-
    - Ensure CHANGELOG.md follows Keep a Changelog format
    - Add [Unreleased] section for upcoming changes
    - Configure automatic changelog updates
    - Set up changelog categories
 
 10. **Configure Branch Protection**
-
     - Recommend branch protection rules:
       - Require PR reviews
       - Require status checks
@@ -93,7 +83,6 @@ Set up automated releases following industry best practices:
     - Document recommended settings
 
 11. **Add Security Scanning**
-
     - Set up Dependabot for dependency updates
     - Configure security alerts
     - Add security policy if needed

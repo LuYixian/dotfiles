@@ -9,21 +9,18 @@ _Command originally created by IndyDevDan (YouTube: https://www.youtube.com/@ind
 Analyze the current state of the git repository by performing the following steps:
 
 1. **Run Git Status Commands**
-
    - Execute `git status` to see current working tree state
    - Run `git diff HEAD origin/main` to check differences with remote
    - Execute `git branch --show-current` to display current branch
    - Check for uncommitted changes and untracked files
 
 2. **Analyze Repository State**
-
    - Identify staged vs unstaged changes
    - List any untracked files
    - Check if branch is ahead/behind remote
    - Review any merge conflicts if present
 
 3. **Read Key Files**
-
    - Review README.md for project context
    - Check for any recent changes in important files
    - Understand project structure if needed

@@ -11,13 +11,11 @@ This command orchestrates four specialized agents to build production-ready Clau
 **Agent**: `skill-elicitation-agent`
 
 1. **Activate Elicitation Agent**
-
    - Launch the skill-elicitation-agent using the Task tool
    - Provide context: "The user wants to create a new Claude Code Skill"
    - Include any initial requirements or ideas the user has shared
 
 2. **Elicitation Questions**
-
    - The agent will ask 3-5 targeted questions to understand:
      - Purpose and scope of the skill
      - Complexity and structure requirements
@@ -26,7 +24,6 @@ This command orchestrates four specialized agents to build production-ready Clau
      - Success criteria
 
 3. **Specification Creation**
-
    - Agent will create a comprehensive skill specification document
    - Includes: metadata, structure, instructions outline, code needs, examples, dependencies
    - Uses progressive disclosure strategy
@@ -43,13 +40,11 @@ This command orchestrates four specialized agents to build production-ready Clau
 **Agent**: `skill-generator-agent`
 
 1. **Activate Generator Agent**
-
    - Launch the skill-generator-agent using the Task tool
    - Pass the approved specification document
    - Specify target location (personal, project, or plugin skill)
 
 2. **Directory Structure Creation**
-
    - Agent creates appropriate directory structure:
      ```
      skill-name/
@@ -61,21 +56,18 @@ This command orchestrates four specialized agents to build production-ready Clau
      ```
 
 3. **SKILL.md Generation**
-
    - Creates main skill file with proper frontmatter
    - Includes clear instructions and examples
    - Follows progressive disclosure principles
    - Links to supporting files
 
 4. **Supporting Files Generation**
-
    - Creates reference documentation
    - Generates example files
    - Writes scripts with proper error handling
    - Creates reusable templates
 
 5. **Dependency Documentation**
-
    - Documents all required packages
    - Provides installation instructions
    - Notes version requirements
@@ -91,48 +83,41 @@ This command orchestrates four specialized agents to build production-ready Clau
 **Agent**: `skill-validator-agent`
 
 1. **Activate Validator Agent**
-
    - Launch the skill-validator-agent using the Task tool
    - Provide path to generated skill
    - Request comprehensive validation
 
 2. **YAML Validation**
-
    - Check frontmatter syntax
    - Verify required fields
    - Validate optional fields
    - Test YAML parsing
 
 3. **Description Analysis**
-
    - Assess discoverability
    - Check trigger keywords
    - Verify clarity and completeness
    - Compare to best practices
 
 4. **Structure Validation**
-
    - Verify file organization
    - Check all references
    - Test script execution
    - Validate permissions
 
 5. **Code Testing**
-
    - Syntax validation
    - Security checks
    - Dependency verification
    - Error handling tests
 
 6. **Integration Testing**
-
    - Test skill loading
    - Verify triggering
    - Check execution flow
    - Validate outputs
 
 7. **Validation Report**
-
    - Generate comprehensive report
    - Score each category
    - List issues by severity
@@ -148,34 +133,29 @@ This command orchestrates four specialized agents to build production-ready Clau
 **Agent**: `skill-documenter-agent`
 
 1. **Activate Documenter Agent**
-
    - Launch the skill-documenter-agent using the Task tool
    - Provide skill path and specification
    - Request comprehensive documentation
 
 2. **SKILL.md Enhancement**
-
    - Refine instructions for clarity
    - Add comprehensive examples
    - Include best practices
    - Create troubleshooting section
 
 3. **Reference Documentation**
-
    - Create detailed technical reference (if needed)
    - Document API and configuration
    - Provide advanced patterns
    - Include performance tuning tips
 
 4. **Example Collection**
-
    - Generate beginner to advanced examples
    - Include troubleshooting examples
    - Show integration patterns
    - Provide case studies
 
 5. **README Creation**
-
    - Create skill directory README (if distributing)
    - Document installation
    - Provide quick start
@@ -190,21 +170,18 @@ This command orchestrates four specialized agents to build production-ready Clau
 ### Phase 5: Final Delivery
 
 1. **Generate Summary**
-
    - List all files created
    - Document location (personal/project/plugin)
    - Provide usage instructions
    - Include test scenarios
 
 2. **Installation Verification**
-
    - Confirm skill is in correct location
    - Verify file permissions
    - Check dependencies documented
    - Test skill loading
 
 3. **Usage Guide**
-
    - Explain how to trigger the skill
    - Provide example prompts
    - Show expected behavior
@@ -258,25 +235,21 @@ Final Delivery
 ## Best Practices
 
 1. **Always Start with Elicitation**
-
    - Don't skip the question phase
    - Understand deeply before building
    - Get user approval on specification
 
 2. **Use All Four Agents**
-
    - Each has specialized expertise
    - Complete flow ensures quality
    - Don't shortcut the process
 
 3. **Iterate Based on Validation**
-
    - Fix issues immediately
    - Re-validate after changes
    - Don't proceed with failures
 
 4. **Test Comprehensively**
-
    - Manual trigger testing
    - Script execution testing
    - Integration testing

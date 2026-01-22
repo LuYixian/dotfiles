@@ -5,7 +5,6 @@ Setup mutation testing for code quality
 ## Instructions
 
 1. **Mutation Testing Strategy Analysis**
-
    - Analyze current test suite coverage and quality
    - Identify critical code paths and business logic for mutation testing
    - Assess existing testing infrastructure and CI/CD integration points
@@ -13,7 +12,6 @@ Setup mutation testing for code quality
    - Plan mutation testing integration with existing quality gates
 
 2. **Mutation Testing Tool Selection**
-
    - Choose appropriate mutation testing framework:
      - **JavaScript/TypeScript**: Stryker, Mutode
      - **Java**: PIT (Pitest), Major
@@ -25,7 +23,6 @@ Setup mutation testing for code quality
    - Consider factors: language support, performance, CI integration, reporting
 
 3. **Mutation Testing Configuration**
-
    - Install and configure mutation testing framework
    - Set up mutation testing configuration files and settings
    - Configure mutation operators and strategies
@@ -33,7 +30,6 @@ Setup mutation testing for code quality
    - Configure performance and timeout settings
 
 4. **Mutation Operator Configuration**
-
    - Configure arithmetic operator mutations (+, -, \*, /, %)
    - Set up relational operator mutations (<, >, <=, >=, ==, !=)
    - Configure logical operator mutations (&&, ||, !)
@@ -41,7 +37,6 @@ Setup mutation testing for code quality
    - Configure statement deletion and insertion mutations
 
 5. **Test Execution and Performance**
-
    - Configure mutation test execution strategy and parallelization
    - Set up incremental mutation testing for large codebases
    - Configure mutation testing timeouts and resource limits
@@ -49,7 +44,6 @@ Setup mutation testing for code quality
    - Configure selective mutation testing for changed code
 
 6. **Quality Metrics and Thresholds**
-
    - Set up mutation score calculation and reporting
    - Configure mutation testing thresholds and quality gates
    - Set up mutation survival analysis and reporting
@@ -57,7 +51,6 @@ Setup mutation testing for code quality
    - Set up mutation testing trend analysis
 
 7. **Integration with Testing Workflow**
-
    - Integrate mutation testing with existing test suites
    - Configure mutation testing execution order and dependencies
    - Set up mutation testing in development and CI environments
@@ -65,7 +58,6 @@ Setup mutation testing for code quality
    - Set up mutation testing feedback loops for developers
 
 8. **CI/CD Pipeline Integration**
-
    - Configure automated mutation testing in continuous integration
    - Set up mutation testing scheduling and triggers
    - Configure mutation testing result reporting and notifications
@@ -73,7 +65,6 @@ Setup mutation testing for code quality
    - Configure mutation testing deployment gates
 
 9. **Result Analysis and Remediation**
-
    - Set up mutation testing result analysis and visualization
    - Configure surviving mutant analysis and categorization
    - Set up test gap identification and remediation workflow

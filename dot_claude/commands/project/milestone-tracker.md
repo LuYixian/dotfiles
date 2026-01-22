@@ -5,14 +5,12 @@ Track and monitor project milestone progress
 ## Instructions
 
 1. **Check Available Tools**
-
    - Verify Linear MCP server connection
    - Check GitHub CLI availability
    - Test git repository access
    - Ensure required permissions
 
 2. **Gather Milestone Data**
-
    - Query Linear for project milestones and roadmap items
    - Fetch GitHub milestones and their associated issues
    - Analyze git tags for historical release patterns
@@ -21,7 +19,6 @@ Track and monitor project milestone progress
 
 3. **Analyze Milestone Progress**
    For each milestone:
-
    - Count completed vs. total tasks
    - Calculate percentage complete
    - Measure velocity trends
@@ -29,7 +26,6 @@ Track and monitor project milestone progress
    - Track time remaining
 
 4. **Perform Predictive Analysis**
-
    - Calculate burn-down rate from historical data
    - Project completion dates based on velocity
    - Factor in team capacity and holidays
@@ -38,7 +34,6 @@ Track and monitor project milestone progress
 
 5. **Risk Assessment**
    Evaluate each milestone for:
-
    - Schedule risk (falling behind)
    - Scope risk (expanding requirements)
    - Resource risk (team availability)
@@ -47,7 +42,6 @@ Track and monitor project milestone progress
 
 6. **Generate Milestone Report**
    Create comprehensive report showing:
-
    - Milestone timeline visualization
    - Progress indicators for each milestone
    - Predicted completion dates with confidence
@@ -55,7 +49,6 @@ Track and monitor project milestone progress
    - Recommended actions for at-risk items
 
 7. **Track Dependencies**
-
    - Map inter-milestone dependencies
    - Identify cross-team dependencies
    - Highlight critical path
@@ -308,7 +301,6 @@ gantt
 ### This Week
 
 1. **Unblock Performance Testing**
-
    - Owner: [Name]
    - Action: Provision test environment
    - Due: Friday EOD
@@ -321,7 +313,6 @@ gantt
 ### Next Sprint
 
 1. **Velocity Recovery Plan**
-
    - Reduce scope by 20%
    - Focus on critical path items
    - Defer nice-to-have features

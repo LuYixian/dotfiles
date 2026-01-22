@@ -5,7 +5,6 @@ Design RESTful API architecture
 ## Instructions
 
 1. **API Design Strategy and Planning**
-
    - Analyze business requirements and define API scope
    - Identify resources, entities, and their relationships
    - Plan API versioning strategy and backward compatibility
@@ -13,7 +12,6 @@ Design RESTful API architecture
    - Plan for scalability, rate limiting, and performance
 
 2. **RESTful Resource Design**
-
    - Design RESTful endpoints following REST principles:
 
    **Express.js API Structure:**
@@ -113,7 +111,6 @@ Design RESTful API architecture
    ```
 
 3. **Request/Response Data Models**
-
    - Define comprehensive data models and validation:
 
    **Data Validation with Joi:**
@@ -237,7 +234,6 @@ Design RESTful API architecture
    ```
 
 4. **Controller Implementation**
-
    - Implement robust controller logic:
 
    **User Controller Example:**
@@ -459,7 +455,6 @@ Design RESTful API architecture
    ```
 
 5. **API Response Standardization**
-
    - Implement consistent response formats:
 
    **API Response Utilities:**
@@ -589,7 +584,6 @@ Design RESTful API architecture
    ```
 
 6. **Authentication and Authorization**
-
    - Implement comprehensive auth system:
 
    **JWT Authentication Middleware:**
@@ -736,7 +730,6 @@ Design RESTful API architecture
    ```
 
 7. **API Documentation with OpenAPI/Swagger**
-
    - Generate comprehensive API documentation:
 
    **Swagger Configuration:**
@@ -1078,7 +1071,6 @@ Design RESTful API architecture
    ```
 
 8. **API Testing and Quality Assurance**
-
    - Implement comprehensive API testing:
 
    **API Test Suite:**
@@ -1273,7 +1265,6 @@ Design RESTful API architecture
    ```
 
 9. **API Versioning Strategy**
-
    - Implement flexible API versioning:
 
    **Version Management:**
@@ -1372,7 +1363,6 @@ Design RESTful API architecture
    ```
 
 10. **Production Monitoring and Analytics**
-
     - Implement API monitoring and analytics:
 
     **API Analytics Middleware:**

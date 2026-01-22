@@ -5,7 +5,6 @@ Design and implement caching solutions
 ## Instructions
 
 1. **Caching Strategy Analysis**
-
    - Analyze application architecture and identify caching opportunities
    - Assess current performance bottlenecks and data access patterns
    - Define caching requirements (TTL, invalidation, consistency)
@@ -13,7 +12,6 @@ Design and implement caching solutions
    - Evaluate caching technologies and storage solutions
 
 2. **Browser and Client-Side Caching**
-
    - Configure HTTP caching headers and cache policies:
 
    **HTTP Cache Headers:**
@@ -60,7 +58,6 @@ Design and implement caching solutions
    ```
 
 3. **Application-Level Caching**
-
    - Implement in-memory and distributed caching:
 
    **Node.js Memory Cache:**
@@ -174,7 +171,6 @@ Design and implement caching solutions
    ```
 
 4. **Database Query Caching**
-
    - Implement database-level caching strategies:
 
    **PostgreSQL Query Caching:**
@@ -265,7 +261,6 @@ Design and implement caching solutions
    ```
 
 5. **API Response Caching**
-
    - Implement comprehensive API caching:
 
    **Express Cache Middleware:**
@@ -342,7 +337,6 @@ Design and implement caching solutions
    ```
 
 6. **Cache Invalidation Strategies**
-
    - Implement intelligent cache invalidation:
 
    **Event-Driven Cache Invalidation:**
@@ -392,7 +386,6 @@ Design and implement caching solutions
    ```
 
 7. **Frontend Caching Strategies**
-
    - Implement client-side caching:
 
    **React Query Caching:**
@@ -475,7 +468,6 @@ Design and implement caching solutions
    ```
 
 8. **Cache Monitoring and Analytics**
-
    - Set up cache performance monitoring:
 
    **Cache Metrics Collection:**
@@ -541,7 +533,6 @@ Design and implement caching solutions
    ```
 
 9. **Cache Warming and Preloading**
-
    - Implement cache warming strategies:
 
    **Scheduled Cache Warming:**
@@ -590,7 +581,6 @@ Design and implement caching solutions
    ```
 
 10. **Testing and Validation**
-
     - Set up cache testing and validation:
 
     **Cache Testing:**

@@ -235,7 +235,6 @@ def evaluate_decision(option, constraints):
 ### Key Success Indicators
 
 1. **Leading Indicators**
-
    - Weekly active users growth >10%
    - Feature adoption rate >60%
    - NPS score >50

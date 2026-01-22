@@ -43,7 +43,6 @@ Setup code formatting following these steps: **$ARGUMENTS**
    ```
 
 3. **IDE Setup**
-
    - Install formatter extensions
    - Enable format on save
    - Configure keyboard shortcuts

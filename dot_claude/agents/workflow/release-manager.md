@@ -514,19 +514,16 @@ alerts:
 ## Best Practices
 
 1. **Progressive Rollout**
-
    - 1% → 10% → 50% → 100%
    - Monitor metrics at each stage
    - Automated rollback on anomalies
 
 2. **Feature Flags**
-
    - Deploy code separately from feature release
    - Gradual feature enablement
    - Quick disable without deployment
 
 3. **Deployment Windows**
-
    - Avoid high-traffic periods
    - Consider timezone differences
    - Plan for rollback time

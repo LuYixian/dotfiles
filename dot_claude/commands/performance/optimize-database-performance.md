@@ -5,7 +5,6 @@ Optimize database queries and performance
 ## Instructions
 
 1. **Database Performance Analysis**
-
    - Analyze current database performance and identify bottlenecks
    - Review slow query logs and execution plans
    - Assess database schema design and normalization
@@ -13,7 +12,6 @@ Optimize database queries and performance
    - Monitor database resource utilization (CPU, memory, I/O)
 
 2. **Query Optimization**
-
    - Optimize slow queries and improve execution plans:
 
    **PostgreSQL Query Optimization:**
@@ -62,7 +60,6 @@ Optimize database queries and performance
    ```
 
 3. **Index Strategy Optimization**
-
    - Design and implement optimal indexing strategy:
 
    **Index Analysis and Creation:**
@@ -150,7 +147,6 @@ Optimize database queries and performance
    ```
 
 4. **Schema Design Optimization**
-
    - Optimize database schema for performance:
 
    **Normalization and Denormalization:**
@@ -226,7 +222,6 @@ Optimize database queries and performance
    ```
 
 5. **Connection Pool Optimization**
-
    - Configure optimal database connection pooling:
 
    **Node.js Connection Pool Configuration:**
@@ -318,7 +313,6 @@ Optimize database queries and performance
    ```
 
 6. **Query Result Caching**
-
    - Implement intelligent database result caching:
 
    ```javascript
@@ -367,7 +361,6 @@ Optimize database queries and performance
    ```
 
 7. **Database Monitoring and Profiling**
-
    - Set up comprehensive database monitoring:
 
    **Performance Monitoring Script:**
@@ -441,7 +434,6 @@ Optimize database queries and performance
    ```
 
 8. **Read Replica and Load Balancing**
-
    - Configure read replicas for query distribution:
 
    ```javascript
@@ -501,7 +493,6 @@ Optimize database queries and performance
    ```
 
 9. **Database Vacuum and Maintenance**
-
    - Implement automated database maintenance:
 
    **PostgreSQL Maintenance Scripts:**
@@ -581,7 +572,6 @@ Optimize database queries and performance
    ```
 
 10. **Performance Testing and Benchmarking**
-
     - Set up database performance testing:
 
     **Load Testing Script:**

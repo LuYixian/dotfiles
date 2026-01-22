@@ -2,6 +2,11 @@
 # format-code.sh - Auto-format various file types after editing
 # Supports: Nix, JSON, YAML, Shell, Go, Lua
 
+# Require jq for JSON parsing
+if ! command -v jq >/dev/null 2>&1; then
+    exit 0
+fi
+
 input=$(cat)
 
 # Extract file path

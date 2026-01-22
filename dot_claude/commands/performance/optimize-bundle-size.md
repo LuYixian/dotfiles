@@ -5,7 +5,6 @@ Reduce and optimize bundle sizes
 ## Instructions
 
 1. **Bundle Analysis and Assessment**
-
    - Analyze current bundle size and composition using webpack-bundle-analyzer or similar
    - Identify large dependencies and unused code
    - Assess current build configuration and optimization settings
@@ -13,7 +12,6 @@ Reduce and optimize bundle sizes
    - Document current performance metrics and loading times
 
 2. **Build Tool Configuration**
-
    - Configure build tool optimization settings:
 
    **Webpack Configuration:**
@@ -84,7 +82,6 @@ Reduce and optimize bundle sizes
    ```
 
 3. **Code Splitting and Lazy Loading**
-
    - Implement route-based code splitting:
 
    **React Route Splitting:**
@@ -130,7 +127,6 @@ Reduce and optimize bundle sizes
    ```
 
 4. **Tree Shaking and Dead Code Elimination**
-
    - Configure tree shaking for optimal dead code elimination:
 
    **Package.json Configuration:**
@@ -171,7 +167,6 @@ Reduce and optimize bundle sizes
    ```
 
 5. **Dependency Optimization**
-
    - Analyze and optimize dependencies:
 
    **Package Analysis Script:**
@@ -208,7 +203,6 @@ Reduce and optimize bundle sizes
    ```
 
 6. **Asset Optimization**
-
    - Optimize static assets and media files:
 
    **Image Optimization:**
@@ -244,7 +238,6 @@ Reduce and optimize bundle sizes
    ```
 
 7. **Module Federation and Micro-frontends**
-
    - Implement module federation for large applications:
 
    **Module Federation Setup:**
@@ -271,7 +264,6 @@ Reduce and optimize bundle sizes
    ```
 
 8. **Performance Monitoring and Measurement**
-
    - Set up bundle size monitoring:
 
    **Bundle Size Monitoring:**
@@ -304,7 +296,6 @@ Reduce and optimize bundle sizes
    ```
 
 9. **Progressive Loading Strategies**
-
    - Implement progressive loading and resource hints:
 
    **Resource Hints:**
@@ -353,7 +344,6 @@ Reduce and optimize bundle sizes
    ```
 
 10. **Validation and Continuous Monitoring**
-
     - Set up automated bundle size validation:
 
     **CI/CD Bundle Size Check:**

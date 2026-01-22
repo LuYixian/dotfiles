@@ -55,31 +55,26 @@ When multiple solutions exist, prioritize in this order:
 ## Core Competencies
 
 - **Modern React Mastery:**
-
   - **Functional Components and Hooks:** Exclusively use functional components with Hooks for managing state (`useState`), side effects (`useEffect`), and other lifecycle events. Adhere to the Rules of Hooks, such as only calling them at the top level of your components.
   - **Component-Based Architecture:** Structure applications by breaking down the UI into small, reusable components. Promote the "Single Responsibility Principle" by ensuring each component does one thing well.
   - **Composition over Inheritance:** Favor composition to reuse code between components, which is more flexible and in line with React's design principles.
   - **JSX Proficiency:** Write clean and readable JSX, using PascalCase for component names and camelCase for prop names.
 
 - **State Management:**
-
   - **Strategic State Management:** Keep state as close as possible to the components that use it. For more complex global state, utilize React's built-in Context API or lightweight libraries like Zustand or Jotai. For large-scale applications with predictable state needs, Redux Toolkit is a viable option.
   - **Server-Side State:** Leverage libraries like React Query (TanStack Query) for fetching, caching, and managing server state.
 
 - **Performance and Optimization:**
-
   - **Minimizing Re-renders:** Employ memoization techniques like `React.memo` for functional components and the `useMemo` and `useCallback` Hooks to prevent unnecessary re-renders and expensive computations.
   - **Code Splitting and Lazy Loading:** Utilize code splitting to break down large bundles and lazy loading for components and images to improve initial load times.
   - **List Virtualization:** For long lists of data, implement list virtualization ("windowing") to render only the items visible on the screen.
 
 - **Testing and Quality Assurance:**
-
   - **Comprehensive Testing:** Write unit and integration tests using Jest as the testing framework and React Testing Library to interact with components from a user's perspective.
   - **User-Centric Testing:** Focus on testing the behavior of your components rather than their implementation details.
   - **Asynchronous Code Testing:** Effectively test asynchronous operations using `async/await` and helpers like `waitFor` from React Testing Library.
 
 - **Error Handling and Debugging:**
-
   - **Error Boundaries:** Implement Error Boundaries to catch JavaScript errors in component trees, preventing the entire application from crashing.
   - **Asynchronous Error Handling:** Use `try...catch` blocks or Promise `.catch()` for handling errors in asynchronous code.
   - **Debugging Tools:** Proficient in using React Developer Tools for inspecting component hierarchies, props, and state.

@@ -7,14 +7,12 @@ Create migration guides for updates
 Follow this systematic approach to create migration guides: **$ARGUMENTS**
 
 1. **Migration Scope Analysis**
-
    - Identify what is being migrated (framework, library, architecture, etc.)
    - Determine source and target versions or technologies
    - Assess the scale and complexity of the migration
    - Identify affected systems and components
 
 2. **Impact Assessment**
-
    - Analyze breaking changes between versions
    - Identify deprecated features and APIs
    - Review new features and capabilities
@@ -22,7 +20,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
    - Evaluate performance and security implications
 
 3. **Prerequisites and Requirements**
-
    - Document system requirements for the target version
    - List required tools and dependencies
    - Specify minimum versions and compatibility requirements
@@ -30,7 +27,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
    - Outline infrastructure and environment needs
 
 4. **Pre-Migration Preparation**
-
    - Create comprehensive backup strategies
    - Set up development and testing environments
    - Document current system state and configurations
@@ -65,7 +61,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
    ```
 
 6. **Breaking Changes Documentation**
-
    - List all breaking changes with examples
    - Provide before/after code comparisons
    - Explain the rationale behind changes
@@ -99,14 +94,12 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
    ```
 
 7. **Configuration Changes**
-
    - Document configuration file updates
    - Explain new configuration options
    - Provide configuration migration scripts
    - Show environment-specific configurations
 
 8. **Database Migration (if applicable)**
-
    - Create database schema migration scripts
    - Document data transformation requirements
    - Provide backup and restore procedures
@@ -114,7 +107,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
    - Plan for zero-downtime migrations
 
 9. **Testing Strategy**
-
    - Update existing tests for new APIs
    - Create migration-specific test cases
    - Implement integration and E2E tests
@@ -122,7 +114,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
    - Document test scenarios and expected outcomes
 
 10. **Performance Considerations**
-
     - Document performance changes and optimizations
     - Provide benchmarking guidelines
     - Identify potential performance regressions
@@ -130,7 +121,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
     - Include memory and resource usage changes
 
 11. **Security Updates**
-
     - Document security improvements and changes
     - Update authentication and authorization code
     - Review and update security configurations
@@ -138,7 +128,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
     - Document new security best practices
 
 12. **Deployment Strategy**
-
     - Plan phased rollout approach
     - Create deployment scripts and automation
     - Set up monitoring and health checks
@@ -166,7 +155,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
     ```
 
 14. **Team Communication and Training**
-
     - Create team training materials
     - Schedule knowledge sharing sessions
     - Document new development workflows
@@ -174,7 +162,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
     - Create quick reference guides
 
 15. **Tools and Automation**
-
     - Provide migration scripts and utilities
     - Create code transformation tools (codemods)
     - Set up automated compatibility checks
@@ -206,7 +193,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
     ```
 
 17. **Risk Mitigation**
-
     - Identify potential migration risks
     - Create contingency plans for each risk
     - Document escalation procedures
@@ -214,7 +200,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
     - Prepare communication for stakeholders
 
 18. **Post-Migration Tasks**
-
     - Clean up deprecated code and configurations
     - Update documentation and README files
     - Review and optimize new implementation
@@ -222,7 +207,6 @@ Follow this systematic approach to create migration guides: **$ARGUMENTS**
     - Plan for future maintenance and updates
 
 19. **Validation and Testing**
-
     - Create comprehensive test plans
     - Document acceptance criteria
     - Set up automated regression testing

@@ -7,7 +7,6 @@ Rollback deployment to previous version
 Follow this systematic rollback procedure: **$ARGUMENTS**
 
 1. **Incident Assessment and Decision**
-
    - Assess the severity and impact of the current deployment issues
    - Determine if rollback is necessary or if forward fix is better
    - Identify affected systems, users, and business functions

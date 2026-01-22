@@ -5,14 +5,12 @@ Configure and initialize a project following the Product as Code specification f
 ## Instructions
 
 1. **Analyze Project Context**
-
    - Check if the current directory is a git repository
    - Verify if a PAC configuration already exists (look for epic-_.yaml or ticket-_.yaml files)
    - Parse any arguments provided: `$ARGUMENTS`
    - If PAC files exist, analyze them to understand current structure
 
 2. **Interactive Setup (if no existing PAC config)**
-
    - Ask user for project details:
      - Project name
      - Project description
@@ -22,7 +20,6 @@ Configure and initialize a project following the Product as Code specification f
    - Validate inputs and confirm with user before proceeding
 
 3. **Create PAC Directory Structure**
-
    - Create `.pac/` directory if it doesn't exist
    - Create subdirectories:
      - `.pac/epics/` - for epic definitions
@@ -31,7 +28,6 @@ Configure and initialize a project following the Product as Code specification f
    - Add `.pac/README.md` explaining the structure and PAC specification
 
 4. **Generate PAC Configuration Files**
-
    - Create `.pac/pac.config.yaml` with:
      ```yaml
      apiVersion: productascode.org/v0.1.0
@@ -51,7 +47,6 @@ Configure and initialize a project following the Product as Code specification f
      ```
 
 5. **Create Initial Epic Template**
-
    - Generate `.pac/templates/epic-template.yaml`:
      ```yaml
      apiVersion: productascode.org/v0.1.0
@@ -73,7 +68,6 @@ Configure and initialize a project following the Product as Code specification f
      ```
 
 6. **Create Initial Ticket Template**
-
    - Generate `.pac/templates/ticket-template.yaml`:
      ```yaml
      apiVersion: productascode.org/v0.1.0
@@ -99,14 +93,12 @@ Configure and initialize a project following the Product as Code specification f
      ```
 
 7. **Create First Epic and Ticket**
-
    - Based on user input, create first epic in `.pac/epics/`
    - Create an initial ticket linked to the epic
    - Use proper naming convention and unique IDs
    - Set appropriate timestamps
 
 8. **Set Up Validation Scripts**
-
    - Create `.pac/scripts/validate.sh` to check PAC compliance:
      - Verify YAML syntax
      - Check required fields
@@ -115,7 +107,6 @@ Configure and initialize a project following the Product as Code specification f
    - Make script executable
 
 9. **Configure Git Integration**
-
    - Add PAC-specific entries to `.gitignore` if needed:
      ```
      .pac/tmp/
@@ -125,7 +116,6 @@ Configure and initialize a project following the Product as Code specification f
    - Create git hook for pre-commit PAC validation (optional)
 
 10. **Generate PAC Documentation**
-
     - Create `.pac/GUIDE.md` with:
       - Quick start guide for team members
       - Common PAC workflows
@@ -134,7 +124,6 @@ Configure and initialize a project following the Product as Code specification f
       - Link to full PAC specification
 
 11. **Create Helper Commands**
-
     - Generate `.pac/scripts/new-epic.sh` for creating new epics
     - Generate `.pac/scripts/new-ticket.sh` for creating new tickets
     - Include prompts for required fields and validation

@@ -81,8 +81,10 @@ for plugin_dir in "$CACHE_DIR/plugins"/*/; do
             skill_name=$(basename "$skill")
             # Remove trailing slash for macOS cp -r compatibility
             skill="${skill%/}"
+            # Atomic update: copy to temp, then move (prevents data loss on interrupt)
+            cp -r "$skill" "$CLAUDE_DIR/skills/$plugin_name/${skill_name}.new"
             rm -rf "$CLAUDE_DIR/skills/$plugin_name/$skill_name"
-            cp -r "$skill" "$CLAUDE_DIR/skills/$plugin_name/$skill_name"
+            mv "$CLAUDE_DIR/skills/$plugin_name/${skill_name}.new" "$CLAUDE_DIR/skills/$plugin_name/$skill_name"
         done
     fi
 

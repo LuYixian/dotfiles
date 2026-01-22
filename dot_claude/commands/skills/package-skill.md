@@ -9,7 +9,6 @@ This command validates and packages an existing skill for distribution. Follow t
 ### Phase 1: Skill Selection
 
 1. **Identify the skill to package**
-
    - Determine skill location (personal or project)
    - Verify skill exists and has SKILL.md
    - Check current state of the skill
@@ -22,7 +21,6 @@ This command validates and packages an existing skill for distribution. Follow t
 ### Phase 2: Validation
 
 1. **Run quick validation**
-
    - Use the quick_validate.py script
    - Check YAML frontmatter validity
    - Verify required fields (name, description)
@@ -30,7 +28,6 @@ This command validates and packages an existing skill for distribution. Follow t
    - Validate directory structure
 
 2. **Run comprehensive validation** (if quick validation passes)
-
    - Use validate-skill.sh for detailed checks
    - Verify all 10 validation phases
    - Check word counts for progressive disclosure
@@ -51,7 +48,6 @@ This command validates and packages an existing skill for distribution. Follow t
    ```
 
 2. **Package creation process**
-
    - Script validates again before packaging
    - Creates zip file with skill name
    - Includes all files while maintaining structure
@@ -65,13 +61,11 @@ This command validates and packages an existing skill for distribution. Follow t
 ### Phase 4: Distribution Options
 
 1. **Personal distribution**
-
    - Share zip file directly
    - Upload to file sharing service
    - Include installation instructions
 
 2. **Team distribution**
-
    - Add to shared repository
    - Upload to team storage
    - Document in team wiki

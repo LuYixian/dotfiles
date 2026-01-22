@@ -21,7 +21,6 @@ Perform a structured code review using the review-code skill.
    ```
 
 2. **Apply review skill**
-
    - Load `skills/review-code/` for full review
    - Or `skills/security-review/` for `--security` flag
 

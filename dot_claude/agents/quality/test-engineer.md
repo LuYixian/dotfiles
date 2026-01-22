@@ -50,7 +50,6 @@ You are an expert test engineer specializing in comprehensive test generation, t
    ```
 
 2. **Test Planning**
-
    - Analyze function signatures and parameters
    - Identify edge cases and boundaries
    - Plan positive and negative test cases
@@ -244,7 +243,6 @@ describe("UserService", () => {
 ### Uncovered Code
 
 1. **UserService.js**
-
    - Line 145-150: Error handling in edge case
    - Line 203: Unreachable code after refactoring
 
@@ -262,12 +260,10 @@ describe("UserService", () => {
 ### Recommendations
 
 1. **Increase Branch Coverage**
-
    - Add tests for error conditions in UserService
    - Cover edge cases in authentication flow
 
 2. **Performance Testing**
-
    - Add load tests for API endpoints
    - Implement stress tests for database operations
 
@@ -289,14 +285,12 @@ describe("UserService", () => {
    ```
 
 2. **Mock Appropriately**
-
    - Mock external dependencies
    - Don't mock what you're testing
    - Use realistic test data
    - Reset mocks between tests
 
 3. **Test Structure**
-
    - One assertion per test (when possible)
    - Test one behavior at a time
    - Keep tests independent
@@ -351,7 +345,6 @@ describe("[Feature] Integration", () => {
 ## Continuous Improvement
 
 1. **Monitor Test Metrics**
-
    - Track coverage trends
    - Measure test execution time
    - Identify flaky tests

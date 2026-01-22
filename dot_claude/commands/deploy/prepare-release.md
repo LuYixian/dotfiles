@@ -7,14 +7,12 @@ Prepare and validate release packages
 Follow this systematic approach to prepare a release: **$ARGUMENTS**
 
 1. **Release Planning and Validation**
-
    - Determine release version number (semantic versioning)
    - Review and validate all features included in release
    - Check that all planned issues and features are complete
    - Verify release criteria and acceptance requirements
 
 2. **Pre-Release Checklist**
-
    - Ensure all tests are passing (unit, integration, E2E)
    - Verify code coverage meets project standards
    - Complete security vulnerability scanning
@@ -52,7 +50,6 @@ Follow this systematic approach to prepare a release: **$ARGUMENTS**
    ```
 
 5. **Version Number Updates**
-
    - Update package.json, setup.py, or equivalent version files
    - Update version in application configuration
    - Update version in documentation and README
@@ -101,7 +98,6 @@ Follow this systematic approach to prepare a release: **$ARGUMENTS**
    ```
 
 7. **Documentation Updates**
-
    - Update API documentation with new endpoints
    - Revise user documentation and guides
    - Update installation and deployment instructions
@@ -142,7 +138,6 @@ Follow this systematic approach to prepare a release: **$ARGUMENTS**
    ```
 
 10. **Testing and Quality Assurance**
-
     - Run comprehensive test suite
     - Perform manual testing of critical features
     - Execute regression testing
@@ -163,7 +158,6 @@ Follow this systematic approach to prepare a release: **$ARGUMENTS**
     ```
 
 11. **Security and Compliance Verification**
-
     - Run security scans and penetration testing
     - Verify compliance with security standards
     - Check for exposed secrets or credentials
@@ -227,7 +221,6 @@ Follow this systematic approach to prepare a release: **$ARGUMENTS**
     ```
 
 14. **Deployment Preparation**
-
     - Prepare deployment scripts and configurations
     - Update environment variables and secrets
     - Plan deployment strategy (blue-green, rolling, canary)
@@ -252,7 +245,6 @@ Follow this systematic approach to prepare a release: **$ARGUMENTS**
     ```
 
 16. **Production Deployment Planning**
-
     - Schedule deployment window
     - Notify stakeholders and users
     - Prepare maintenance mode if needed
@@ -301,7 +293,6 @@ Follow this systematic approach to prepare a release: **$ARGUMENTS**
     ```
 
 18. **Communication and Announcements**
-
     - Prepare release announcement
     - Update status page and documentation
     - Notify customers and users
@@ -309,7 +300,6 @@ Follow this systematic approach to prepare a release: **$ARGUMENTS**
     - Update social media and marketing materials
 
 19. **Post-Release Monitoring**
-
     - Monitor application performance and errors
     - Track user adoption of new features
     - Monitor system metrics and alerts

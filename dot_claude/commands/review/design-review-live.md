@@ -89,7 +89,6 @@ git diff --merge-base origin/HEAD
 ## Communication Principles
 
 1. **Problems Over Prescriptions**: Describe problems and impact, not solutions
-
    - Bad: "Change margin to 16px"
    - Good: "The spacing feels inconsistent with adjacent elements, creating visual clutter"
 

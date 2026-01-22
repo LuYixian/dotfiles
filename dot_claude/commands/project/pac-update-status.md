@@ -5,14 +5,12 @@ Update ticket status and track progress in Product as Code workflow
 ## Instructions
 
 1. **Parse Command Arguments**
-
    - Extract arguments from: `$ARGUMENTS`
    - Required: `--ticket <ticket-id>` or select interactively
    - Optional: `--status <status>`, `--assignee <assignee>`, `--comment <comment>`
    - Validate `.pac/` directory exists
 
 2. **Ticket Selection**
-
    - If ticket ID provided, validate it exists
    - Otherwise, show interactive ticket selector:
      - List tickets grouped by status
@@ -21,7 +19,6 @@ Update ticket status and track progress in Product as Code workflow
      - Allow search by ticket name
 
 3. **Load Current Ticket State**
-
    - Read ticket file from `.pac/tickets/[ticket-id].yaml`
    - Display current ticket information:
      - Name and description
@@ -31,7 +28,6 @@ Update ticket status and track progress in Product as Code workflow
      - Task completion status
 
 4. **Status Transition Validation**
-
    - Current status determines valid transitions:
      - `backlog` → `in-progress`, `cancelled`
      - `in-progress` → `review`, `blocked`, `backlog`
@@ -43,7 +39,6 @@ Update ticket status and track progress in Product as Code workflow
    - Show available transitions if invalid status provided
 
 5. **Update Ticket Status**
-
    - If new status provided and valid:
      - Update `spec.status` field
      - Update `metadata.updated` timestamp
@@ -60,7 +55,6 @@ Update ticket status and track progress in Product as Code workflow
        - Update completion timestamp
 
 6. **Update Additional Fields**
-
    - If `--assignee` provided:
      - Update `metadata.assignee`
      - Add assignment history entry
@@ -69,7 +63,6 @@ Update ticket status and track progress in Product as Code workflow
      - Include timestamp and current user
 
 7. **Task and Criteria Progress**
-
    - If moving to `in-progress`, prompt to review tasks
    - Allow marking tasks as complete:
      ```yaml
@@ -82,7 +75,6 @@ Update ticket status and track progress in Product as Code workflow
    - Calculate and display completion percentage
 
 8. **Update Parent Epic**
-
    - Load parent epic from `.pac/epics/[epic-id].yaml`
    - Update ticket entry in epic's ticket list:
      ```yaml
@@ -96,7 +88,6 @@ Update ticket status and track progress in Product as Code workflow
    - If ticket is done, increment epic completion metrics
 
 9. **Git Integration**
-
    - If status changes to `in-progress` and no branch exists:
      - Suggest: `git checkout -b feature/[ticket-id]`
    - If status changes to `review`:
@@ -106,7 +97,6 @@ Update ticket status and track progress in Product as Code workflow
      - Suggest merging and branch cleanup
 
 10. **Generate Status Report**
-
     - Show status update summary:
 
       ```
@@ -129,7 +119,6 @@ Update ticket status and track progress in Product as Code workflow
       ```
 
 11. **Notification Hooks**
-
     - If `.pac/hooks/` directory exists:
       - Execute `status-change.sh` if present
       - Pass ticket ID, old status, new status as arguments

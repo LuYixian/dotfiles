@@ -5,7 +5,6 @@ Implement API rate limiting
 ## Instructions
 
 1. **Rate Limiting Strategy and Planning**
-
    - Analyze API endpoints and traffic patterns
    - Define rate limiting policies for different user types and endpoints
    - Plan for distributed rate limiting across multiple servers
@@ -13,7 +12,6 @@ Implement API rate limiting
    - Design rate limiting bypass mechanisms for trusted clients
 
 2. **Express.js Rate Limiting Implementation**
-
    - Set up comprehensive rate limiting middleware:
 
    **Basic Rate Limiting Setup:**
@@ -149,7 +147,6 @@ Implement API rate limiting
    ```
 
 3. **Advanced Rate Limiting Algorithms**
-
    - Implement sophisticated rate limiting strategies:
 
    **Token Bucket Implementation:**
@@ -331,7 +328,6 @@ Implement API rate limiting
    ```
 
 4. **Custom Rate Limiting Middleware**
-
    - Build flexible rate limiting solutions:
 
    **Advanced Rate Limiting Middleware:**
@@ -505,7 +501,6 @@ Implement API rate limiting
    ```
 
 5. **API Quota Management**
-
    - Implement comprehensive quota systems:
 
    **Quota Management System:**
@@ -743,7 +738,6 @@ Implement API rate limiting
    ```
 
 6. **Rate Limiting for Different Services**
-
    - Implement service-specific rate limiting:
 
    **Database Rate Limiting:**
@@ -1026,7 +1020,6 @@ Implement API rate limiting
    ```
 
 7. **Rate Limiting Dashboard and Analytics**
-
    - Monitor and analyze rate limiting effectiveness:
 
    **Rate Limiting Analytics:**
@@ -1242,7 +1235,6 @@ Implement API rate limiting
    ```
 
 8. **Rate Limiting Configuration Management**
-
    - Dynamic rate limit configuration:
 
    **Configuration Manager:**
@@ -1482,7 +1474,6 @@ Implement API rate limiting
    ```
 
 9. **Testing Rate Limits**
-
    - Comprehensive rate limiting tests:
 
    **Rate Limiting Test Suite:**
@@ -1749,7 +1740,6 @@ Implement API rate limiting
    ```
 
 10. **Production Monitoring and Alerting**
-
     - Monitor rate limiting effectiveness:
 
     **Rate Limiting Monitoring:**

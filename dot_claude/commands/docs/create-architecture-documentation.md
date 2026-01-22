@@ -5,7 +5,6 @@ Generate comprehensive architecture documentation
 ## Instructions
 
 1. **Architecture Analysis and Discovery**
-
    - Analyze current system architecture and component relationships
    - Identify key architectural patterns and design decisions
    - Document system boundaries, interfaces, and dependencies
@@ -13,7 +12,6 @@ Generate comprehensive architecture documentation
    - Identify architectural debt and improvement opportunities
 
 2. **Architecture Documentation Framework**
-
    - Choose appropriate documentation framework and tools:
      - **C4 Model**: Context, Containers, Components, Code diagrams
      - **Arc42**: Comprehensive architecture documentation template
@@ -23,7 +21,6 @@ Generate comprehensive architecture documentation
      - **Draw.io/Lucidchart**: Visual diagramming tools
 
 3. **System Context Documentation**
-
    - Create high-level system context diagrams
    - Document external systems and integrations
    - Define system boundaries and responsibilities
@@ -31,7 +28,6 @@ Generate comprehensive architecture documentation
    - Create system landscape and ecosystem overview
 
 4. **Container and Service Architecture**
-
    - Document container/service architecture and deployment view
    - Create service dependency maps and communication patterns
    - Document deployment architecture and infrastructure
@@ -39,7 +35,6 @@ Generate comprehensive architecture documentation
    - Document data persistence and storage architecture
 
 5. **Component and Module Documentation**
-
    - Create detailed component architecture diagrams
    - Document internal module structure and relationships
    - Define component responsibilities and interfaces
@@ -47,7 +42,6 @@ Generate comprehensive architecture documentation
    - Create code organization and package structure documentation
 
 6. **Data Architecture Documentation**
-
    - Document data models and database schemas
    - Create data flow diagrams and processing pipelines
    - Document data storage strategies and technologies
@@ -55,7 +49,6 @@ Generate comprehensive architecture documentation
    - Create data integration and synchronization documentation
 
 7. **Security and Compliance Architecture**
-
    - Document security architecture and threat model
    - Create authentication and authorization flow diagrams
    - Document compliance requirements and controls
@@ -63,7 +56,6 @@ Generate comprehensive architecture documentation
    - Create incident response and security monitoring documentation
 
 8. **Quality Attributes and Cross-Cutting Concerns**
-
    - Document performance characteristics and scalability patterns
    - Create reliability and availability architecture documentation
    - Document monitoring and observability architecture
@@ -71,7 +63,6 @@ Generate comprehensive architecture documentation
    - Create disaster recovery and business continuity documentation
 
 9. **Architecture Decision Records (ADRs)**
-
    - Create comprehensive ADR template and process
    - Document historical architectural decisions and rationale
    - Create decision tracking and review process
