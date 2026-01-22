@@ -1,0 +1,180 @@
+{
+  "skills": {
+    "python-best-practices": {
+      "type": "domain",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": [
+          "python",
+          "py",
+          "pytest",
+          "ruff",
+          "uv",
+          "pip",
+          "pyproject"
+        ],
+        "intentPatterns": [
+          "write.*python",
+          "create.*function",
+          "fix.*error",
+          "add.*test",
+          "refactor.*code"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": ["**/*.py", "**/pyproject.toml"],
+        "excludePatterns": [
+          "**/migrations/**",
+          "**/.venv/**",
+          "**/__pycache__/**"
+        ]
+      },
+      "skipConditions": {
+        "commands": ["/commit", "/context"],
+        "taskTypes": ["documentation-only"]
+      }
+    },
+    "git-workflow": {
+      "type": "domain",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": [
+          "git",
+          "commit",
+          "branch",
+          "merge",
+          "rebase",
+          "pr",
+          "pull request",
+          "push"
+        ],
+        "intentPatterns": [
+          "create.*branch",
+          "merge.*into",
+          "squash.*commit",
+          "revert.*change",
+          "cherry.*pick"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": ["**/.git/**", "**/.gitignore"]
+      },
+      "skipConditions": {
+        "commands": ["/doc-generate"],
+        "contexts": ["read-only-review"]
+      }
+    },
+    "security-review": {
+      "type": "guardrail",
+      "enforcement": "suggest",
+      "priority": "high",
+      "promptTriggers": {
+        "keywords": [
+          "security",
+          "auth",
+          "authentication",
+          "authorization",
+          "password",
+          "token",
+          "secret",
+          "credential",
+          "encrypt",
+          "vulnerability",
+          "injection",
+          "xss",
+          "csrf"
+        ],
+        "intentPatterns": [
+          "handle.*auth",
+          "store.*password",
+          "validate.*input",
+          "secure.*endpoint",
+          "encrypt.*data"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": ["**/auth/**", "**/security/**", "**/login/**"],
+        "contentPatterns": [
+          "password",
+          "api_key",
+          "secret",
+          "token",
+          "credential",
+          "private_key"
+        ]
+      },
+      "skipConditions": {
+        "filePatterns": ["**/test_*.py", "**/*_test.py"],
+        "contexts": ["test-file-editing"]
+      }
+    },
+    "error-resolver": {
+      "type": "agent",
+      "priority": "high",
+      "promptTriggers": {
+        "keywords": [
+          "error",
+          "exception",
+          "traceback",
+          "failed",
+          "failure",
+          "bug",
+          "broken",
+          "crash",
+          "not working"
+        ],
+        "intentPatterns": [
+          "fix.*error",
+          "debug.*issue",
+          "why.*failing",
+          "help.*broken",
+          "solve.*problem"
+        ]
+      },
+      "fileTriggers": {
+        "contentPatterns": [
+          "Traceback",
+          "Error:",
+          "Exception:",
+          "FAILED",
+          "AssertionError"
+        ]
+      },
+      "skipConditions": {
+        "commands": ["/test", "/tdd-cycle"],
+        "contexts": ["intentional-failure-testing"]
+      }
+    },
+    "pr-workflow": {
+      "type": "domain",
+      "priority": "medium",
+      "promptTriggers": {
+        "keywords": [
+          "pr",
+          "pull request",
+          "review",
+          "merge",
+          "approve",
+          "changes requested"
+        ],
+        "intentPatterns": [
+          "create.*pr",
+          "review.*pr",
+          "merge.*pr",
+          "update.*pr"
+        ]
+      },
+      "fileTriggers": {
+        "pathPatterns": ["**/.github/pull_request_template.md"]
+      },
+      "skipConditions": {
+        "contexts": ["local-development-only"]
+      }
+    }
+  },
+  "globalSettings": {
+    "maxActiveSkills": 3,
+    "priorityOrder": ["guardrail", "agent", "domain"],
+    "debugMode": false
+  }
+}

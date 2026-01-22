@@ -1,0 +1,49 @@
+#!/bin/bash
+# Flatten Claude Code external agents from wshobson/agents plugins
+# Triggered when .chezmoidata.yaml claude.externalPlugins changes
+#
+# Config hash: {{ include ".chezmoidata.yaml" | sha256sum }}
+
+set -euo pipefail
+
+CACHE_DIR="$HOME/.cache/wshobson-agents"
+TARGET_DIR="$HOME/.claude/agents/external"
+
+# Selected plugins from .chezmoidata.yaml
+PLUGINS=(
+{{- range .claude.externalPlugins }}
+    "{{ . }}"
+{{- end }}
+)
+
+echo "🔄 Flattening Claude Code external agents..."
+
+# Ensure target directory exists and is clean
+rm -rf "$TARGET_DIR"
+mkdir -p "$TARGET_DIR"
+
+# Check if cache exists
+if [[ ! -d "$CACHE_DIR/plugins" ]]; then
+    echo "⚠️  Cache not found at $CACHE_DIR, run 'chezmoi apply' first"
+    exit 0
+fi
+
+# Extract agents from each selected plugin
+for plugin in "${PLUGINS[@]}"; do
+    plugin_agents="$CACHE_DIR/plugins/$plugin/agents"
+    if [[ -d "$plugin_agents" ]]; then
+        # Copy all .md files from plugin's agents directory
+        for agent_file in "$plugin_agents"/*.md; do
+            if [[ -f "$agent_file" ]]; then
+                cp "$agent_file" "$TARGET_DIR/"
+            fi
+        done
+        echo "  ✓ $plugin"
+    else
+        echo "  ⚠ $plugin (no agents directory)"
+    fi
+done
+
+# Count results
+agent_count=$(find "$TARGET_DIR" -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' ')
+echo "✅ Flattened $agent_count agents to $TARGET_DIR"
