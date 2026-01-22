@@ -100,11 +100,12 @@ else
   export ZSH_TMUX_DEFAULT_SESSION_NAME="main"
 fi
 # ─────────────────────────────────────────────────────────────
-# Claude Code configuration directory
-# Move config from ~/.claude to ~/.config/claude for cleaner home
-# Codex/Gemini: no useful config to manage, keep default location
+# Claude Code configuration
+# Uses default location ~/.claude (managed by chezmoi)
+# Global config includes: CLAUDE.md, commands/, skills/, hooks/
+# Project-specific config goes in each project's .claude/ directory
 # ─────────────────────────────────────────────────────────────
-export CLAUDE_CONFIG_DIR="$HOME/.config/claude"
+# Note: CLAUDE_CONFIG_DIR removed - using default ~/.claude location
 {{- if eq .chezmoi.os "darwin" }}
 
 # ─────────────────────────────────────────────────────────────
