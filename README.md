@@ -27,11 +27,13 @@
 ## ✨ Highlights
 
 - **Cross-platform**: One repo for macOS + Linux (`nix-darwin` + `flakey-profile`)
-- **One-command bootstrap**: Installs Nix, applies configs, and syncs everything
-- **Claude Code integration**: Automated plugin sync, quality protocols, and AI-powered workflows
-- **Modern CLI**: Rust-based tools replacing traditional Unix commands
-- **Profiles**: `work` / `private` / `headless` switches via `chezmoi init` prompts
-- **Secrets**: `age`-encrypted files with optional 1Password-backed key bootstrap
+- **One-command bootstrap**: Installs Nix (Determinate), applies configs, syncs everything automatically
+- **Claude Code integration**: 14+ plugins from marketplace, quality protocols, smart hooks
+- **Modern CLI**: Rust-based tools (eza, bat, ripgrep, fd, zoxide) replacing Unix classics
+- **Multi-profile**: `work` / `private` / `headless` switches via chezmoi prompts
+- **Secure secrets**: `age` encryption with 1Password-backed key bootstrap
+- **Workflow guardrails**: pre-commit hooks + Claude Code hooks for safe git operations
+- **CI parity**: Template rendering and `nix flake check` run on macOS + Linux
 
 ---
 
@@ -60,12 +62,23 @@
 
 ## 🚀 Quick Start
 
-```bash
-# Option 1: Run init script directly (recommended)
-curl -fsLS https://raw.githubusercontent.com/signalridge/dotfiles/main/init.sh | sh
+**Option 1: Run init script directly from GitHub (recommended)**
 
-# Option 2: Using chezmoi
+```bash
+curl -fsLS https://raw.githubusercontent.com/signalridge/dotfiles/main/init.sh | sh
+```
+
+**Option 2: Install chezmoi and init**
+
+```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply signalridge
+```
+
+**Option 3: Clone and run locally**
+
+```bash
+git clone https://github.com/signalridge/dotfiles.git
+cd dotfiles && ./init.sh
 ```
 
 This will automatically:
@@ -75,6 +88,13 @@ This will automatically:
 3. Fetch encryption key from 1Password (or prompt for manual setup)
 4. Apply all dotfiles and configurations
 5. Sync Claude Code plugins from marketplace
+
+> [!IMPORTANT]
+> **First-time users**: When prompted for `useEncryption`, answer **No** (default).
+> The encryption setup is specific to the repo owner. If you need encryption, modify:
+>
+> - `.chezmoiscripts/run_once_before_01_setup-encryption-key.sh`: Change `KEY_FILE`, `KEY_PUB`, and 1Password item path (`op://Personal/main/...`)
+> - `.chezmoi.toml.tmpl`: Update `identity` and `recipientsFile` paths in `[age]` section
 
 After installation, restart your terminal. For macOS, run `just darwin` to activate nix-darwin configuration.
 
@@ -101,6 +121,12 @@ After installation, restart your terminal. For macOS, run `just darwin` to activ
 │   └── modules/            # nix-darwin / flakey-profile modules
 └── dot_custom/             # Shell functions & aliases
 ```
+
+**chezmoi** manages dotfiles across machines with templating, secrets, and platform-specific conditionals.
+
+**nix-darwin** (macOS) provides declarative system configuration through Nix, managing system packages, Homebrew, and macOS preferences.
+
+**flakey-profile** (Linux) provides declarative package management using the same Nix flake, focused on user packages.
 
 | Component     | macOS          | Linux          |
 | ------------- | -------------- | -------------- |
@@ -147,27 +173,22 @@ Built-in quality assurance inspired by SuperClaude:
 | **Confidence Check** | Pre-implementation assessment (HIGH/MEDIUM/LOW) |
 | **Self-Check**       | Post-implementation verification with evidence  |
 
-### Included Skills
-
-| Skill                   | Description                         |
-| ----------------------- | ----------------------------------- |
-| `git-workflow`          | Git operations and workflows        |
-| `python-best-practices` | Typing, testing, and code standards |
-| `review-code`           | Multi-dimensional code review       |
-| `security-review`       | Security audit capabilities         |
-
 ### Hooks
 
-| Hook             | Trigger          | Action                                      |
-| ---------------- | ---------------- | ------------------------------------------- |
-| `format-code.sh` | After Edit/Write | Auto-format Nix, JSON, YAML, Shell, Go, Lua |
-| `enforce-uv.sh`  | On pip commands  | Redirect to `uv` for Python                 |
+| Hook                    | Trigger          | Action                                      |
+| ----------------------- | ---------------- | ------------------------------------------- |
+| `format-code.sh`        | After Edit/Write | Auto-format Nix, JSON, YAML, Shell, Go, Lua |
+| `enforce-uv.sh`         | On pip commands  | Redirect to `uv` for Python                 |
+| `block-main-edits.sh`   | On file edit     | Prevent direct edits to main branch         |
+| `block-git-rewrites.sh` | On git commands  | Block force push and history rewrites       |
 
 ---
 
 <a id="tool-chains"></a>
 
 ## ⚡ Tool Chains
+
+This setup replaces traditional Unix tools with modern, Rust-based alternatives.
 
 ### Modern CLI Replacements
 
