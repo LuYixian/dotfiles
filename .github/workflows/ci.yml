@@ -18,7 +18,7 @@ jobs:
           use-gha-cache: true
       - name: Install tools
         run: |
-          nix profile install nixpkgs#treefmt nixpkgs#shfmt nixpkgs#shellcheck nixpkgs#statix nixpkgs#nixfmt nixpkgs#stylua nixpkgs#selene
+          nix profile install nixpkgs#treefmt nixpkgs#shfmt nixpkgs#shellcheck nixpkgs#statix nixpkgs#nixfmt nixpkgs#stylua nixpkgs#selene nixpkgs#nodePackages.prettier
       - name: Setup chezmoi
         run: |
           sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
