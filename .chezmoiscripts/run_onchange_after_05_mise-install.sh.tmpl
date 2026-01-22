@@ -2,7 +2,7 @@
 
 set -eufo pipefail
 
-# mise config: {{ output "sha256sum" (joinPath .chezmoi.homeDir ".config/mise/config.toml") | trim }}
+# mise config: {{ output "sha256sum" (joinPath .chezmoi.homeDir ".config/mise/config.toml") | trim | default "n/a" }}
 
 echo ":: [05] Installing mise tools"
 

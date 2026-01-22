@@ -1,13 +1,13 @@
-{{ if eq .platform "darwin" -}}
 #!/bin/bash
+# darwin-only: excluded on linux via .chezmoiignore
 
 set -eufo pipefail
 
-# flake.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.nix") | trim }}
-# flake.lock: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.lock") | trim }}
-# apps.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/apps.nix") | trim }}
-# system.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/system.nix") | trim }}
-# host-users.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/host-users.nix") | trim }}
+# flake.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.nix") | trim | default "n/a" }}
+# flake.lock: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.lock") | trim | default "n/a" }}
+# apps.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/apps.nix") | trim | default "n/a" }}
+# system.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/system.nix") | trim | default "n/a" }}
+# host-users.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/host-users.nix") | trim | default "n/a" }}
 
 echo ":: [02] Configuring nix-darwin"
 
@@ -25,4 +25,3 @@ else
     echo "    Switching nix-darwin configuration..."
     sudo darwin-rebuild switch --flake ~/nix-config#{{ .hostname }} --show-trace --verbose
 fi
-{{ end -}}

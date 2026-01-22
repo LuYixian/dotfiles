@@ -2,8 +2,8 @@
 
 set -eufo pipefail
 
-# profile.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/profile.nix") | trim }}
-# flake.lock: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.lock") | trim }}
+# profile.nix: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/modules/profile.nix") | trim | default "n/a" }}
+# flake.lock: {{ output "sha256sum" (joinPath .chezmoi.homeDir "nix-config/flake.lock") | trim | default "n/a" }}
 
 echo ":: [03] Switching Nix profile"
 
