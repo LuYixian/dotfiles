@@ -2,10 +2,6 @@
 
 ![header](https://capsule-render.vercel.app/api?type=waving&color=0:282a36,100:bd93f9&height=200&section=header&text=~/.dotfiles&fontSize=48&fontColor=f8f8f2&fontAlignY=30&desc=One%20command%20%C2%B7%20Full%20environment%20%C2%B7%20Zero%20hassle&descSize=16&descColor=8be9fd&descAlignY=55&animation=fadeIn)
 
-**chezmoi + Nix · 跨平台开发环境 (macOS / Linux)**
-
-[English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
-
 <p>
   <a href="https://github.com/signalridge/dotfiles/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/signalridge/dotfiles/ci.yml?style=for-the-badge&logo=github&label=CI"></a>&nbsp;
   <a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge"></a>&nbsp;
@@ -16,11 +12,13 @@
 <p>
   <a href="https://github.com/twpayne/chezmoi"><img alt="chezmoi" src="https://img.shields.io/badge/chezmoi-4B91E2?style=for-the-badge&logo=chezmoi&logoColor=white"></a>&nbsp;
   <a href="https://github.com/LnL7/nix-darwin"><img alt="nix-darwin" src="https://img.shields.io/badge/nix--darwin-5277C3?style=for-the-badge&logo=nixos&logoColor=white"></a>&nbsp;
-  <a href="https://www.zsh.org/"><img alt="zsh" src="https://img.shields.io/badge/zsh-F15A24?style=for-the-badge&logo=zsh&logoColor=white"></a>&nbsp;
+  <a href="https://www.anthropic.com/claude-code"><img alt="Claude Code" src="https://img.shields.io/badge/Claude_Code-191919?style=for-the-badge&logo=anthropic&logoColor=white"></a>&nbsp;
   <a href="https://brew.sh/"><img alt="Homebrew" src="https://img.shields.io/badge/Homebrew-FBB040?style=for-the-badge&logo=homebrew&logoColor=black"></a>
 </p>
 
-_基于 Nix 与 chezmoi 的现代、可复现开发环境，同时支持 macOS 与 Linux_
+[English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md)
+
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=BD93F9&center=true&vCenter=true&width=600&lines=chezmoi+%2B+Nix+%E5%A3%B0%E6%98%8E%E5%BC%8F%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83;%E8%B7%A8%E5%B9%B3%E5%8F%B0+macOS+%2B+Linux+%E6%94%AF%E6%8C%81;Claude+Code+%E8%87%AA%E5%8A%A8%E6%8F%92%E4%BB%B6%E5%90%8C%E6%AD%A5;%E7%8E%B0%E4%BB%A3+Rust+CLI+%E5%B7%A5%E5%85%B7%E9%93%BE)](https://git.io/typing-svg)
 
 </div>
 
