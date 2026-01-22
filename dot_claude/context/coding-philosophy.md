@@ -1,5 +1,7 @@
 # Coding Philosophy
 
+Detailed principles referenced by CLAUDE.md. For execution rules, see CLAUDE.md directly.
+
 ## Core Beliefs
 
 - **Pursue good taste** - Eliminate edge cases to make code logic natural
@@ -26,15 +28,6 @@
 
 ✅ Fix the root cause
 
-## Learning the Codebase
-
-Before implementing:
-
-1. Find 3+ similar features/components
-2. Identify common patterns and conventions
-3. Use same libraries/utilities when possible
-4. Follow existing test patterns
-
 ## Tooling Rules
 
 - Use project's existing build system
@@ -49,29 +42,6 @@ Before implementing:
 - Maintain perspective at appropriate scale
 - Higher layers stay architectural
 
-## Collaboration Boundaries
+## Edit Fallback
 
-**AI autonomy zone (proceed without asking):**
-
-- Implementation details within approved direction
-- Standard formatting and style choices
-- Obvious bug fixes with clear solutions
-- Exploratory mode experiments (L1-L2)
-
-**Human decision zone (escalate):**
-
-- Architectural choices with multiple valid approaches
-- Trade-offs between competing requirements
-- Changes with wide, hard-to-reverse impact
-- Novel patterns not established in codebase
-
-## Execution Rules
-
-**ALWAYS:**
-
-- Plan complex tasks before implementation
-- Track progress with TodoWrite for L3+ tasks
-- Stop after 5 consecutive failures and request guidance
-- Report guardrail changes (see `guardrails.md`)
-
-**Edit fallback:** When Edit fails 2+ times → try sed/awk → then Write
+When Edit tool fails 2+ times → try sed/awk → then Write
