@@ -217,26 +217,26 @@ Implement API rate limiting
          local refillPeriod = tonumber(ARGV[3])
          local tokensRequested = tonumber(ARGV[4])
          local now = tonumber(ARGV[5])
-
+   
          local bucket = redis.call('HMGET', key, 'tokens', 'lastRefill')
          local tokens = tonumber(bucket[1]) or capacity
          local lastRefill = tonumber(bucket[2]) or now
-
+   
          -- Calculate tokens to add
          local timePassed = now - lastRefill
          local tokensToAdd = math.floor(timePassed / refillPeriod) * refillRate
          tokens = math.min(capacity, tokens + tokensToAdd)
-
+   
          local success = 0
          if tokens >= tokensRequested then
            tokens = tokens - tokensRequested
            success = 1
          end
-
+   
          -- Update bucket
          redis.call('HMSET', key, 'tokens', tokens, 'lastRefill', now)
          redis.call('EXPIRE', key, 3600) -- 1 hour TTL
-
+   
          return {success, tokens, math.max(0, refillPeriod - (timePassed % refillPeriod))}
        `;
 
@@ -282,13 +282,13 @@ Implement API rate limiting
          local windowStart = tonumber(ARGV[1])
          local now = tonumber(ARGV[2])
          local maxRequests = tonumber(ARGV[3])
-
+   
          -- Remove old entries
          redis.call('ZREMRANGEBYSCORE', key, 0, windowStart)
-
+   
          -- Count current requests in window
          local currentCount = redis.call('ZCARD', key)
-
+   
          if currentCount < maxRequests then
            -- Add current request
            redis.call('ZADD', key, now, now)
@@ -767,10 +767,10 @@ Implement API rate limiting
          local key = KEYS[1]
          local maxConnections = tonumber(ARGV[1])
          local ttl = tonumber(ARGV[2])
-
+   
          local current = redis.call('GET', key) or 0
          current = tonumber(current)
-
+   
          if current < maxConnections then
            redis.call('INCR', key)
            redis.call('EXPIRE', key, ttl)
@@ -811,19 +811,19 @@ Implement API rate limiting
          local maxCost = tonumber(ARGV[2])
          local cost = tonumber(ARGV[3])
          local now = tonumber(ARGV[4])
-
+   
          local windowStart = now - windowMs
-
+   
          -- Remove old entries
          redis.call('ZREMRANGEBYSCORE', key, 0, windowStart)
-
+   
          -- Get current cost
          local currentCost = 0
          local entries = redis.call('ZRANGE', key, 0, -1, 'WITHSCORES')
          for i = 2, #entries, 2 do
            currentCost = currentCost + tonumber(entries[i])
          end
-
+   
          if currentCost + cost <= maxCost then
            redis.call('ZADD', key, cost, now)
            redis.call('EXPIRE', key, math.ceil(windowMs / 1000))

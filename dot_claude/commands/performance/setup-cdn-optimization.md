@@ -615,18 +615,18 @@ Configure CDN for optimal delivery
          addEventListener('fetch', event => {
            event.respondWith(handleRequest(event.request));
          });
-
+   
          async function handleRequest(request) {
            const url = new URL(request.url);
            const referer = request.headers.get('Referer');
-
+   
            // Allow requests from your domain and direct access
            const allowedDomains = ['example.com', 'www.example.com'];
-
+   
            if (!referer || allowedDomains.some(domain => referer.includes(domain))) {
              return fetch(request);
            }
-
+   
            // Block hotlinking
            return new Response('Hotlinking not allowed', { status: 403 });
          }

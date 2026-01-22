@@ -3,7 +3,7 @@ repos:
     rev: v5.0.0
     hooks:
       - id: trailing-whitespace
-        exclude: \.tmpl$
+        exclude: \.(tmpl|md)$
       - id: end-of-file-fixer
         exclude: \.tmpl$
       - id: check-yaml

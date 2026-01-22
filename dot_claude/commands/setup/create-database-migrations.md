@@ -44,10 +44,10 @@ Create and manage database migrations
            rollback_sql TEXT,
            batch_number INTEGER
          );
-
+   
          CREATE INDEX IF NOT EXISTS idx_schema_migrations_version
          ON schema_migrations(version);
-
+   
          CREATE INDEX IF NOT EXISTS idx_schema_migrations_batch
          ON schema_migrations(batch_number);
        `);
@@ -61,7 +61,7 @@ Create and manage database migrations
            locked_by VARCHAR(255),
            CHECK (id = 1)
          );
-
+   
          INSERT INTO migration_lock (id, is_locked)
          VALUES (1, FALSE)
          ON CONFLICT (id) DO NOTHING;
@@ -391,7 +391,7 @@ Create and manage database migrations
            value JSONB NOT NULL DEFAULT '{}',
            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-
+   
            UNIQUE(user_id, category, key)
          );
        `);

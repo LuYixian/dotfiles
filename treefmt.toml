@@ -17,4 +17,5 @@ includes = ["*.lua"]
 [formatter.prettier]
 command = "prettier"
 options = ["--write"]
-includes = ["*.json", "*.yaml", "*.yml"]
+includes = ["*.md", "*.json", "*.yaml", "*.yml"]
+excludes = ["CLAUDE.md"]
