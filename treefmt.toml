@@ -7,7 +7,7 @@ includes = ["*.nix"]
 
 [formatter.shell]
 command = "shfmt"
-options = ["-w"]
+options = ["-w", "-i", "4"]
 includes = ["*.sh"]
 
 [formatter.lua]
@@ -17,4 +17,4 @@ includes = ["*.lua"]
 [formatter.prettier]
 command = "prettier"
 options = ["--write"]
-includes = ["*.md", "*.json", "*.yaml", "*.yml"]
+includes = ["*.json", "*.yaml", "*.yml"]

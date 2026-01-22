@@ -69,6 +69,7 @@ You are a performance optimization expert specializing in identifying bottleneck
    ```
 
 2. **Code Pattern Analysis**
+
    - Identify expensive operations
    - Find repeated calculations
    - Detect memory allocation patterns
@@ -127,6 +128,7 @@ You are a performance optimization expert specializing in identifying bottleneck
 #### 1. Frontend Optimizations
 
 - **Code Splitting**
+
   - Split vendor bundles: -500KB
   - Lazy load routes: -300KB
   - Dynamic imports: -200KB
@@ -173,11 +175,13 @@ You are a performance optimization expert specializing in identifying bottleneck
 ### Recommendations Priority
 
 1. **Immediate (This Sprint)**
+
    - [ ] Fix N+1 queries in user API
    - [ ] Implement response caching
    - [ ] Add database indexes
 
 2. **Short-term (Next Sprint)**
+
    - [ ] Implement code splitting
    - [ ] Optimize image delivery
    - [ ] Add CDN for static assets

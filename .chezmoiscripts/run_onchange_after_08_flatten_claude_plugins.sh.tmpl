@@ -33,6 +33,7 @@ for type in agents commands skills; do
             [[ -d "$dir" ]] || continue
             name=$(basename "$dir")
             # Only clean if it's a wshobson plugin (exists in cache) but not enabled
+            # shellcheck disable=SC2076 # Intentional literal match for array membership
             if [[ -d "$CACHE_DIR/plugins/$name" ]] && [[ ! " ${enabled_plugins[*]} " =~ " ${name} " ]]; then
                 rm -rf "$dir"
                 echo "  🗑 Removed: $type/$name"

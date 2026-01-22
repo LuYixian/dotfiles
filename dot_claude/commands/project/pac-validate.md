@@ -5,12 +5,14 @@ Validate Product as Code project structure and files for specification complianc
 ## Instructions
 
 1. **Initial Environment Check**
+
    - Verify `.pac/` directory exists
    - Check for PAC configuration file at `.pac/pac.config.yaml`
    - Parse arguments: `$ARGUMENTS`
    - Determine validation scope (single file, directory, or entire project)
 
 2. **Configuration Validation**
+
    - Load and validate `.pac/pac.config.yaml`:
      - Check `apiVersion` format (must be semantic version)
      - Verify `kind` is "Configuration"
@@ -19,6 +21,7 @@ Validate Product as Code project structure and files for specification complianc
    - Report any missing or invalid configuration
 
 3. **Directory Structure Validation**
+
    - Verify required directories exist:
      - `.pac/epics/` - Epic definitions
      - `.pac/tickets/` - Ticket definitions
@@ -27,6 +30,7 @@ Validate Product as Code project structure and files for specification complianc
    - Ensure no orphaned files outside expected structure
 
 4. **Epic File Validation**
+
    - For each file in `.pac/epics/`:
      - Verify YAML syntax is valid
      - Check `apiVersion: productascode.org/v0.1.0`
@@ -43,6 +47,7 @@ Validate Product as Code project structure and files for specification complianc
    - Track all epic IDs for cross-reference validation
 
 5. **Ticket File Validation**
+
    - For each file in `.pac/tickets/`:
      - Verify YAML syntax is valid
      - Check `apiVersion: productascode.org/v0.1.0`
@@ -61,6 +66,7 @@ Validate Product as Code project structure and files for specification complianc
        - `tasks` array is properly formatted
 
 6. **Cross-Reference Validation**
+
    - Verify all ticket epic references point to existing epics
    - Check that epic ticket lists match actual ticket files
    - Validate ticket dependencies reference existing tickets
@@ -68,18 +74,21 @@ Validate Product as Code project structure and files for specification complianc
    - Verify unique IDs across all entities
 
 7. **Data Integrity Checks**
+
    - Validate timestamp formats (ISO 8601)
    - Check that updated timestamps are >= created timestamps
    - Verify status transitions make sense (no done tickets in backlog epics)
    - Validate priority and effort estimates are consistent
 
 8. **Template Validation**
+
    - If templates exist in `.pac/templates/`:
      - Verify they follow PAC specification
      - Check they include all required fields
      - Ensure placeholder values are clearly marked
 
 9. **Generate Validation Report**
+
    - Create detailed report with:
 
      ```
@@ -112,6 +121,7 @@ Validate Product as Code project structure and files for specification complianc
      ```
 
 10. **Auto-Fix Options**
+
     - If `--fix` flag provided:
       - Add missing required fields with placeholder values
       - Fix formatting issues (indentation, quotes)
@@ -120,6 +130,7 @@ Validate Product as Code project structure and files for specification complianc
     - Show what would be fixed without `--fix` flag
 
 11. **Git Integration**
+
     - If `--pre-commit` flag:
       - Only validate files staged for commit
       - Exit with appropriate code for git hook

@@ -169,11 +169,13 @@ Goal: Build frontend for [feature]
 ### Created Plans
 
 1. **user-management-backend.md**
+
    - DoD items: 5
    - Estimated: 1.5 weeks
    - Prerequisites: None
 
 2. **user-management-frontend.md**
+
    - DoD items: 4
    - Estimated: 1 week
    - Prerequisites: Plan 1

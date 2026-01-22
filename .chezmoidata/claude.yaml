@@ -1112,7 +1112,7 @@ claude:
         - ./skills/protocol-reverse-engineering
         - ./skills/anti-reversing-techniques
     - name: conductor
-      description: 'Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context → Spec & Plan → Implement'
+      description: "Context-Driven Development plugin that transforms Claude Code into a project management tool with structured workflow: Context → Spec & Plan → Implement"
       keywords: []
       commands: []
       agents: []

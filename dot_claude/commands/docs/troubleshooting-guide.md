@@ -7,6 +7,7 @@ Generate troubleshooting documentation
 Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
 
 1. **System Overview and Architecture**
+
    - Document the system architecture and components
    - Map out dependencies and integrations
    - Identify critical paths and failure points
@@ -14,6 +15,7 @@ Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
    - Document data flow and communication patterns
 
 2. **Common Issues Identification**
+
    - Collect historical support tickets and issues
    - Interview team members about frequent problems
    - Analyze error logs and monitoring data
@@ -21,6 +23,7 @@ Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
    - Identify patterns in system failures
 
 3. **Troubleshooting Framework**
+
    - Establish systematic diagnostic procedures
    - Create problem isolation methodologies
    - Document escalation paths and procedures
@@ -98,11 +101,13 @@ Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
    ### HTTP Status Codes
 
    - **500 Internal Server Error**
+
      - Check application logs for stack traces
      - Verify database connectivity
      - Check environment variables
 
    - **404 Not Found**
+
      - Verify URL routing configuration
      - Check if resources exist
      - Review API endpoint documentation
@@ -114,6 +119,7 @@ Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
    ```
 
 7. **Environment-Specific Issues**
+
    - Document development environment problems
    - Address staging/testing environment issues
    - Cover production-specific troubleshooting
@@ -280,6 +286,7 @@ Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
     ```
 
 13. **Monitoring and Alerting Setup**
+
     - Configure health checks and monitoring
     - Set up log aggregation and analysis
     - Implement alerting for critical issues
@@ -313,6 +320,7 @@ Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
     ```
 
 15. **Recovery Procedures**
+
     - Document system recovery steps
     - Create data backup and restore procedures
     - Establish rollback procedures for deployments
@@ -320,6 +328,7 @@ Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
     - Test recovery procedures regularly
 
 16. **Preventive Measures**
+
     - Implement monitoring and alerting
     - Set up automated health checks
     - Create deployment validation procedures
@@ -327,6 +336,7 @@ Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
     - Document maintenance procedures
 
 17. **Knowledge Base Integration**
+
     - Link to relevant documentation
     - Reference API documentation
     - Include links to monitoring dashboards
@@ -352,6 +362,7 @@ Follow this systematic approach to create troubleshooting guides: **$ARGUMENTS**
     ```
 
 19. **Documentation Maintenance**
+
     - Regular review and updates
     - Version control for troubleshooting guides
     - Feedback collection from users

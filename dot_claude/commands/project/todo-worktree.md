@@ -24,7 +24,9 @@ Structured workflow to transform vague todos into implemented features using git
    - If Status is "Done": Task is complete, do nothing
 2. Add `/todos/worktrees/` to .gitignore: `rg -q "/todos/worktrees/" .gitignore || echo -e "\n/todos/worktrees/" >> .gitignore`
 3. Read `todos/project-description.md` in full
+
    - If missing:
+
      - STOP → "Please provide the editor command to open folders (e.g. 'code', 'cursor')"
      - Use parallel Task agents to analyze codebase:
        - Identify purpose, features

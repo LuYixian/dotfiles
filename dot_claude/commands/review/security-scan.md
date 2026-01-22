@@ -31,6 +31,7 @@ npm audit           # Node.js
 ### 3. Apply Security Skill
 
 Load `skills/security-review/SKILL.md` checklist for:
+
 - OWASP Top 10
 - Language-specific patterns
 - Common vulnerabilities
@@ -41,11 +42,13 @@ Load `skills/security-review/SKILL.md` checklist for:
 ## Security Scan: [scope]
 
 ### Quick Results
+
 - Secrets found: X locations
 - Dependency issues: X packages
 - Code patterns: X concerns
 
 ### Action Required
+
 1. [Critical issue]
 2. [High issue]
 ```

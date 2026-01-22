@@ -5,6 +5,7 @@ Analyze overall project health and metrics
 ## Instructions
 
 1. **Health Check Initialization**
+
    - Verify tool connections (Linear, GitHub)
    - Define evaluation period (default: last 30 days)
    - Set health check criteria and thresholds

@@ -7,6 +7,7 @@ Clean up merged and stale git branches
 Follow this systematic approach to clean up git branches: **$ARGUMENTS**
 
 1. **Repository State Analysis**
+
    - Check current branch and uncommitted changes
    - List all local and remote branches
    - Identify the main/master branch name
@@ -23,6 +24,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
    ```
 
 2. **Safety Precautions**
+
    - Ensure working directory is clean
    - Switch to main/master branch
    - Pull latest changes from remote
@@ -36,6 +38,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
    ```
 
 3. **Identify Merged Branches**
+
    - List branches that have been merged into main
    - Exclude protected branches (main, master, develop)
    - Check both local and remote merged branches
@@ -50,6 +53,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
    ```
 
 4. **Identify Stale Branches**
+
    - Find branches with no recent activity
    - Check last commit date for each branch
    - Identify branches older than specified timeframe (e.g., 30 days)
@@ -64,6 +68,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
    ```
 
 5. **Interactive Branch Review**
+
    - Review each branch before deletion
    - Check if branch has unmerged changes
    - Verify branch purpose and status
@@ -78,6 +83,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
    ```
 
 6. **Protected Branch Configuration**
+
    - Identify branches that should never be deleted
    - Configure protection rules for important branches
    - Document branch protection policies
@@ -89,6 +95,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
    ```
 
 7. **Local Branch Cleanup**
+
    - Delete merged local branches safely
    - Remove stale feature branches
    - Clean up tracking branches for deleted remotes
@@ -103,6 +110,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
    ```
 
 8. **Remote Branch Cleanup**
+
    - Remove merged remote branches
    - Clean up remote tracking references
    - Delete obsolete remote branches
@@ -166,18 +174,21 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
    ```
 
 10. **Team Coordination**
+
     - Notify team before cleaning shared branches
     - Check if branches are being used by others
     - Coordinate branch cleanup schedules
     - Document branch cleanup procedures
 
 11. **Branch Naming Convention Cleanup**
+
     - Identify branches with non-standard naming
     - Clean up temporary or experimental branches
     - Remove old hotfix and feature branches
     - Enforce consistent naming conventions
 
 12. **Verification and Validation**
+
     - Verify important branches are still present
     - Check that no active work was deleted
     - Validate remote branch synchronization
@@ -190,12 +201,14 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
     ```
 
 13. **Documentation and Reporting**
+
     - Document what branches were cleaned up
     - Report any issues or conflicts found
     - Update team documentation about branch lifecycle
     - Create branch cleanup schedule and policies
 
 14. **Rollback Procedures**
+
     - Document how to recover deleted branches
     - Use reflog to find deleted branch commits
     - Create emergency recovery procedures
@@ -208,6 +221,7 @@ Follow this systematic approach to clean up git branches: **$ARGUMENTS**
     ```
 
 15. **Automation Setup**
+
     - Set up automated branch cleanup scripts
     - Configure CI/CD pipeline for branch cleanup
     - Create scheduled cleanup jobs

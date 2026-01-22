@@ -5,6 +5,7 @@ Auto-generate API reference documentation
 ## Instructions
 
 1. **API Documentation Strategy Analysis**
+
    - Analyze current API structure and endpoints
    - Identify documentation requirements (REST, GraphQL, gRPC, etc.)
    - Assess existing code annotations and documentation
@@ -12,6 +13,7 @@ Auto-generate API reference documentation
    - Plan documentation automation and maintenance strategy
 
 2. **Documentation Tool Selection**
+
    - Choose appropriate API documentation tools:
      - **OpenAPI/Swagger**: REST API documentation with Swagger UI
      - **Redoc**: Modern OpenAPI documentation renderer
@@ -23,6 +25,7 @@ Auto-generate API reference documentation
    - Consider factors: API type, team workflow, hosting, interactivity
 
 3. **Code Annotation and Schema Definition**
+
    - Add comprehensive code annotations for API endpoints
    - Define request/response schemas and data models
    - Add parameter descriptions and validation rules
@@ -30,6 +33,7 @@ Auto-generate API reference documentation
    - Add example requests and responses
 
 4. **API Specification Generation**
+
    - Set up automated API specification generation from code
    - Configure OpenAPI/Swagger specification generation
    - Set up schema validation and consistency checking
@@ -37,6 +41,7 @@ Auto-generate API reference documentation
    - Set up specification file management and version control
 
 5. **Interactive Documentation Setup**
+
    - Configure interactive API documentation with try-it-out functionality
    - Set up API testing and example execution
    - Configure authentication handling in documentation
@@ -44,6 +49,7 @@ Auto-generate API reference documentation
    - Configure API endpoint categorization and organization
 
 6. **Documentation Content Enhancement**
+
    - Add comprehensive API guides and tutorials
    - Create authentication and authorization documentation
    - Add error handling and status code documentation
@@ -51,6 +57,7 @@ Auto-generate API reference documentation
    - Add rate limiting and usage guidelines
 
 7. **Documentation Hosting and Deployment**
+
    - Set up documentation hosting and deployment
    - Configure documentation website generation and styling
    - Set up custom domain and SSL configuration
@@ -58,6 +65,7 @@ Auto-generate API reference documentation
    - Set up documentation analytics and usage tracking
 
 8. **Automation and CI/CD Integration**
+
    - Configure automated documentation generation in CI/CD pipeline
    - Set up documentation deployment automation
    - Configure documentation validation and quality checks
@@ -65,6 +73,7 @@ Auto-generate API reference documentation
    - Configure documentation testing and link validation
 
 9. **Multi-format Documentation Generation**
+
    - Generate documentation in multiple formats (HTML, PDF, Markdown)
    - Set up downloadable documentation packages
    - Configure offline documentation access

@@ -5,6 +5,7 @@ Configure Kubernetes deployment manifests
 ## Instructions
 
 1. **Kubernetes Architecture Planning**
+
    - Analyze application architecture and deployment requirements
    - Define resource requirements (CPU, memory, storage, network)
    - Plan namespace organization and multi-tenancy strategy
@@ -12,6 +13,7 @@ Configure Kubernetes deployment manifests
    - Define scaling strategies and performance requirements
 
 2. **Cluster Setup and Configuration**
+
    - Set up Kubernetes cluster (managed or self-hosted)
    - Configure cluster networking and CNI plugin
    - Set up cluster storage classes and persistent volumes
@@ -19,6 +21,7 @@ Configure Kubernetes deployment manifests
    - Set up cluster monitoring and logging infrastructure
 
 3. **Application Containerization**
+
    - Ensure application is properly containerized
    - Optimize container images for Kubernetes deployment
    - Configure multi-stage builds and security scanning
@@ -26,6 +29,7 @@ Configure Kubernetes deployment manifests
    - Configure image pull policies and secrets
 
 4. **Kubernetes Manifest Creation**
+
    - Create Deployment manifests with proper resource limits
    - Set up Service manifests for internal and external communication
    - Configure ConfigMaps and Secrets for configuration management
@@ -33,6 +37,7 @@ Configure Kubernetes deployment manifests
    - Set up NetworkPolicies for security and isolation
 
 5. **Load Balancing and Ingress**
+
    - Configure Ingress controllers and routing rules
    - Set up SSL/TLS termination and certificate management
    - Configure load balancing strategies and session affinity
@@ -40,6 +45,7 @@ Configure Kubernetes deployment manifests
    - Configure traffic management and canary deployments
 
 6. **Auto-scaling Configuration**
+
    - Set up Horizontal Pod Autoscaler (HPA) based on metrics
    - Configure Vertical Pod Autoscaler (VPA) for resource optimization
    - Set up Cluster Autoscaler for node scaling
@@ -47,6 +53,7 @@ Configure Kubernetes deployment manifests
    - Set up resource quotas and limits
 
 7. **Health Checks and Monitoring**
+
    - Configure liveness and readiness probes
    - Set up startup probes for slow-starting applications
    - Configure health check endpoints and monitoring
@@ -54,6 +61,7 @@ Configure Kubernetes deployment manifests
    - Configure alerting and notification systems
 
 8. **Security and Compliance**
+
    - Configure Pod Security Standards and policies
    - Set up network segmentation and security policies
    - Configure service accounts and RBAC permissions
@@ -61,6 +69,7 @@ Configure Kubernetes deployment manifests
    - Configure security scanning and compliance monitoring
 
 9. **CI/CD Integration**
+
    - Set up automated Kubernetes deployment pipelines
    - Configure GitOps workflows with ArgoCD or Flux
    - Set up automated testing in Kubernetes environments

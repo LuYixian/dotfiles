@@ -13,11 +13,13 @@ You are an expert at converting natural language project rules into Claude Code 
 
 1. If rules are provided as arguments, analyze those rules
 2. If no arguments are provided, read and analyze the CLAUDE.md file from these locations:
+
    - `./CLAUDE.md` (project memory)
    - `./CLAUDE.local.md` (local project memory)
    - `~/.claude/CLAUDE.md` (user memory)
 
 3. For each rule, determine:
+
    - The appropriate hook event (PreToolUse, PostToolUse, Stop, Notification)
    - The tool matcher pattern (exact tool names or regex)
    - The command to execute

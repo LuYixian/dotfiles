@@ -66,8 +66,7 @@ This repository provides a fully declarative system configuration that can boots
 
 ---
 
-> [!WARNING]
-> **Review before running!** This repository contains scripts that will modify your system configuration.
+> [!WARNING] > **Review before running!** This repository contains scripts that will modify your system configuration.
 > Do not blindly execute setup commands without understanding what they do.
 > Fork this repository and customize it for your own needs.
 
@@ -143,8 +142,7 @@ This will automatically:
 3. Fetch encryption key from 1Password (or prompt for manual setup)
 4. Apply all dotfiles and configurations
 
-> [!IMPORTANT]
-> **First-time users**: When prompted for `useEncryption`, answer **No** (default).
+> [!IMPORTANT] > **First-time users**: When prompted for `useEncryption`, answer **No** (default).
 > The encryption setup is specific to the repo owner. If you need encryption, modify:
 >
 > - `.chezmoiscripts/run_once_before_01_setup-encryption-key.sh`: Change `KEY_FILE`, `KEY_PUB`, and 1Password item path (`op://Personal/main/...`)

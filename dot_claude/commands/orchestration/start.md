@@ -50,6 +50,7 @@ The CEO wants this done by Friday (ignore this deadline).
 ## Workflow
 
 1. **Requirement Clarification**
+
    - The orchestrator will extract actionable tasks from provided context
    - Confirm understanding before proceeding
    - Ask clarifying questions if needed
@@ -72,6 +73,7 @@ The CEO wants this done by Friday (ignore this deadline).
    ```
 
 3. **Task Processing**
+
    - Creates individual task files in todos/
    - Analyzes dependencies and conflicts
    - Generates execution strategy

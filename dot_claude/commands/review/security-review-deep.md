@@ -15,6 +15,7 @@ Perform thorough security-focused code review using the security-review skill.
 Identify HIGH-CONFIDENCE security vulnerabilities with real exploitation potential.
 
 **Principles:**
+
 - Only flag issues with >80% confidence of actual exploitability
 - Skip theoretical issues, style concerns, or low-impact findings
 - Focus on vulnerabilities leading to unauthorized access, data breaches, or system compromise
@@ -37,6 +38,7 @@ git diff --merge-base origin/HEAD
 ### Step 3: Apply Security Skill
 
 Load `skills/security-review/SKILL.md` for:
+
 - OWASP Top 10 checklist
 - Injection patterns (SQL, XSS, Command)
 - Authentication/Authorization checks
@@ -48,14 +50,17 @@ Load `skills/security-review/SKILL.md` for:
 ## Security Review: [scope]
 
 ### CRITICAL (Exploitable)
+
 - **[vuln-type]** `file:line` - Description
   - Exploitation: How it can be exploited
   - Fix: Recommended remediation
 
 ### HIGH (Likely Exploitable)
+
 ...
 
 ### Summary
+
 Reviewed X files, found Y critical, Z high issues
 ```
 

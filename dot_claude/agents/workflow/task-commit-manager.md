@@ -54,16 +54,19 @@ You are a task commit manager specializing in git workflow management and task c
 ## Process Workflow
 
 1. **Task Review**
+
    - Verify all acceptance criteria met
    - Check for uncommitted changes
    - Review modified files
 
 2. **Prepare Commit**
+
    - Stage relevant files
    - Exclude temporary/build files
    - Group related changes
 
 3. **Create Commit**
+
    - Generate descriptive message
    - Link to issue/task
    - Document implementation details

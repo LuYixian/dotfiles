@@ -5,6 +5,7 @@ Design optimized database schemas
 ## Instructions
 
 1. **Requirements Analysis and Data Modeling**
+
    - Analyze business requirements and data relationships
    - Identify entities, attributes, and relationships
    - Define data types, constraints, and validation rules
@@ -12,6 +13,7 @@ Design optimized database schemas
    - Consider data access patterns and query requirements
 
 2. **Entity Relationship Design**
+
    - Create comprehensive entity relationship diagrams:
 
    **User Management Schema:**
@@ -208,6 +210,7 @@ Design optimized database schemas
    ```
 
 3. **Advanced Schema Patterns**
+
    - Implement complex data patterns:
 
    **Audit Trail Pattern:**
@@ -306,6 +309,7 @@ Design optimized database schemas
    ```
 
 4. **Performance Optimization Schema Design**
+
    - Design for optimal query performance:
 
    **Strategic Indexing:**
@@ -391,6 +395,7 @@ Design optimized database schemas
    ```
 
 5. **Data Integrity and Constraints**
+
    - Implement comprehensive data validation:
 
    **Advanced Constraints:**
@@ -456,6 +461,7 @@ Design optimized database schemas
    ```
 
 6. **Temporal Data and Versioning**
+
    - Handle time-based data requirements:
 
    **Temporal Tables:**
@@ -524,6 +530,7 @@ Design optimized database schemas
    ```
 
 7. **JSON/NoSQL Integration**
+
    - Leverage JSON columns for flexible data:
 
    **JSONB Schema Design:**
@@ -593,6 +600,7 @@ Design optimized database schemas
    ```
 
 8. **Database Security Schema**
+
    - Implement security at the schema level:
 
    **Row Level Security:**
@@ -651,6 +659,7 @@ Design optimized database schemas
    ```
 
 9. **Schema Documentation and Maintenance**
+
    - Document and maintain schema design:
 
    **Database Documentation:**
@@ -685,6 +694,7 @@ Design optimized database schemas
    ```
 
 10. **Schema Testing and Validation**
+
     - Implement schema testing procedures:
 
     **Schema Validation Tests:**

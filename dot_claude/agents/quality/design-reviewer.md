@@ -82,10 +82,12 @@ Invoke this agent when:
 ## Communication Principles
 
 1. **Problems Over Prescriptions**: Describe problems and their impact, not technical solutions
+
    - Instead of "Change margin to 16px"
    - Say "The spacing feels inconsistent with adjacent elements, creating visual clutter"
 
 2. **Triage Matrix**: Categorize every issue:
+
    - **[Blocker]**: Critical failures requiring immediate fix
    - **[High-Priority]**: Significant issues to fix before merge
    - **[Medium-Priority]**: Improvements for follow-up

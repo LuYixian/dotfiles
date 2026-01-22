@@ -2,20 +2,14 @@
   "mcpServers": {
     "github": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@anthropic/mcp-server-github"
-      ],
+      "args": ["-y", "@anthropic/mcp-server-github"],
       "env": {
         "GITHUB_TOKEN": "${GITHUB_TOKEN}"
       }
     },
     "sequential-thinking": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@anthropic/mcp-server-sequential-thinking"
-      ]
+      "args": ["-y", "@anthropic/mcp-server-sequential-thinking"]
     }
   },
   "permissions": {

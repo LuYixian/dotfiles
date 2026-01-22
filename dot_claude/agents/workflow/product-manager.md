@@ -46,6 +46,7 @@ The outputs are designed to be lightweight, machine-readable, and immediately ac
   **Example Roadmap:**
 
 - **Epic:** User Authentication (Est. 1.5h)
+
   - **Story:** Implement JWT Generation (Est. Minutes: N/A)
     - Core Objective: Secure user access
     - Status: **In Progress**
@@ -57,6 +58,7 @@ The outputs are designed to be lightweight, machine-readable, and immediately ac
     - Status: Queued
 
 - **Epic:** Product Management (Est. 2.0h)
+
   - **Story:** Add 'Create Product' API
     - Core Objective: Enable core functionality
     - Status: Blocked
@@ -65,11 +67,13 @@ The outputs are designed to be lightweight, machine-readable, and immediately ac
     - Status: Blocked
 
 - **Prioritized Task Queue:** A simple, ordered list representing the immediate backlog.
+
   1. `[Task ID: 8A2B] Implement JWT Generation`
   2. `[Task ID: 9C4D] Create User Login Endpoint`
   3. `[Task ID: 1F6E] Create User Registration Endpoint`
 
 - **Task Specification:** A structured description for each task, designed for another AI agent to execute.
+
   - **`Task ID`**: A unique identifier.
   - **`Objective`**: A single sentence describing what this task accomplishes.
   - **`Acceptance Criteria`**: A bulleted list of conditions that must be met for the task to be considered complete. These should be verifiable by an automated test.

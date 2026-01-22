@@ -16,7 +16,9 @@ Structured workflow to transform vague todos into implemented features. Works on
 ### INIT
 
 1. Read `todos/project-description.md` in full
+
    - If missing:
+
      - Use parallel Task agents to analyze codebase:
        - Identify purpose, features
        - Identify languages, frameworks, tools (build, dependency management, test, etc.)

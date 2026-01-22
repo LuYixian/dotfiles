@@ -5,6 +5,7 @@ Create and manage database migrations
 ## Instructions
 
 1. **Migration Strategy and Planning**
+
    - Analyze current database schema and target changes
    - Plan migration strategy for zero-downtime deployments
    - Define rollback procedures and data safety measures
@@ -12,6 +13,7 @@ Create and manage database migrations
    - Plan for data transformation and validation
 
 2. **Migration Framework Setup**
+
    - Set up comprehensive migration framework:
 
    **Node.js Migration Framework:**
@@ -327,6 +329,7 @@ Create and manage database migrations
    ```
 
 3. **Migration File Templates**
+
    - Create standardized migration templates:
 
    **SQL Migration Template:**
@@ -417,6 +420,7 @@ Create and manage database migrations
    ```
 
 4. **Advanced Migration Patterns**
+
    - Implement complex migration scenarios:
 
    **Data Migration with Validation:**
@@ -568,6 +572,7 @@ Create and manage database migrations
    ```
 
 5. **Schema Alteration Migrations**
+
    - Handle schema changes safely:
 
    **Safe Column Addition:**
@@ -710,6 +715,7 @@ Create and manage database migrations
    ```
 
 6. **Migration Testing Framework**
+
    - Test migrations thoroughly:
 
    **Migration Test Suite:**
@@ -957,6 +963,7 @@ Create and manage database migrations
    ```
 
 7. **Production Migration Safety**
+
    - Implement production-safe migration practices:
 
    **Safe Production Migration:**
@@ -1135,6 +1142,7 @@ Create and manage database migrations
    ```
 
 8. **Migration Monitoring and Alerting**
+
    - Monitor migration execution:
 
    **Migration Monitoring:**
@@ -1276,6 +1284,7 @@ Create and manage database migrations
    ```
 
 9. **Migration CLI Tools**
+
    - Create comprehensive CLI interface:
 
    **Migration CLI:**

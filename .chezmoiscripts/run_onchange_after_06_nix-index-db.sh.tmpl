@@ -36,7 +36,7 @@ if [[ "$PINNED_VERSION" != "$INSTALLED_VERSION" ]] || [[ ! -f "$HOME/.cache/nix-
     fi
 
     ln -sf "${filename}" files
-    echo "$PINNED_VERSION" > "$VERSION_FILE"
+    echo "$PINNED_VERSION" >"$VERSION_FILE"
     echo "    Database updated to $PINNED_VERSION"
 else
     echo "    nix-index database already at $INSTALLED_VERSION"

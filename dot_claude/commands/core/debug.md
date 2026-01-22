@@ -29,6 +29,7 @@ Debug issues using the ISOLATE → TRACE → VERIFY methodology.
 3. Add diagnostic logging if needed
 
 **Common culprits:**
+
 - Null/undefined values
 - Type mismatches
 - Off-by-one errors

@@ -5,6 +5,7 @@ Configure CDN for optimal delivery
 ## Instructions
 
 1. **CDN Strategy and Provider Selection**
+
    - Analyze application traffic patterns and global user distribution
    - Evaluate CDN providers (CloudFlare, AWS CloudFront, Fastly, KeyCDN)
    - Assess content types and caching requirements
@@ -12,6 +13,7 @@ Configure CDN for optimal delivery
    - Define performance and cost optimization goals
 
 2. **CDN Configuration and Setup**
+
    - Configure CDN with optimal settings:
 
    **CloudFlare Configuration:**
@@ -106,6 +108,7 @@ Configure CDN for optimal delivery
    ```
 
 3. **Static Asset Optimization**
+
    - Optimize assets for CDN delivery:
 
    **Asset Build Process:**
@@ -203,6 +206,7 @@ Configure CDN for optimal delivery
    ```
 
 4. **Compression and Optimization**
+
    - Configure optimal compression settings:
 
    **Gzip/Brotli Compression:**
@@ -277,6 +281,7 @@ Configure CDN for optimal delivery
    ```
 
 5. **Cache Headers and Policies**
+
    - Configure optimal caching strategies:
 
    **Smart Cache Headers:**
@@ -350,6 +355,7 @@ Configure CDN for optimal delivery
    ```
 
 6. **Image Optimization and Delivery**
+
    - Implement advanced image optimization:
 
    **Responsive Image Delivery:**
@@ -423,6 +429,7 @@ Configure CDN for optimal delivery
    ```
 
 7. **CDN Purging and Cache Invalidation**
+
    - Implement intelligent cache invalidation:
 
    **CloudFlare Cache Purging:**
@@ -497,6 +504,7 @@ Configure CDN for optimal delivery
    ```
 
 8. **Performance Monitoring and Analytics**
+
    - Set up CDN performance monitoring:
 
    **CDN Performance Tracking:**
@@ -573,6 +581,7 @@ Configure CDN for optimal delivery
    ```
 
 9. **Security and Access Control**
+
    - Configure CDN security features:
 
    **CDN Security Configuration:**
@@ -627,6 +636,7 @@ Configure CDN for optimal delivery
    ```
 
 10. **Cost Optimization and Monitoring**
+
     - Implement CDN cost optimization:
 
     **Cost Monitoring:**

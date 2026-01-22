@@ -68,11 +68,13 @@ For semantic conflicts:
    ```
 
 2. **Understand both changes**:
+
    - What does HEAD (current) change do?
    - What does incoming change do?
    - Are they compatible?
 
 3. **Resolve**:
+
    - Keep one version
    - Keep both (combine)
    - Write new code that satisfies both intents

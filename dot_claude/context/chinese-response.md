@@ -19,12 +19,14 @@
 根据项目偏好选择：
 
 **Option A: 英文 (团队项目推荐)**
+
 ```
 feat(auth): add OAuth2 support for GitHub
 fix(api): handle null response in user endpoint
 ```
 
 **Option B: 中文 (个人项目可选)**
+
 ```
 feat(auth): 添加 GitHub OAuth2 支持
 fix(api): 处理用户端点的空响应

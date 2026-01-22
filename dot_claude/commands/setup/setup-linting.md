@@ -7,6 +7,7 @@ Setup code linting and quality tools
 Follow this systematic approach to setup linting: **$ARGUMENTS**
 
 1. **Project Analysis**
+
    - Identify programming languages and frameworks
    - Check existing linting configuration
    - Review current code style and patterns
@@ -56,6 +57,7 @@ Follow this systematic approach to setup linting: **$ARGUMENTS**
    ```
 
 4. **IDE Integration**
+
    - Configure VS Code settings
    - Setup auto-fix on save
    - Install relevant extensions

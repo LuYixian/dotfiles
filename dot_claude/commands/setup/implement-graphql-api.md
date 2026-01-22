@@ -5,6 +5,7 @@ Implement GraphQL API endpoints
 ## Instructions
 
 1. **GraphQL Setup and Configuration**
+
    - Set up GraphQL server with Apollo Server or similar
    - Configure schema-first or code-first approach
    - Plan GraphQL architecture and data modeling
@@ -12,6 +13,7 @@ Implement GraphQL API endpoints
    - Configure GraphQL playground and documentation
 
 2. **Schema Definition and Type System**
+
    - Define comprehensive GraphQL schema:
 
    **Schema Definition (SDL):**
@@ -404,6 +406,7 @@ Implement GraphQL API endpoints
    ```
 
 3. **Resolver Implementation**
+
    - Implement comprehensive resolvers:
 
    **Main Resolvers:**
@@ -650,6 +653,7 @@ Implement GraphQL API endpoints
    ```
 
 4. **DataLoader for N+1 Problem**
+
    - Implement efficient data loading:
 
    **DataLoader Implementation:**
@@ -744,6 +748,7 @@ Implement GraphQL API endpoints
    ```
 
 5. **Authentication and Authorization**
+
    - Implement GraphQL-specific auth:
 
    **Auth Helpers:**
@@ -851,6 +856,7 @@ Implement GraphQL API endpoints
    ```
 
 6. **Real-time Subscriptions**
+
    - Implement GraphQL subscriptions:
 
    **Subscription Setup:**
@@ -968,6 +974,7 @@ Implement GraphQL API endpoints
    ```
 
 7. **Error Handling and Validation**
+
    - Implement comprehensive error handling:
 
    **Error Handling:**
@@ -1132,6 +1139,7 @@ Implement GraphQL API endpoints
    ```
 
 8. **Performance Optimization**
+
    - Implement GraphQL performance optimizations:
 
    **Query Complexity and Depth Limiting:**
@@ -1269,6 +1277,7 @@ Implement GraphQL API endpoints
    ```
 
 9. **GraphQL Testing**
+
    - Implement comprehensive GraphQL testing:
 
    **GraphQL Test Suite:**
@@ -1608,6 +1617,7 @@ Implement GraphQL API endpoints
    ```
 
 10. **Production Setup and Deployment**
+
     - Configure GraphQL for production:
 
     **Production Configuration:**

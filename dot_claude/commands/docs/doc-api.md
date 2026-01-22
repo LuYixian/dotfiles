@@ -7,12 +7,14 @@ Generate API documentation from code
 Follow this systematic approach to create API documentation: **$ARGUMENTS**
 
 1. **Code Analysis and Discovery**
+
    - Scan the codebase for API endpoints, routes, and handlers
    - Identify REST APIs, GraphQL schemas, and RPC services
    - Map out controller classes, route definitions, and middleware
    - Discover request/response models and data structures
 
 2. **Documentation Tool Selection**
+
    - Choose appropriate documentation tools based on stack:
      - **OpenAPI/Swagger**: REST APIs with interactive documentation
      - **GraphQL**: GraphiQL, GraphQL Playground, or Apollo Studio
@@ -65,6 +67,7 @@ Follow this systematic approach to create API documentation: **$ARGUMENTS**
    ```
 
 4. **Endpoint Documentation**
+
    - Document all HTTP methods (GET, POST, PUT, DELETE, PATCH)
    - Specify request parameters (path, query, header, body)
    - Define response schemas and status codes
@@ -72,24 +75,28 @@ Follow this systematic approach to create API documentation: **$ARGUMENTS**
    - Document authentication and authorization requirements
 
 5. **Request/Response Examples**
+
    - Provide realistic request examples for each endpoint
    - Include sample response data with proper formatting
    - Show different response scenarios (success, error, edge cases)
    - Document content types and encoding
 
 6. **Authentication Documentation**
+
    - Document authentication methods (API keys, JWT, OAuth)
    - Explain authorization scopes and permissions
    - Provide authentication examples and token formats
    - Document session management and refresh token flows
 
 7. **Data Model Documentation**
+
    - Define all data schemas and models
    - Document field types, constraints, and validation rules
    - Include relationships between entities
    - Provide example data structures
 
 8. **Error Handling Documentation**
+
    - Document all possible error responses
    - Explain error codes and their meanings
    - Provide troubleshooting guidance
@@ -100,7 +107,7 @@ Follow this systematic approach to create API documentation: **$ARGUMENTS**
    **Swagger UI Integration:**
 
    ```html
-   <!DOCTYPE html>
+   <!doctype html>
    <html>
      <head>
        <title>API Documentation</title>
@@ -120,6 +127,7 @@ Follow this systematic approach to create API documentation: **$ARGUMENTS**
    ```
 
 10. **Code Annotation and Comments**
+
     - Add inline documentation to API handlers
     - Use framework-specific annotation tools:
       - **Java**: @ApiOperation, @ApiParam (Swagger annotations)
@@ -151,36 +159,42 @@ Follow this systematic approach to create API documentation: **$ARGUMENTS**
     ```
 
 12. **Testing Integration**
+
     - Generate API test collections from documentation
     - Include test scripts and validation rules
     - Set up automated API testing
     - Document test scenarios and expected outcomes
 
 13. **Version Management**
+
     - Document API versioning strategy
     - Maintain documentation for multiple API versions
     - Document deprecation timelines and migration guides
     - Track breaking changes between versions
 
 14. **Performance Documentation**
+
     - Document rate limits and throttling policies
     - Include performance benchmarks and SLAs
     - Document caching strategies and headers
     - Explain pagination and filtering options
 
 15. **SDK and Client Library Documentation**
+
     - Generate client libraries from API specifications
     - Document SDK usage and examples
     - Provide quickstart guides for different languages
     - Include integration examples and best practices
 
 16. **Environment-Specific Documentation**
+
     - Document different environments (dev, staging, prod)
     - Include environment-specific endpoints and configurations
     - Document deployment and configuration requirements
     - Provide environment setup instructions
 
 17. **Security Documentation**
+
     - Document security best practices
     - Include CORS and CSP policies
     - Document input validation and sanitization

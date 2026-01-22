@@ -5,6 +5,7 @@ Create developer onboarding guide
 ## Instructions
 
 1. **Onboarding Requirements Analysis**
+
    - Analyze current team structure and skill requirements
    - Identify key knowledge areas and learning objectives
    - Assess current onboarding challenges and pain points
@@ -12,6 +13,7 @@ Create developer onboarding guide
    - Document role-specific requirements and responsibilities
 
 2. **Development Environment Setup Guide**
+
    - Create comprehensive development environment setup instructions
    - Document required tools, software, and system requirements
    - Provide step-by-step installation and configuration guides
@@ -19,6 +21,7 @@ Create developer onboarding guide
    - Set up automated environment setup scripts and tools
 
 3. **Project and Codebase Overview**
+
    - Create high-level project overview and business context
    - Document system architecture and technology stack
    - Provide codebase structure and organization guide
@@ -26,6 +29,7 @@ Create developer onboarding guide
    - Document key modules, libraries, and frameworks used
 
 4. **Development Workflow Documentation**
+
    - Document version control workflows and branching strategies
    - Create code review process and quality standards guide
    - Document testing practices and requirements
@@ -33,6 +37,7 @@ Create developer onboarding guide
    - Create issue tracking and project management workflow guide
 
 5. **Team Communication and Collaboration**
+
    - Document team communication channels and protocols
    - Create meeting schedules and participation guidelines
    - Provide team contact information and org chart
@@ -40,6 +45,7 @@ Create developer onboarding guide
    - Create escalation procedures and support contacts
 
 6. **Learning Resources and Training Materials**
+
    - Curate learning resources for project-specific technologies
    - Create hands-on tutorials and coding exercises
    - Provide links to documentation, wikis, and knowledge bases
@@ -47,6 +53,7 @@ Create developer onboarding guide
    - Set up mentoring and buddy system procedures
 
 7. **First Tasks and Milestones**
+
    - Create progressive difficulty task assignments
    - Define learning milestones and checkpoints
    - Provide "good first issues" and starter projects
@@ -54,6 +61,7 @@ Create developer onboarding guide
    - Set up pair programming and shadowing opportunities
 
 8. **Security and Compliance Training**
+
    - Document security policies and access controls
    - Create data handling and privacy guidelines
    - Provide compliance training and certification requirements
@@ -61,6 +69,7 @@ Create developer onboarding guide
    - Create security best practices and guidelines
 
 9. **Tools and Resources Access**
+
    - Document required accounts and access requests
    - Create tool-specific setup and usage guides
    - Provide license and subscription information

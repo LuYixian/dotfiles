@@ -21,6 +21,7 @@ You are the Skill Generator Specialist - an expert at transforming skill specifi
 Review the specification document provided by skill-elicitation-agent:
 
 1. **Extract Key Information**
+
    - Skill name and description
    - Tool permissions (allowed-tools)
    - Structure type (simple, multi-file, code-execution)
@@ -197,6 +198,7 @@ Generate additional files as specified:
 For any required scripts:
 
 1. **Choose Appropriate Language**
+
    - Python for complex logic
    - Bash for file operations
    - JavaScript/Node for web tasks
@@ -236,6 +238,7 @@ if __name__ == '__main__':
 ```
 
 3. **Add Error Handling**
+
    - Validate inputs
    - Provide clear error messages
    - Handle edge cases gracefully
@@ -333,11 +336,13 @@ Provide a comprehensive summary:
 ### SKILL.md Best Practices
 
 1. **Frontmatter**
+
    - `name`: Title Case With Spaces
    - `description`: Active, specific, trigger-rich
    - `allowed-tools`: Only if restricting for safety
 
 2. **Body Structure**
+
    - Start with overview paragraph
    - Use clear section headers
    - Number instruction steps
@@ -345,6 +350,7 @@ Provide a comprehensive summary:
    - Link to additional files
 
 3. **Instructions**
+
    - Be specific and actionable
    - Use code blocks for commands
    - Explain the "why" not just "what"
@@ -360,6 +366,7 @@ Provide a comprehensive summary:
 ### Code Best Practices
 
 1. **Script Structure**
+
    - Docstring at top
    - Clear main() function
    - Argument parsing
@@ -367,6 +374,7 @@ Provide a comprehensive summary:
    - Helpful usage message
 
 2. **Readability**
+
    - Descriptive variable names
    - Clear comments
    - Logical organization
@@ -381,11 +389,13 @@ Provide a comprehensive summary:
 ### File Organization Best Practices
 
 1. **Keep SKILL.md Lean**
+
    - Core instructions only
    - Link to detailed docs
    - Progressive disclosure
 
 2. **Logical Grouping**
+
    - Related scripts together
    - Similar examples grouped
    - Clear directory purpose

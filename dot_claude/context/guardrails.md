@@ -4,16 +4,16 @@ Unified definition of sensitive areas requiring special handling.
 
 ## Sensitive Categories
 
-| Category | Examples | Risk Level |
-|----------|----------|------------|
-| **Authentication** | Login, OAuth, JWT, sessions, tokens | Critical |
-| **Authorization** | Permissions, roles, ACLs, policies | Critical |
-| **Financial** | Billing, payments, subscriptions, invoices | Critical |
-| **Security** | Encryption, hashing, secrets, credentials | Critical |
-| **Data Schema** | Database migrations, model changes | High |
-| **External APIs** | Public endpoints, webhooks, integrations | High |
-| **Irreversible Ops** | Data deletion, migrations, deployments | High |
-| **PII/Privacy** | User data, GDPR, personal information | High |
+| Category             | Examples                                   | Risk Level |
+| -------------------- | ------------------------------------------ | ---------- |
+| **Authentication**   | Login, OAuth, JWT, sessions, tokens        | Critical   |
+| **Authorization**    | Permissions, roles, ACLs, policies         | Critical   |
+| **Financial**        | Billing, payments, subscriptions, invoices | Critical   |
+| **Security**         | Encryption, hashing, secrets, credentials  | Critical   |
+| **Data Schema**      | Database migrations, model changes         | High       |
+| **External APIs**    | Public endpoints, webhooks, integrations   | High       |
+| **Irreversible Ops** | Data deletion, migrations, deployments     | High       |
+| **PII/Privacy**      | User data, GDPR, personal information      | High       |
 
 ## Detection Patterns
 

@@ -5,6 +5,7 @@ Configure load and performance testing
 ## Instructions
 
 1. **Load Testing Strategy and Requirements**
+
    - Analyze application architecture and identify performance-critical components
    - Define load testing objectives (capacity planning, performance validation, bottleneck identification)
    - Determine testing scenarios (normal load, peak load, stress testing, spike testing)
@@ -12,6 +13,7 @@ Configure load and performance testing
    - Plan load testing environments and infrastructure requirements
 
 2. **Load Testing Tool Selection**
+
    - Choose appropriate load testing tools based on requirements:
      - **k6**: Modern, developer-friendly with JavaScript scripting
      - **Artillery**: Simple, powerful, great for CI/CD integration
@@ -22,6 +24,7 @@ Configure load and performance testing
    - Consider factors: scripting language, reporting, CI integration, cost
 
 3. **Test Environment Setup**
+
    - Set up dedicated load testing environment matching production
    - Configure test data and database setup for consistent testing
    - Set up network configuration and firewall rules
@@ -29,6 +32,7 @@ Configure load and performance testing
    - Set up test isolation and cleanup procedures
 
 4. **Load Test Script Development**
+
    - Create test scripts for critical user journeys and API endpoints
    - Implement realistic user behavior patterns and think times
    - Set up test data generation and management
@@ -36,6 +40,7 @@ Configure load and performance testing
    - Implement parameterization and data-driven testing
 
 5. **Performance Scenarios Configuration**
+
    - **Load Testing**: Normal expected traffic patterns
    - **Stress Testing**: Beyond normal capacity to find breaking points
    - **Spike Testing**: Sudden traffic increases and decreases
@@ -44,6 +49,7 @@ Configure load and performance testing
    - **Capacity Testing**: Maximum user load determination
 
 6. **Monitoring and Metrics Collection**
+
    - Set up application performance monitoring during tests
    - Configure infrastructure metrics collection (CPU, memory, disk, network)
    - Set up database performance monitoring and query analysis
@@ -51,6 +57,7 @@ Configure load and performance testing
    - Set up log aggregation and error tracking
 
 7. **Test Execution and Automation**
+
    - Configure automated test execution and scheduling
    - Set up test result collection and analysis
    - Configure test environment provisioning and teardown
@@ -58,6 +65,7 @@ Configure load and performance testing
    - Configure test result storage and historical tracking
 
 8. **Performance Analysis and Reporting**
+
    - Set up automated performance analysis and threshold checking
    - Configure performance trend analysis and regression detection
    - Set up detailed performance reporting and visualization
@@ -65,6 +73,7 @@ Configure load and performance testing
    - Set up performance benchmark and baseline management
 
 9. **CI/CD Integration**
+
    - Integrate load tests into continuous integration pipeline
    - Configure performance gates and deployment blocking
    - Set up automated performance regression detection
