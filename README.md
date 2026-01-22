@@ -24,22 +24,39 @@
 
 ---
 
-Setting up a new development machine is tedious: dozens of packages to install, countless tools to configure, and years of tweaks to remember. This repository solves that with **fully declarative configuration** - every package, setting, and dotfile defined in code, **reproducible** across any machine with one command.
-
----
-
 ## ✨ Highlights
 
 - **Cross-platform**: One repo for macOS + Linux (`nix-darwin` + `flakey-profile`)
-- **End-to-end bootstrap**: Nix installer auto-selects fastest Determinate mirror, chezmoi renders and applies templates in one flow
-- **Profiles everywhere**: `.chezmoidata/` drives `shared` / `work` / `private` packages across Nix, Homebrew, and MAS
-- **macOS polish**: nix-darwin system defaults, Homebrew + MAS integration, post-apply update scripts
-- **Claude Code integration**: 14+ plugins from marketplace, quality protocols, smart hooks for safe operations
+- **One-command bootstrap**: From bare metal to full environment with a single `curl | sh`
+- **Claude Code integration**: 14+ plugins from marketplace with automated sync
 - **Modern CLI**: Rust-based tools (eza, bat, ripgrep, fd, zoxide) replacing Unix classics
-- **Security-first secrets**: `age` encryption with 1Password-assisted key bootstrapping
+- **Security-first**: `age` encryption with 1Password-assisted key bootstrapping
+
+---
+
+## 💡 Why This Repo
+
+- **Profiles everywhere**: `.chezmoidata/` drives `shared` / `work` / `private` packages across Nix, Homebrew, and MAS
+- **End-to-end bootstrap**: Nix installer auto-selects fastest Determinate mirror, chezmoi renders and applies templates in one flow
+- **macOS polish**: nix-darwin system defaults, Homebrew + MAS integration, post-apply update scripts
 - **Workflow guardrails**: pre-commit (shellcheck, markdownlint, prettier, Nix lint) + Claude Code hooks
 - **DX automation**: Justfile routines, fzf navigation helpers, AI-assisted commit messages
 - **CI parity**: Template rendering and `nix flake check` run on macOS + Linux
+- **Claude Code hooks**: Auto-format code, enforce uv over pip, block main branch edits
+
+---
+
+## 🎯 Motivation
+
+Setting up a new development machine is tedious: dozens of packages to install, countless tools to configure, and years of tweaks to remember. This repository solves that with **fully declarative configuration** - every package, setting, and dotfile defined in code, **reproducible** across any machine with one command.
+
+**Core principles:**
+
+- **Reproducibility** — Same environment on any machine, every time
+- **Declarative** — Everything defined in code, version controlled
+- **Modular** — Profile-based customization for work/personal/headless
+- **AI-augmented** — Claude Code integration for development workflows
+- **Security-first** — Encrypted secrets with 1Password integration
 
 ---
 

@@ -24,22 +24,39 @@
 
 ---
 
-搭建一台新的开发机器很繁琐：几十个软件包要装、无数工具要配置、还有多年积累的小调整要记住。本仓库通过**完全声明式配置**解决这个问题——所有软件包、设置、dotfiles 都以代码定义，一条命令即可在任意机器上**完全复现**。
-
----
-
 ## ✨ 亮点
 
 - **跨平台**：同一套配置支持 macOS + Linux（`nix-darwin` + `flakey-profile`）
-- **端到端引导**：Nix 安装器自动选择最快的 Determinate 镜像，chezmoi 一次性渲染并应用模板
-- **Profile 全覆盖**：`.chezmoidata/` 驱动 `shared` / `work` / `private` 包，贯穿 Nix、Homebrew、MAS
-- **macOS 打磨**：nix-darwin 系统偏好、Homebrew + MAS 集成、应用后更新脚本
-- **Claude Code 集成**：14+ marketplace 插件、质量协议、智能 Hooks 确保安全操作
+- **一键引导**：从裸机到完整环境，只需一条 `curl | sh`
+- **Claude Code 集成**：14+ marketplace 插件，自动同步更新
 - **现代 CLI**：Rust 工具链（eza、bat、ripgrep、fd、zoxide）替代传统 Unix 命令
 - **安全优先**：`age` 加密 + 1Password 辅助密钥引导
+
+---
+
+## 💡 为什么选择这个仓库
+
+- **Profile 全覆盖**：`.chezmoidata/` 驱动 `shared` / `work` / `private` 包，贯穿 Nix、Homebrew、MAS
+- **端到端引导**：Nix 安装器自动选择最快的 Determinate 镜像，chezmoi 一次性渲染并应用模板
+- **macOS 打磨**：nix-darwin 系统偏好、Homebrew + MAS 集成、应用后更新脚本
 - **工作流护栏**：pre-commit（shellcheck、markdownlint、prettier、Nix lint）+ Claude Code hooks
 - **DX 自动化**：Justfile 升级/清理、fzf 导航、AI 辅助提交信息
 - **CI 一致性**：macOS + Linux 双平台模板渲染与 `nix flake check`
+- **Claude Code Hooks**：自动格式化代码、强制使用 uv 替代 pip、阻止直接编辑 main 分支
+
+---
+
+## 🎯 设计理念
+
+搭建一台新的开发机器很繁琐：几十个软件包要装、无数工具要配置、还有多年积累的小调整要记住。本仓库通过**完全声明式配置**解决这个问题——所有软件包、设置、dotfiles 都以代码定义，一条命令即可在任意机器上**完全复现**。
+
+**核心原则：**
+
+- **可复现性** — 任何机器、每一次，都是相同的环境
+- **声明式** — 一切定义在代码中，版本控制
+- **模块化** — 基于 Profile 的定制：工作/个人/无头服务器
+- **AI 增强** — Claude Code 集成，提升开发工作流
+- **安全优先** — 加密 secrets，集成 1Password
 
 ---
 
