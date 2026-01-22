@@ -24,15 +24,21 @@
 
 ---
 
+Setting up a new development machine is tedious: dozens of packages to install, countless tools to configure, and years of tweaks to remember. This repository solves that with **fully declarative configuration** - every package, setting, and dotfile defined in code, **reproducible** across any machine with one command.
+
+---
+
 ## ✨ Highlights
 
 - **Cross-platform**: One repo for macOS + Linux (`nix-darwin` + `flakey-profile`)
-- **One-command bootstrap**: Installs Nix (Determinate), applies configs, syncs everything automatically
-- **Claude Code integration**: 14+ plugins from marketplace, quality protocols, smart hooks
+- **End-to-end bootstrap**: Nix installer auto-selects fastest Determinate mirror, chezmoi renders and applies templates in one flow
+- **Profiles everywhere**: `.chezmoidata/` drives `shared` / `work` / `private` packages across Nix, Homebrew, and MAS
+- **macOS polish**: nix-darwin system defaults, Homebrew + MAS integration, post-apply update scripts
+- **Claude Code integration**: 14+ plugins from marketplace, quality protocols, smart hooks for safe operations
 - **Modern CLI**: Rust-based tools (eza, bat, ripgrep, fd, zoxide) replacing Unix classics
-- **Multi-profile**: `work` / `private` / `headless` switches via chezmoi prompts
-- **Secure secrets**: `age` encryption with 1Password-backed key bootstrap
-- **Workflow guardrails**: pre-commit hooks + Claude Code hooks for safe git operations
+- **Security-first secrets**: `age` encryption with 1Password-assisted key bootstrapping
+- **Workflow guardrails**: pre-commit (shellcheck, markdownlint, prettier, Nix lint) + Claude Code hooks
+- **DX automation**: Justfile routines, fzf navigation helpers, AI-assisted commit messages
 - **CI parity**: Template rendering and `nix flake check` run on macOS + Linux
 
 ---

@@ -24,15 +24,21 @@
 
 ---
 
+新しい開発マシンのセットアップは面倒です：数十のパッケージをインストールし、無数のツールを設定し、長年の調整を思い出す必要があります。このリポジトリは**完全に宣言的な設定**でこの問題を解決します——すべてのパッケージ、設定、dotfiles がコードで定義され、1 コマンドで任意のマシンに**完全再現**できます。
+
+---
+
 ## ✨ ハイライト
 
 - **クロスプラットフォーム**：macOS + Linux を 1 つの構成で管理（`nix-darwin` + `flakey-profile`）
-- **ワンコマンドブートストラップ**：Nix（Determinate）を自動インストール、設定を適用、すべてを同期
-- **Claude Code 統合**：14 以上のプラグインを自動同期、品質プロトコル、スマート Hooks
+- **エンドツーエンドブートストラップ**：Nix インストーラが最速の Determinate ミラーを自動選択、chezmoi が一括でテンプレートを適用
+- **プロファイルを横断**：`.chezmoidata/` が `shared` / `work` / `private` パッケージを Nix・Homebrew・MAS で統一管理
+- **macOS チューニング**：nix-darwin のシステム設定、Homebrew + MAS 統合、適用後の更新スクリプト
+- **Claude Code 統合**：14 以上の marketplace プラグイン、品質プロトコル、安全操作のためのスマート Hooks
 - **モダン CLI**：Rust ツールチェーン（eza、bat、ripgrep、fd、zoxide）で Unix クラシックを置き換え
-- **マルチプロファイル**：chezmoi プロンプトで `work` / `private` / `headless` を切り替え
-- **セキュアなシークレット**：`age` 暗号化 + 1Password キーブートストラップ
-- **ワークフローガードレール**：pre-commit hooks + Claude Code hooks で安全な操作を確保
+- **セキュリティ優先**：`age` 暗号化 + 1Password アシスト付きキーブートストラップ
+- **ワークフローガードレール**：pre-commit（shellcheck、markdownlint、prettier、Nix lint）+ Claude Code hooks
+- **DX 自動化**：Justfile のアップグレード/クリーンアップ、fzf ナビゲーション、AI アシストコミットメッセージ
 - **CI 一貫性**：macOS + Linux でテンプレートレンダリングと `nix flake check` を実行
 
 ---

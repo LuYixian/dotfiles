@@ -24,15 +24,21 @@
 
 ---
 
+搭建一台新的开发机器很繁琐：几十个软件包要装、无数工具要配置、还有多年积累的小调整要记住。本仓库通过**完全声明式配置**解决这个问题——所有软件包、设置、dotfiles 都以代码定义，一条命令即可在任意机器上**完全复现**。
+
+---
+
 ## ✨ 亮点
 
 - **跨平台**：同一套配置支持 macOS + Linux（`nix-darwin` + `flakey-profile`）
-- **一键引导**：自动安装 Nix（Determinate）、应用配置、同步所有组件
-- **Claude Code 集成**：14+ 插件自动同步、质量协议、智能 Hooks
+- **端到端引导**：Nix 安装器自动选择最快的 Determinate 镜像，chezmoi 一次性渲染并应用模板
+- **Profile 全覆盖**：`.chezmoidata/` 驱动 `shared` / `work` / `private` 包，贯穿 Nix、Homebrew、MAS
+- **macOS 打磨**：nix-darwin 系统偏好、Homebrew + MAS 集成、应用后更新脚本
+- **Claude Code 集成**：14+ marketplace 插件、质量协议、智能 Hooks 确保安全操作
 - **现代 CLI**：Rust 工具链（eza、bat、ripgrep、fd、zoxide）替代传统 Unix 命令
-- **多 Profile**：通过 chezmoi prompts 切换 `work` / `private` / `headless`
-- **安全加密**：`age` 加密 + 1Password 密钥引导
-- **工作流护栏**：pre-commit hooks + Claude Code hooks 确保安全操作
+- **安全优先**：`age` 加密 + 1Password 辅助密钥引导
+- **工作流护栏**：pre-commit（shellcheck、markdownlint、prettier、Nix lint）+ Claude Code hooks
+- **DX 自动化**：Justfile 升级/清理、fzf 导航、AI 辅助提交信息
 - **CI 一致性**：macOS + Linux 双平台模板渲染与 `nix flake check`
 
 ---
