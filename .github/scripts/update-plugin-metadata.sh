@@ -59,7 +59,7 @@ preserve_existing_keywords() {
     [[ -z "$EXISTING_YAML" || ! -f "$EXISTING_YAML" ]] && return 0
 
     local existing_plugins
-    existing_plugins=$(yq -o=json '.claude.plugins' "$EXISTING_YAML")
+    existing_plugins=$(yq -o=json '.claude.wshobson.registry' "$EXISTING_YAML")
 
     # For each plugin with empty keywords, check if existing has keywords
     jq -r '.[] | select(.keywords == []) | .name' "$OUTPUT" | while read -r name; do
