@@ -1,4 +1,36 @@
 claude:
+  # Local directories (protected from plugin sync)
+  localDirectories:
+    agents:
+      - audit
+      - development
+      - docs
+      - frontend
+      - infrastructure
+      - platform
+      - quality
+      - skill-builder
+      - workflow
+    commands:
+      - core
+      - deploy
+      - dev
+      - docs
+      - git
+      - meta
+      - orchestration
+      - performance
+      - plan
+      - pr
+      - project
+      - review
+      - setup
+      - simulation
+      - skills
+      - test
+    skills:
+      - git-workflow
+      - review-code
   enabledPlugins:
     - python-development
     - javascript-typescript

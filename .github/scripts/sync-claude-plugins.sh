@@ -32,12 +32,16 @@ get_enabled_plugins() {
     yq -r '.claude.enabledPlugins[]' "$CLAUDE_YAML" 2>/dev/null || true
 }
 
-# Check if directory is local (exists in git, not a plugin)
-# Local = has files tracked in git before this sync
+# Get local directories from claude.yaml
+get_local_dirs() {
+    local type=$1
+    yq -r ".claude.localDirectories.${type}[]" "$CLAUDE_YAML" 2>/dev/null || true
+}
+
+# Check if directory is local (defined in claude.yaml)
 is_local_dir() {
     local type=$1 name=$2
-    # Check if any files in this dir are tracked by git
-    git ls-files --error-unmatch "$DOT_CLAUDE/$type/$name" &>/dev/null 2>&1
+    get_local_dirs "$type" | grep -qx "$name"
 }
 
 # Sync single wshobson plugin
