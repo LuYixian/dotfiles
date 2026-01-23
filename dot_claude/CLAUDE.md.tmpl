@@ -39,9 +39,11 @@ When task matches keywords, **proactively use Task tool** with corresponding age
 | Keywords | Action |
 |----------|--------|
 | bug, error, crash, 报错, 失败 | `debugger` + `superpowers:systematic-debugging` |
+| multiple-bugs, multi-test-failures | `superpowers:dispatching-parallel-agents` + `systematic-debugging` per agent |
 | review, 审查, check code | `code-reviewer` + `superpowers:requesting-code-review` |
 | test, coverage, 测试 | `test-engineer` + `superpowers:test-driven-development` |
-| design, 架构, structure | `architecture-auditor` |
+| new-design, 新设计, 新架构 | `superpowers:brainstorming` first, then `architecture-auditor` |
+| audit-architecture, 审计架构 | `architecture-auditor` |
 | slow, optimize, 性能, profile | `performance-auditor` |
 | security, auth, 安全, vulnerability | `code-auditor` |
 | refactor, clean up, 重构 | `code-developer` |
@@ -92,18 +94,26 @@ For L3+ tasks, use Superpowers skills in order:
 | Phase | Skill | When to Use |
 |-------|-------|-------------|
 | 1. Requirements | `superpowers:brainstorming` | Requirements unclear or multiple approaches |
-| 2. Planning | `superpowers:writing-plans` | After requirements confirmed, before coding |
-| 3. Implementation | `superpowers:test-driven-development` | All production code (no exceptions) |
-| 4. Execution | `superpowers:executing-plans` | Following the written plan step by step |
-| 5. Verification | `superpowers:verification-before-completion` | Before ANY completion claims |
-| 6. Review | `superpowers:requesting-code-review` | Request human code review |
-| 7. Respond | `superpowers:receiving-code-review` | Address review feedback |
-| 8. Complete | `superpowers:finishing-a-development-branch` | Merge branch after approval |
+| 2. Workspace | `superpowers:using-git-worktrees` | Before any coding begins (parallel features) |
+| 3. Planning | `superpowers:writing-plans` | After requirements confirmed, before coding |
+| 4. Implementation | `superpowers:test-driven-development` | All production code (no exceptions) |
+| 5. Execution | `superpowers:executing-plans` or `superpowers:subagent-driven-development` | Following the written plan |
+| 6. Verification | `superpowers:verification-before-completion` | Before ANY completion claims |
+| 7. Spec Review | `superpowers:requesting-code-review` | Verify code matches spec (first review) |
+| 8. Quality Review | `superpowers:requesting-code-review` | Code quality check (second review) |
+| 9. Respond | `superpowers:receiving-code-review` | Address review feedback |
+| 10. Complete | `superpowers:finishing-a-development-branch` | Merge branch after approval |
+
+**Two-Stage Review Process:**
+1. **Spec Compliance Review** - Confirms implementation matches the original spec/requirements
+2. **Code Quality Review** - Checks code patterns, maintainability, and best practices
+
+Both reviews must pass before proceeding to completion.
 
 **Rules:**
 - L1-L2: Skills optional, direct execution OK
-- L3+: Start from Phase 1 if unclear, Phase 2 if requirements clear
-- TDD is mandatory for all production code (Phase 3)
+- L3+: Start from Phase 1 if unclear, Phase 3 if requirements clear
+- TDD is mandatory for all production code (Phase 4)
 - Use `superpowers:systematic-debugging` for bug investigations
 
 **TDD Resources:**
@@ -111,7 +121,7 @@ For L3+ tasks, use Superpowers skills in order:
 - L1-L2 quick: Use `/tdd-workflows:tdd-red`, `tdd-green`, `tdd-refactor` (granular commands)
 
 **Alternatives:**
-- `superpowers:subagent-driven-development` - Fresh subagent per task (vs batch execution)
+- `superpowers:subagent-driven-development` - Fresh subagent per task (isolation)
 - `superpowers:dispatching-parallel-agents` - Parallel independent tasks
 - `superpowers:using-git-worktrees` - Parallel feature development
 
@@ -180,6 +190,10 @@ Detailed in `context/coding-philosophy.md`. Quick summary:
 - **Minimal changes** - Only what's necessary, don't "improve" working code
 - **Fix, don't hide** - No `@ts-ignore`, `skip`, empty catch without fixing root cause
 
+**Additional Context (from plugins):**
+- `context/design-principles.md` - S-Tier SaaS dashboard design patterns
+- `context/quality-protocols.md` - Self-check and verification workflows
+
 ---
 
 ## Guardrails
@@ -197,7 +211,9 @@ Sensitive areas defined in `context/guardrails.md`:
 
 ## Git Conventions
 
-**Branch:** `feat/`, `fix/`, `refactor/`, `docs/`
+**Full reference:** `skills/git-workflow/SKILL.md` (shell functions, safety rules)
+
+**Branch:** `feat/`, `fix/`, `refactor/`, `docs/`, `test/`, `chore/`
 
 **Commit (Conventional):**
 ```
@@ -206,6 +222,10 @@ type(scope): description
 feat(auth): add OAuth2 support
 fix(api): handle null response
 ```
+
+**Shell Functions:** `fgc` (fuzzy checkout), `fga` (fuzzy add), `fgl` (fuzzy log), `aicommit`
+
+**Safety:** Force push to protected branches blocked. `--amend` and `--hard` require confirmation.
 
 ---
 
