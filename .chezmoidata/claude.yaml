@@ -47,9 +47,13 @@ claude:
       - debugging-toolkit
       - code-review-ai
       - code-documentation
-      - ui-design
       - security-scanning
       - comprehensive-review
+      # 新增
+      - data-engineering
+      - database-design
+      - database-migrations
+      - developer-essentials
     # Registry (auto-updated by GitHub Action from marketplace.json)
     registry:
       - name: code-documentation
