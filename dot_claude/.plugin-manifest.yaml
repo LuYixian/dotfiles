@@ -1,0 +1,91 @@
+# Plugin Manifest - Tracks which directories are managed by GitHub Action
+# DO NOT manually edit plugin-managed directories
+# Local customizations go in directories NOT listed here
+
+# Last sync metadata
+sync:
+  timestamp: "2026-01-23T17:21:19Z"
+  wshobson_agents_sha: f912c8b
+  superpowers_sha: 1014b7c
+# Plugin-managed directories (will be overwritten on sync)
+# Format: type/name -> source
+managed:
+  agents:
+    - backend-development
+    - cloud-infrastructure
+    - code-documentation
+    - code-review-ai
+    - comprehensive-review
+    - database-cloud-optimization
+    - debugging-toolkit
+    - javascript-typescript
+    - llm-application-dev
+    - machine-learning-ops
+    - python-development
+    - security-scanning
+    - shell-scripting
+    - superpowers
+    - systems-programming
+    - tdd-workflows
+    - ui-design
+  commands:
+    - backend-development
+    - code-review-ai
+    - comprehensive-review
+    - database-cloud-optimization
+    - debugging-toolkit
+    - javascript-typescript
+    - llm-application-dev
+    - machine-learning-ops
+    - python-development
+    - security-scanning
+    - superpowers
+    - systems-programming
+    - tdd-workflows
+    - ui-design
+  skills:
+    - backend-development
+    - cloud-infrastructure
+    - javascript-typescript
+    - llm-application-dev
+    - machine-learning-ops
+    - python-development
+    - security-scanning
+    - shell-scripting
+    - superpowers
+    - systems-programming
+    - ui-design
+# Local directories (protected from deletion)
+# These are auto-detected from dot_claude source
+local:
+  agents:
+    - audit
+    - development
+    - docs
+    - frontend
+    - infrastructure
+    - platform
+    - quality
+    - skill-builder
+    - workflow
+  commands:
+    - code-documentation
+    - core
+    - deploy
+    - dev
+    - docs
+    - git
+    - meta
+    - orchestration
+    - performance
+    - plan
+    - pr
+    - project
+    - review
+    - setup
+    - simulation
+    - skills
+    - test
+  skills:
+    - git-workflow
+    - review-code
