@@ -14,6 +14,8 @@ claude:
     - code-review-ai
     - code-documentation
     - ui-design
+    - security-scanning
+    - comprehensive-review
   # Plugin registry (from wshobson/agents marketplace.json)
   plugins:
     - name: code-documentation

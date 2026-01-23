@@ -34,19 +34,37 @@ See `context/tech-stack-guidelines.md` for language-specific conventions.
 
 When task matches keywords, **proactively use Task tool** with corresponding agents:
 
-| Keywords | Agents |
+### Core Rules (Always Active)
+
+| Keywords | Action |
 |----------|--------|
-| bug, error, crash, 报错, 失败 | `debugger` |
-| review, 审查, check code | `code-reviewer` |
-| test, coverage, 测试 | `test-engineer` |
+| bug, error, crash, 报错, 失败 | `debugger` + `superpowers:systematic-debugging` |
+| review, 审查, check code | `code-reviewer` + `superpowers:requesting-code-review` |
+| test, coverage, 测试 | `test-engineer` + `superpowers:test-driven-development` |
 | design, 架构, structure | `architecture-auditor` |
 | slow, optimize, 性能, profile | `performance-auditor` |
 | security, auth, 安全, vulnerability | `code-auditor` |
 | refactor, clean up, 重构 | `code-developer` |
+| L3+, complex, 复杂任务 | `superpowers:brainstorming` first |
+| verify, 验证, complete | `superpowers:verification-before-completion` |
+
+### Plugin-Based Rules (Enabled Plugins)
+{{- range .claude.plugins }}
+{{- $pluginName := .name }}
+{{- $isEnabled := false }}
+{{- range $.claude.enabledPlugins }}
+{{- if eq . $pluginName }}{{ $isEnabled = true }}{{ end }}
+{{- end }}
+{{- if and $isEnabled (gt (len .keywords) 0) }}
+
+**{{ .name }}**: {{ .description }}
+- Keywords: `{{ .keywords | join "`, `" }}`
+{{- end }}
+{{- end }}
 
 **Dispatch Rules:**
 - L1-L2: Direct execution, no subagent needed
-- L3-L4: Auto-dispatch based on keywords above
+- L3-L4: Auto-dispatch based on keywords above + use Superpowers workflow
 - Uncertain: Ask "需要我调用 X agent 协助吗？"
 
 ---
