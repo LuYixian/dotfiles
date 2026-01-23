@@ -47,7 +47,7 @@ jobs:
         run: |
           chmod +x .github/scripts/update-plugin-metadata.sh
           .github/scripts/update-plugin-metadata.sh /tmp/wshobson-agents /tmp/plugins.json .chezmoidata/claude.yaml
-          yq -i -P '.claude.plugins = load("/tmp/plugins.json")' .chezmoidata/claude.yaml
+          yq -i -P '.claude.wshobson.registry = load("/tmp/plugins.json")' .chezmoidata/claude.yaml
       - name: Check for changes
         id: changes
         run: |

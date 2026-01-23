@@ -27,9 +27,9 @@ log_ok() { echo -e "${GREEN}[OK]${NC} $*"; }
 log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-# Get enabled plugins from claude.yaml
+# Get enabled wshobson plugins from claude.yaml
 get_enabled_plugins() {
-    yq -r '.claude.enabledPlugins[]' "$CLAUDE_YAML" 2>/dev/null || true
+    yq -r '.claude.wshobson.enabled[]' "$CLAUDE_YAML" 2>/dev/null || true
 }
 
 # Get local directories from claude.yaml
