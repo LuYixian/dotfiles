@@ -169,10 +169,9 @@ This is a comprehensive list of all available agents organized by expertise area
 - **mobile-developer** - Cross-platform mobile application developer specializing in React Native and Flutter with native platform integrations and mobile-specific UX patterns.
 - **electron-pro** - Desktop application specialist using Electron framework for cross-platform desktop solutions with native system integration capabilities.
 
-**Developer Experience & Modernization:**
+**Developer Experience:**
 
 - **dx-optimizer** - Developer experience specialist improving tooling, setup processes, build systems, and development workflows to enhance team productivity.
-- **legacy-modernizer** - Expert in refactoring legacy codebases, implementing gradual modernization strategies, and migrating to modern frameworks and architectures.
 
 ### Infrastructure & Operations Agents
 
