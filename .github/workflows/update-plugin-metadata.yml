@@ -1,0 +1,38 @@
+name: Update Claude plugin metadata
+on:
+  schedule:
+    - cron: "0 6 * * 0" # Weekly on Sunday
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install yq
+        run: sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq
+      - name: Download wshobson/agents
+        run: curl -sL https://github.com/wshobson/agents/archive/refs/heads/main.tar.gz | tar xz && mv agents-main /tmp/wshobson-agents
+      - name: Update metadata
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          chmod +x .github/scripts/update-plugin-metadata.sh
+          .github/scripts/update-plugin-metadata.sh /tmp/wshobson-agents /tmp/plugins.json .chezmoidata/claude.yaml
+          yq -i -P '.claude.plugins = load("/tmp/plugins.json")' .chezmoidata/claude.yaml
+      - name: Create PR
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' }}
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "chore(claude): update plugin metadata"
+          title: "chore(claude): update plugin metadata (${{ github.run_id }})"
+          branch: update-claude-plugin-metadata
+          labels: dependencies,claude,automation
+          body: |
+            Updates plugin metadata (keywords, descriptions, file paths) from [wshobson/agents](https://github.com/wshobson/agents).
+
+            - Scans `commands/`, `agents/`, `skills/` directories for file paths
+            - Preserves existing keywords
+            - Uses Claude Haiku to generate missing keywords

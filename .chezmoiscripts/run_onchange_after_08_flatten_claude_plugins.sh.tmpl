@@ -1,9 +1,10 @@
 #!/bin/bash
 # Flatten Claude Code external plugins (agents, commands, skills)
+# Sources: wshobson/agents (plugins) + obra/superpowers (core skills)
 # Controlled by .chezmoidata/claude.yaml -> enabledPlugins
-# Source repo managed by .chezmoiexternal.toml (refreshPeriod = 168h)
+# Source repos managed by .chezmoiexternal.toml (refreshPeriod = 168h)
 #
-# Triggers: wshobsonAgents={{ .versions.wshobsonAgents }} enabledPlugins={{ .claude.enabledPlugins | toJson | sha256sum }}
+# Triggers: wshobsonAgents={{ .versions.wshobsonAgents }} superpowers={{ .versions.superpowers }} enabledPlugins={{ .claude.enabledPlugins | toJson | sha256sum }}
 
 set -euo pipefail
 
@@ -92,4 +93,57 @@ for plugin_dir in "$CACHE_DIR/plugins"/*/; do
     echo "  ✓ $plugin_name"
 done
 
-echo "✅ Synced $plugin_count plugins"
+echo "✅ Synced $plugin_count wshobson plugins"
+
+# ============================================================================
+# Superpowers sync (obra/superpowers)
+# Flat structure: agents/, commands/, skills/ at root level
+# ============================================================================
+SUPERPOWERS_CACHE="$HOME/.cache/superpowers"
+
+if [[ -d "$SUPERPOWERS_CACHE" ]]; then
+    echo ""
+    echo ":: Syncing Superpowers..."
+    sp_count=0
+
+    # Sync agents
+    if [[ -d "$SUPERPOWERS_CACHE/agents" ]]; then
+        mkdir -p "$CLAUDE_DIR/agents/superpowers"
+        for f in "$SUPERPOWERS_CACHE/agents"/*.md; do
+            [[ -f "$f" ]] && cp -f "$f" "$CLAUDE_DIR/agents/superpowers/"
+        done
+        echo "  ✓ agents"
+        ((sp_count++)) || true
+    fi
+
+    # Sync commands
+    if [[ -d "$SUPERPOWERS_CACHE/commands" ]]; then
+        mkdir -p "$CLAUDE_DIR/commands/superpowers"
+        for f in "$SUPERPOWERS_CACHE/commands"/*.md; do
+            [[ -f "$f" ]] && cp -f "$f" "$CLAUDE_DIR/commands/superpowers/"
+        done
+        echo "  ✓ commands"
+        ((sp_count++)) || true
+    fi
+
+    # Sync skills (copy entire directories)
+    if [[ -d "$SUPERPOWERS_CACHE/skills" ]]; then
+        mkdir -p "$CLAUDE_DIR/skills/superpowers"
+        skill_count=0
+        for skill in "$SUPERPOWERS_CACHE/skills"/*/; do
+            [[ -d "$skill" ]] || continue
+            skill_name=$(basename "$skill")
+            skill="${skill%/}"
+            cp -r "$skill" "$CLAUDE_DIR/skills/superpowers/${skill_name}.new"
+            rm -rf "$CLAUDE_DIR/skills/superpowers/$skill_name"
+            mv "$CLAUDE_DIR/skills/superpowers/${skill_name}.new" "$CLAUDE_DIR/skills/superpowers/$skill_name"
+            ((skill_count++)) || true
+        done
+        echo "  ✓ skills ($skill_count)"
+        ((sp_count++)) || true
+    fi
+
+    echo "✅ Superpowers synced"
+else
+    echo "⚠ Superpowers cache not found, run 'chezmoi apply -R' to fetch"
+fi

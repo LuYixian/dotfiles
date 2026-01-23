@@ -21,3 +21,14 @@
     url = "https://github.com/wshobson/agents/archive/refs/heads/main.tar.gz"
     stripComponents = 1
     refreshPeriod = "168h"  # check for updates weekly
+
+# ------------------------------------------------------------------------------
+# Superpowers (obra/superpowers)
+# Core skills library: TDD, debugging, brainstorming, collaboration patterns
+# Provides workflow discipline and best practices enforcement
+# ------------------------------------------------------------------------------
+[".cache/superpowers"]
+    type = "archive"
+    url = "https://github.com/obra/superpowers/archive/refs/heads/main.tar.gz"
+    stripComponents = 1
+    refreshPeriod = "168h"  # check for updates weekly
