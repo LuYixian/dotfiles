@@ -2,9 +2,8 @@
 # sync-claude-plugins.sh - Sync Claude Code plugins from upstream repos
 # Usage: ./sync-claude-plugins.sh <wshobson-dir> <superpowers-dir>
 #
-# Syncs enabled plugins to dot_claude/{agents,commands,skills}/
-# Detects local directories automatically (no manifest needed)
-# Removes orphan plugin directories
+# Strategy: Delete all non-local directories, then sync enabled plugins
+# Local directories are defined in claude.yaml and protected from deletion
 
 set -euo pipefail
 
@@ -38,10 +37,29 @@ get_local_dirs() {
     yq -r ".claude.localDirectories.${type}[]" "$CLAUDE_YAML" 2>/dev/null || true
 }
 
-# Check if directory is local (defined in claude.yaml)
+# Check if directory is local
 is_local_dir() {
     local type=$1 name=$2
     get_local_dirs "$type" | grep -qx "$name"
+}
+
+# Delete all non-local directories for a type
+clean_non_local() {
+    local type=$1
+    [[ -d "$DOT_CLAUDE/$type" ]] || return 0
+
+    for dir in "$DOT_CLAUDE/$type"/*/; do
+        [[ -d "$dir" ]] || continue
+        local name
+        name=$(basename "$dir")
+
+        # Keep local directories
+        is_local_dir "$type" "$name" && continue
+
+        # Delete non-local
+        rm -rf "$dir"
+        log_warn "Deleted: $type/$name"
+    done
 }
 
 # Sync single wshobson plugin
@@ -57,7 +75,6 @@ sync_plugin() {
     for type in agents commands skills; do
         if [[ -d "$src/$type" ]]; then
             mkdir -p "$DOT_CLAUDE/$type/$name"
-            rm -rf "$DOT_CLAUDE/$type/$name"/*
             cp -r "$src/$type"/* "$DOT_CLAUDE/$type/$name/" 2>/dev/null || true
             ((synced++)) || true
         fi
@@ -69,64 +86,20 @@ sync_plugin() {
 
 # Sync superpowers
 sync_superpowers() {
-    for type in agents commands; do
+    for type in agents commands skills; do
         if [[ -d "$SUPERPOWERS_DIR/$type" ]]; then
             mkdir -p "$DOT_CLAUDE/$type/superpowers"
-            rm -rf "$DOT_CLAUDE/$type/superpowers"/*
             cp -r "$SUPERPOWERS_DIR/$type"/* "$DOT_CLAUDE/$type/superpowers/" 2>/dev/null || true
         fi
     done
-
-    if [[ -d "$SUPERPOWERS_DIR/skills" ]]; then
-        mkdir -p "$DOT_CLAUDE/skills/superpowers"
-        rm -rf "$DOT_CLAUDE/skills/superpowers"/*
-        cp -r "$SUPERPOWERS_DIR/skills"/* "$DOT_CLAUDE/skills/superpowers/"
-    fi
     log_ok "superpowers"
-}
-
-# Remove orphan directories
-cleanup_orphans() {
-    local type=$1
-    shift
-    local -a enabled=("$@")
-    local removed=0
-
-    [[ -d "$DOT_CLAUDE/$type" ]] || return 0
-
-    for dir in "$DOT_CLAUDE/$type"/*/; do
-        [[ -d "$dir" ]] || continue
-        local name
-        name=$(basename "$dir")
-
-        # Skip superpowers
-        [[ "$name" == "superpowers" ]] && continue
-
-        # Skip local directories
-        is_local_dir "$type" "$name" && continue
-
-        # Skip enabled plugins
-        local found=false
-        for p in "${enabled[@]}"; do
-            [[ "$p" == "$name" ]] && {
-                found=true
-                break
-            }
-        done
-        [[ "$found" == "true" ]] && continue
-
-        # Orphan - remove
-        rm -rf "$dir"
-        log_warn "Removed: $type/$name"
-        ((removed++)) || true
-    done
 }
 
 # Main
 main() {
     log_info "Syncing Claude plugins..."
 
-    # Validate
+    # Validate inputs
     [[ -d "$WSHOBSON_DIR" ]] || {
         log_error "Not found: $WSHOBSON_DIR"
         exit 1
@@ -147,20 +120,21 @@ main() {
     done < <(get_enabled_plugins)
     log_info "Enabled: ${#enabled[@]} plugins"
 
-    # Sync
+    # Step 1: Delete all non-local directories
+    log_info "Cleaning non-local directories..."
+    for type in agents commands skills; do
+        clean_non_local "$type"
+    done
+
+    # Step 2: Sync enabled plugins
     log_info "Syncing wshobson plugins..."
     for plugin in "${enabled[@]}"; do
         sync_plugin "$plugin" || true
     done
 
+    # Step 3: Sync superpowers
     log_info "Syncing superpowers..."
     sync_superpowers
-
-    # Cleanup
-    log_info "Cleaning orphans..."
-    for type in agents commands skills; do
-        cleanup_orphans "$type" "${enabled[@]}"
-    done
 
     log_info "Done"
 }
