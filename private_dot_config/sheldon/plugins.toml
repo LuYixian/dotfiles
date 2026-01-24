@@ -71,3 +71,9 @@ github = "zsh-users/zsh-syntax-highlighting"
 # zsh-autocomplete must load AFTER zsh-syntax-highlighting
 [plugins.zsh-autocomplete]
 github = 'marlonrichert/zsh-autocomplete'
+[plugins.zsh-autocomplete.hooks]
+post = """
+# Unbind Ctrl+P/N to avoid conflicts with Docker (Ctrl+P Ctrl+Q for detach)
+bindkey -M emacs -r '^P'
+bindkey -M emacs -r '^N'
+"""
