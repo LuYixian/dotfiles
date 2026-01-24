@@ -1,4 +1,9 @@
+{{- $provider := .claudeProvider | default "anthropic" -}}
+{{- $config := index .claude.providers $provider -}}
 {
+{{- if and $config $config.base_url }}
+  "apiKeyHelper": "~/.local/bin/claude-get-token",
+{{- end }}
   "mcpServers": {
     "github": {
       "command": "npx",
@@ -96,14 +101,8 @@
     ]
   },
   "env": {
-{{- $provider := .claudeProvider | default "anthropic" }}
-{{- $config := index .claude.providers $provider }}
 {{- if and $config $config.base_url }}
-{{- $apiKey := output "sh" "-c" (printf "gopass show -o claude-code/providers/%s/api_key 2>/dev/null || true" $provider) | trim }}
     "ANTHROPIC_BASE_URL": "{{ $config.base_url }}",
-{{- if $apiKey }}
-    "ANTHROPIC_AUTH_TOKEN": "{{ $apiKey }}",
-{{- end }}
     "ANTHROPIC_MODEL": "{{ $config.model }}",
     "ANTHROPIC_SMALL_FAST_MODEL": "{{ $config.small_model }}",
 {{- if $config.timeout_ms }}

@@ -1,0 +1,38 @@
+#!/bin/bash
+# Claude Code API Key Helper
+# Called by Claude Code via apiKeyHelper to dynamically fetch API token
+# Reads current provider from chezmoi data and retrieves token from gopass
+
+set -euo pipefail
+
+# Get current provider from chezmoi data
+get_provider() {
+    chezmoi data --format json 2>/dev/null | jq -r '.claudeProvider // "anthropic"'
+}
+
+main() {
+    local provider
+    provider=$(get_provider)
+
+    # Check if provider has base_url (third-party)
+    local base_url
+    base_url=$(chezmoi data --format json 2>/dev/null | jq -r ".claude.providers.$provider.base_url // empty")
+
+    # Native Anthropic providers use OAuth, no token needed
+    if [[ -z "$base_url" ]]; then
+        exit 0
+    fi
+
+    # Third-party providers: get token from gopass
+    local token
+    token=$(gopass show -o "claude-code/providers/$provider/api_key" 2>/dev/null) || {
+        echo "Error: API token not found for '$provider'" >&2
+        echo "Run: claude-switch add-key $provider" >&2
+        exit 1
+    }
+
+    # Output token (Claude Code reads stdout)
+    echo -n "$token"
+}
+
+main "$@"
