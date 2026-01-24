@@ -84,12 +84,27 @@ sync_plugin() {
     return 0
 }
 
+# Get superpowers exclude list from claude.yaml
+get_superpowers_exclude() {
+    local type=$1
+    yq -r ".claude.superpowers.exclude.${type}[]" "$CLAUDE_YAML" 2>/dev/null || true
+}
+
 # Sync superpowers
 sync_superpowers() {
     for type in agents commands skills; do
         if [[ -d "$SUPERPOWERS_DIR/$type" ]]; then
             mkdir -p "$DOT_CLAUDE/$type/superpowers"
             cp -r "$SUPERPOWERS_DIR/$type"/* "$DOT_CLAUDE/$type/superpowers/" 2>/dev/null || true
+
+            # Remove excluded items
+            while IFS= read -r exclude; do
+                [[ -n "$exclude" ]] || continue
+                if [[ -d "$DOT_CLAUDE/$type/superpowers/$exclude" ]]; then
+                    rm -rf "$DOT_CLAUDE/$type/superpowers/$exclude"
+                    log_warn "Excluded: superpowers/$type/$exclude"
+                fi
+            done < <(get_superpowers_exclude "$type")
         fi
     done
     log_ok "superpowers"

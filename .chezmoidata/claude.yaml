@@ -31,6 +31,13 @@ claude:
     skills:
       - git-workflow
       - review-code
+  # obra/superpowers config
+  superpowers:
+    enabled: true
+    # Exclude items that require SessionStart hook (we use CLAUDE.md instead)
+    exclude:
+      skills:
+        - using-superpowers
   # wshobson/agents plugins
   wshobson:
     enabled:
