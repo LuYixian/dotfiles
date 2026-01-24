@@ -29,6 +29,7 @@ claude:
       - skills
       - test
     skills:
+      - changelog-generator
       - git-workflow
       - review-code
   # obra/superpowers config (always enabled, only configure exclusions)
