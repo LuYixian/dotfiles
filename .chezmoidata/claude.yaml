@@ -13,8 +13,8 @@ claude:
       small_model: "claude-sonnet-4-5-20250929"
     haiku:
       base_url: ""
-      model: "claude-haiku-4-5"
-      small_model: "claude-haiku-4-5"
+      model: "claude-haiku-4-5-20251001"
+      small_model: "claude-haiku-4-5-20251001"
     # === Third-party providers (require base_url and API token) ===
     # DeepSeek: https://api-docs.deepseek.com/guides/anthropic_api
     deepseek:
@@ -60,7 +60,7 @@ claude:
       haiku_model: "MiniMax-M2.1"
       sonnet_model: "MiniMax-M2.1"
       opus_model: "MiniMax-M2.1"
-    # Doubao (ByteDance): https://www.volcengine.com/docs/82379/1518015
+    # Doubao (ByteDance): https://www.volcengine.com/docs/82379/1949118
     doubao:
       base_url: "https://ark.cn-beijing.volces.com/api/coding"
       model: "doubao-seed-code-preview-latest"
