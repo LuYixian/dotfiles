@@ -38,16 +38,15 @@ claude:
       skills:
         - using-superpowers # Requires SessionStart hook (we use CLAUDE.md instead)
   # anthropics/skills - Official document processing skills
-  anthropics:
+  anthropicsSkills:
     repo: anthropics/skills
     include:
-      skills:
-        - pdf
-        - docx
-        - xlsx
-        - pptx
+      - pdf
+      - docx
+      - xlsx
+      - pptx
   # wshobson/agents plugins
-  wshobson:
+  wshobsonAgents:
     repo: wshobson/agents
     include:
       - python-development

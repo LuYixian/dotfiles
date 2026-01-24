@@ -27,14 +27,14 @@ log_ok() { echo -e "${GREEN}[OK]${NC} $*"; }
 log_warn() { echo -e "${YELLOW}[WARN]${NC} $*"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-# Get included wshobson plugins from claude.yaml
+# Get included wshobsonAgents plugins from claude.yaml
 get_wshobson_include() {
-    yq -r '.claude.wshobson.include[]' "$CLAUDE_YAML" 2>/dev/null || true
+    yq -r '.claude.wshobsonAgents.include[]' "$CLAUDE_YAML" 2>/dev/null || true
 }
 
-# Get included anthropics skills from claude.yaml
+# Get included anthropicsSkills from claude.yaml
 get_anthropics_include() {
-    yq -r '.claude.anthropics.include.skills[]' "$CLAUDE_YAML" 2>/dev/null || true
+    yq -r '.claude.anthropicsSkills.include[]' "$CLAUDE_YAML" 2>/dev/null || true
 }
 
 # Get local directories from claude.yaml
