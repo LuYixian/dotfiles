@@ -91,7 +91,7 @@ jobs:
 
             ### Sources
             - [DeepSeek](https://api-docs.deepseek.com/guides/anthropic_api)
-            - [Kimi](https://platform.moonshot.cn/docs)
+            - [Kimi](https://platform.moonshot.cn/docs/guide/agent-support)
             - [GLM](https://docs.bigmodel.cn/cn/coding-plan/tool/claude)
             - [Qwen](https://help.aliyun.com/zh/model-studio/claude-code)
             - [MiniMax](https://platform.minimax.io/docs/coding-plan/claude-code)

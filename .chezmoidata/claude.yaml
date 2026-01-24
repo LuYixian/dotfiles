@@ -26,7 +26,7 @@ claude:
       haiku_model: "deepseek-chat"
       sonnet_model: "deepseek-chat"
       opus_model: "deepseek-reasoner"
-    # Kimi K2 (Moonshot): https://platform.moonshot.cn/docs
+    # Kimi K2 (Moonshot): https://platform.moonshot.cn/docs/guide/agent-support
     kimi:
       base_url: "https://api.moonshot.cn/anthropic"
       model: "kimi-k2-0711-preview"

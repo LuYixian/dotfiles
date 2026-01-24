@@ -12,7 +12,7 @@ CLAUDE_YAML="$REPO_ROOT/.chezmoidata/claude.yaml"
 # Provider documentation URLs
 declare -A PROVIDER_DOCS=(
     ["deepseek"]="https://api-docs.deepseek.com/guides/anthropic_api"
-    ["kimi"]="https://platform.moonshot.cn/docs"
+    ["kimi"]="https://platform.moonshot.cn/docs/guide/agent-support"
     ["glm"]="https://docs.bigmodel.cn/cn/coding-plan/tool/claude"
     ["qwen"]="https://help.aliyun.com/zh/model-studio/claude-code"
     ["minimax"]="https://platform.minimax.io/docs/coding-plan/claude-code"
