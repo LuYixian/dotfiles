@@ -20,12 +20,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
-      - name: Install yq
+      - name: Install tools
         run: |
+          # yq
           sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq
+          # shfmt
+          sudo wget -qO /usr/local/bin/shfmt https://github.com/mvdan/sh/releases/latest/download/shfmt_v3.8.0_linux_amd64
+          sudo chmod +x /usr/local/bin/shfmt
       - name: Get upstream SHAs
         id: upstream
         run: |
@@ -50,8 +52,10 @@ jobs:
           chmod +x .github/scripts/update-plugin-metadata.sh
           .github/scripts/update-plugin-metadata.sh /tmp/wshobson-agents /tmp/plugins.json .chezmoidata/claude.yaml
           yq -i -P '.claude.wshobson.registry = load("/tmp/plugins.json")' .chezmoidata/claude.yaml
-      - name: Format files (match local pre-commit)
-        run: nix run nixpkgs#treefmt -- --no-cache
+      - name: Format files
+        run: |
+          npx prettier --write "dot_claude/**/*.{md,json,js,ts}" ".chezmoidata/*.yaml"
+          find dot_claude -name "*.sh" -exec shfmt -w {} \;
       - name: Check for changes
         id: changes
         run: |
