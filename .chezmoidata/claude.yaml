@@ -29,10 +29,13 @@ claude:
     # Kimi K2 (Moonshot): https://platform.moonshot.cn/docs/guide/agent-support
     kimi:
       base_url: "https://api.moonshot.cn/anthropic"
-      model: "kimi-k2-0711-preview"
+      model: "kimi-k2-thinking-turbo"
       small_model: "kimi-k2-0711-preview"
       timeout_ms: "600000"
       disable_nonessential_traffic: true
+      haiku_model: kimi-k2-thinking-turbo
+      sonnet_model: kimi-k2-thinking-turbo
+      opus_model: kimi-k2-thinking-turbo
     # GLM (Zhipu AI): https://docs.bigmodel.cn/cn/coding-plan/tool/claude
     glm:
       base_url: "https://open.bigmodel.cn/api/anthropic"
