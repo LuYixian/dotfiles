@@ -340,13 +340,21 @@ test_provider() {
         token=$(gopass show -o "claude-code/providers/$provider/api_key")
     fi
 
-    # Test API connectivity with a simple models endpoint
+    # Test API connectivity with minimal messages request
+    # Using /v1/messages endpoint (supported by all Anthropic-compatible providers)
+    # Reference: https://docs.anthropic.com/en/api/prompt-validation
     echo "  Testing API connectivity..."
+
+    local model
+    model=$(chezmoi data --format json 2>/dev/null | jq -r ".claude.providers.$provider.model // \"deepseek-chat\"")
+
     local response http_code
-    response=$(curl -sS -w "\n%{http_code}" --max-time 10 \
-        -H "Authorization: Bearer $token" \
+    response=$(curl -sS -w "\n%{http_code}" --max-time 30 \
+        -X POST "$base_url/v1/messages" \
+        -H "x-api-key: $token" \
         -H "anthropic-version: 2023-06-01" \
-        "$base_url/v1/models" 2>&1)
+        -H "Content-Type: application/json" \
+        -d "{\"model\":\"$model\",\"max_tokens\":1,\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}]}" 2>&1)
 
     http_code=$(echo "$response" | tail -n1)
     local body
@@ -360,18 +368,30 @@ test_provider() {
             echo -e "  ${RED}✗ Authentication failed (invalid API key)${NC}"
             return 1
             ;;
+        403)
+            echo -e "  ${RED}✗ Access forbidden (check API key permissions)${NC}"
+            return 1
+            ;;
         429)
             echo -e "  ${YELLOW}⚠ Rate limited (429)${NC}"
             echo "  API is reachable but rate limited"
-            return 1
+            ;;
+        500|502|503)
+            echo -e "  ${YELLOW}⚠ Server error (HTTP $http_code)${NC}"
+            echo "  API may be temporarily unavailable"
             ;;
         000)
             echo -e "  ${RED}✗ Connection failed (network error or timeout)${NC}"
             return 1
             ;;
         *)
-            echo -e "  ${YELLOW}⚠ Unexpected response: HTTP $http_code${NC}"
-            echo "  Response: $body"
+            # Check if response contains expected fields (some providers return different codes)
+            if echo "$body" | jq -e '.content' &>/dev/null; then
+                echo -e "  ${GREEN}✓ API connection successful${NC}"
+            else
+                echo -e "  ${YELLOW}⚠ Unexpected response: HTTP $http_code${NC}"
+                echo "  Response: ${body:0:200}"
+            fi
             ;;
     esac
 
