@@ -15,12 +15,26 @@ const PROVIDER_DOCS = {
 
 async function fetchPage(url, timeout = 60000) {
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
+  const context = await browser.newContext({
+    userAgent:
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  });
   const page = await context.newPage();
 
   try {
-    await page.goto(url, { waitUntil: "networkidle", timeout });
-    await page.waitForTimeout(2000);
+    // Try domcontentloaded first (faster), then wait for content
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout });
+    // Wait for main content to render
+    await page.waitForTimeout(5000);
+    // Try to wait for body to have substantial content
+    try {
+      await page.waitForFunction(
+        () => document.body && document.body.innerText.length > 1000,
+        { timeout: 30000 },
+      );
+    } catch {
+      // Continue anyway if content check times out
+    }
     const content = await page.evaluate(() => {
       const clone = document.body.cloneNode(true);
       clone

@@ -97,13 +97,14 @@ apply_response() {
 
     # Extract JSON from response (handles markdown code blocks)
     local json
-    json=$(echo "$response" | sed -n '/^\[/,/^\]/p' | head -1)
-    if [[ -z "$json" ]]; then
-        # Try extracting from code block
+    # Try extracting from code block first
+    if echo "$response" | grep -q '```json'; then
         json=$(echo "$response" | sed -n '/```json/,/```/p' | grep -v '```')
-    fi
-    if [[ -z "$json" ]]; then
+    elif echo "$response" | grep -q '```'; then
         json=$(echo "$response" | sed -n '/```/,/```/p' | grep -v '```')
+    else
+        # Try to extract raw JSON array (multi-line)
+        json=$(echo "$response" | sed -n '/^\[/,/^\]/p')
     fi
 
     # Validate JSON
