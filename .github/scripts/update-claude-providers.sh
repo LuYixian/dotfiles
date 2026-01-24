@@ -31,24 +31,37 @@ generate_prompt() {
     fi
 
     cat <<'HEADER'
-You are a configuration extraction assistant. Your task is to extract Claude Code provider configuration from official documentation.
+You are a configuration extraction assistant. Extract Claude Code provider configuration from official documentation.
 
-For each provider, extract these fields (if available):
-- base_url: The API endpoint URL for Claude Code (Anthropic-compatible endpoint)
-- model: The recommended model ID
-- small_model: The smaller/faster model ID (or same as model)
-- timeout_ms: API timeout in milliseconds (if specified)
-- disable_nonessential_traffic: true if documentation recommends this
-- haiku_model: Model mapping for Haiku tier (optional)
-- sonnet_model: Model mapping for Sonnet tier (optional)
-- opus_model: Model mapping for Opus tier (optional)
+## Claude Code Environment Variables
 
-IMPORTANT:
-- Only include fields that are explicitly documented
-- Use exact model IDs as shown in the documentation
-- Return ONLY valid JSON array, no markdown or explanation
+Official env vars (from https://code.claude.com/docs/en/settings):
 
-Output format (JSON array):
+| Env Variable | YAML Field | Description |
+|--------------|------------|-------------|
+| ANTHROPIC_BASE_URL | base_url | API endpoint URL (required for third-party) |
+| ANTHROPIC_MODEL | model | Default model ID |
+| ANTHROPIC_SMALL_FAST_MODEL | small_model | Smaller/faster model for background tasks |
+| ANTHROPIC_DEFAULT_HAIKU_MODEL | haiku_model | Model for Haiku tier |
+| ANTHROPIC_DEFAULT_SONNET_MODEL | sonnet_model | Model for Sonnet tier |
+| ANTHROPIC_DEFAULT_OPUS_MODEL | opus_model | Model for Opus tier |
+| CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC | disable_nonessential_traffic | Disable telemetry (boolean) |
+
+Provider-recommended (not official, but some providers suggest):
+
+| Env Variable | YAML Field | Description |
+|--------------|------------|-------------|
+| API_TIMEOUT_MS | timeout_ms | API timeout in milliseconds (e.g. 600000 = 10min) |
+
+## Rules
+1. Extract values for the YAML fields listed above from each provider's documentation
+2. Use exact model IDs and URLs as shown in the documentation
+3. For small_model: if not explicitly mentioned, use the same value as model
+4. For timeout_ms: include if documentation mentions timeout configuration
+5. Set disable_nonessential_traffic to true if documentation recommends disabling telemetry
+6. Return valid JSON array only
+
+## Output format
 ```json
 [
   {
@@ -57,7 +70,10 @@ Output format (JSON array):
       "base_url": "...",
       "model": "...",
       "small_model": "...",
-      "timeout_ms": "...",
+      "timeout_ms": "600000",
+      "haiku_model": "...",
+      "sonnet_model": "...",
+      "opus_model": "...",
       "disable_nonessential_traffic": true
     }
   }
@@ -123,21 +139,18 @@ apply_response() {
 
         echo "Updating: $provider"
 
-        # Update each field if present
-        for field in base_url model small_model timeout_ms haiku_model sonnet_model opus_model; do
-            local value
-            value=$(echo "$config" | jq -r ".$field // empty")
-            if [[ -n "$value" ]]; then
-                yq -i ".claude.providers.$provider.$field = \"$value\"" "$CLAUDE_YAML"
+        # Dynamically iterate over ALL fields in the config
+        echo "$config" | jq -r 'to_entries[] | "\(.key)\t\(.value)"' | while IFS=$'\t' read -r field value; do
+            if [[ -n "$value" && "$value" != "null" ]]; then
+                # Handle boolean vs string values
+                if [[ "$value" == "true" || "$value" == "false" ]]; then
+                    yq -i ".claude.providers.$provider.$field = $value" "$CLAUDE_YAML"
+                else
+                    yq -i ".claude.providers.$provider.$field = \"$value\"" "$CLAUDE_YAML"
+                fi
+                echo "  $field = $value"
             fi
         done
-
-        # Handle boolean field
-        local disable
-        disable=$(echo "$config" | jq -r '.disable_nonessential_traffic // empty')
-        if [[ "$disable" == "true" ]]; then
-            yq -i ".claude.providers.$provider.disable_nonessential_traffic = true" "$CLAUDE_YAML"
-        fi
     done
 
     echo "Updated: $CLAUDE_YAML"

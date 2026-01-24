@@ -22,10 +22,12 @@ get_current() {
     chezmoi data --format json 2>/dev/null | jq -r '.claudeProvider // "anthropic"'
 }
 
-# Set provider in chezmoi.toml
+# Set provider in chezmoi.toml (portable across macOS and Linux)
 set_provider() {
     local provider="$1"
-    sed -i '' "s/^claudeProvider = .*/claudeProvider = \"$provider\"/" "$CHEZMOI_CONFIG"
+    local tmp_file
+    tmp_file=$(mktemp)
+    sed "s/^claudeProvider = .*/claudeProvider = \"$provider\"/" "$CHEZMOI_CONFIG" > "$tmp_file" && mv "$tmp_file" "$CHEZMOI_CONFIG"
 }
 
 # Check if provider is valid
