@@ -1,7 +1,7 @@
 name: Update Claude Provider Configs
 on:
   schedule:
-    - cron: "0 6 * * 1" # Weekly on Monday at 06:00 UTC
+    - cron: "0 6 1 * *" # Monthly on 1st at 06:00 UTC
   workflow_dispatch:
     inputs:
       provider:

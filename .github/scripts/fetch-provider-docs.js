@@ -13,7 +13,7 @@ const PROVIDER_DOCS = {
   doubao: "https://www.volcengine.com/docs/82379/1928261",
 };
 
-async function fetchPage(url, timeout = 30000) {
+async function fetchPage(url, timeout = 60000) {
   const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
   const page = await context.newPage();
