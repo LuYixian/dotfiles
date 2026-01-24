@@ -16,7 +16,7 @@ declare -A PROVIDER_DOCS=(
     ["glm"]="https://docs.bigmodel.cn/cn/coding-plan/tool/claude"
     ["qwen"]="https://help.aliyun.com/zh/model-studio/claude-code"
     ["minimax"]="https://platform.minimax.io/docs/coding-plan/claude-code"
-    ["doubao"]="https://www.volcengine.com/docs/82379/1949118"
+    ["doubao"]="https://www.volcengine.com/docs/82379/1928261"
 )
 
 # Generate prompt for Gemini

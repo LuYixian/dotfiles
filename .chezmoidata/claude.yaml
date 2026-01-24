@@ -60,7 +60,7 @@ claude:
       haiku_model: "MiniMax-M2.1"
       sonnet_model: "MiniMax-M2.1"
       opus_model: "MiniMax-M2.1"
-    # Doubao (ByteDance): https://www.volcengine.com/docs/82379/1949118
+    # Doubao (ByteDance): https://www.volcengine.com/docs/82379/1928261
     doubao:
       base_url: "https://ark.cn-beijing.volces.com/api/coding"
       model: "doubao-seed-code-preview-latest"
