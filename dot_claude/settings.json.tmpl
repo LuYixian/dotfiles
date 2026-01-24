@@ -102,9 +102,26 @@
 {{- if and $config $config.base_url }}
 {{- $apiKey := output "sh" "-c" (printf "gopass show -o claude-code/providers/%s/api_key 2>/dev/null || true" $provider) | trim }}
     "ANTHROPIC_BASE_URL": "{{ $config.base_url }}",
+{{- if $apiKey }}
     "ANTHROPIC_AUTH_TOKEN": "{{ $apiKey }}",
+{{- end }}
     "ANTHROPIC_MODEL": "{{ $config.model }}",
     "ANTHROPIC_SMALL_FAST_MODEL": "{{ $config.small_model }}",
+{{- if $config.timeout_ms }}
+    "API_TIMEOUT_MS": "{{ $config.timeout_ms }}",
+{{- end }}
+{{- if $config.disable_nonessential_traffic }}
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+{{- end }}
+{{- if $config.haiku_model }}
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "{{ $config.haiku_model }}",
+{{- end }}
+{{- if $config.sonnet_model }}
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "{{ $config.sonnet_model }}",
+{{- end }}
+{{- if $config.opus_model }}
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "{{ $config.opus_model }}",
+{{- end }}
 {{- end }}
     "_CLAUDE_PROVIDER": "{{ $provider }}"
   }
