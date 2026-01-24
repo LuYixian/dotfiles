@@ -359,7 +359,7 @@ class AlgorithmVisualizer:
 ### Call Stack Visualization:
 ````
 
-{func_name}({example_input})
+{func*name}({example_input})
 │
 ├─> Base case check: {example_input} == 0? No
 ├─> Recursive call: {func_name}({example_input - 1})
@@ -372,9 +372,9 @@ class AlgorithmVisualizer:
 │ │ │ │
 │ │ │ └─> Base case: Return 1
 │ │ │
-│ │ └─> Return: 1 _ 1 = 1
+│ │ └─> Return: 1 * 1 = 1
 │ │
-│ └─> Return: 2 _ 1 = 2
+│ └─> Return: 2 \_ 1 = 2
 │
 └─> Return: 3 \* 2 = 6
 

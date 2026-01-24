@@ -80,7 +80,11 @@ sync_plugin() {
         fi
     done
 
-    [[ $synced -gt 0 ]] && log_ok "$name" || log_warn "$name (empty)"
+    if [[ $synced -gt 0 ]]; then
+        log_ok "$name"
+    else
+        log_warn "$name (empty)"
+    fi
     return 0
 }
 

@@ -56,7 +56,6 @@ claude:
       - code-documentation
       - security-scanning
       - comprehensive-review
-      # 新增
       - data-engineering
       - database-design
       - database-migrations
