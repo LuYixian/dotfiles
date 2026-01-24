@@ -96,6 +96,16 @@
     ]
   },
   "env": {
-    "INSIDE_CLAUDE_CODE": "1"
+    "INSIDE_CLAUDE_CODE": "1",
+{{- $provider := .claudeProvider | default "anthropic" }}
+{{- $config := index .claude.providers $provider }}
+{{- if and $config $config.base_url }}
+{{- $apiKey := output "sh" "-c" (printf "gopass show -o claude-code/providers/%s/api_key 2>/dev/null || true" $provider) | trim }}
+    "ANTHROPIC_BASE_URL": "{{ $config.base_url }}",
+    "ANTHROPIC_AUTH_TOKEN": "{{ $apiKey }}",
+    "ANTHROPIC_MODEL": "{{ $config.model }}",
+    "ANTHROPIC_SMALL_FAST_MODEL": "{{ $config.small_model }}",
+{{- end }}
+    "_CLAUDE_PROVIDER": "{{ $provider }}"
   }
 }
