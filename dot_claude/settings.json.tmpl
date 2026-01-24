@@ -1,4 +1,17 @@
-{{- $provider := .claudeProvider | default "anthropic" -}}
+{{- /* Parse provider@account format */ -}}
+{{- $providerAccount := "anthropic" -}}
+{{- if hasKey . "claudeProviderAccount" -}}
+{{-   $providerAccount = .claudeProviderAccount -}}
+{{- else if hasKey . "claudeProvider" -}}
+{{-   $providerAccount = .claudeProvider -}}
+{{- end -}}
+{{- $provider := $providerAccount -}}
+{{- $account := "default" -}}
+{{- if contains "@" $providerAccount -}}
+{{-   $parts := splitList "@" $providerAccount -}}
+{{-   $provider = index $parts 0 -}}
+{{-   $account = index $parts 1 -}}
+{{- end -}}
 {{- $config := index .claude.providers $provider -}}
 {
 {{- if and $config $config.base_url }}
@@ -120,6 +133,10 @@
 {{- if $config.opus_model }}
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "{{ $config.opus_model }}",
 {{- end }}
+{{- end }}
+{{- if and $config $config.base_url }}
+    "_CLAUDE_PROVIDER": "{{ $provider }}",
+    "_CLAUDE_ACCOUNT": "{{ $account }}",
 {{- end }}
     "INSIDE_CLAUDE_CODE": "1"
   }

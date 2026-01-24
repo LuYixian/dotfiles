@@ -1,6 +1,8 @@
 claude:
   # Claude Code provider configuration (used by claude-switch)
   # Docs: https://docs.anthropic.com/zh-CN/docs/claude-code/settings
+  # Multi-account: use provider@account format (e.g., "deepseek@work")
+  # Default account is "default" when no @account is specified
   providers:
     # === Native Anthropic providers (no base_url, use OAuth) ===
     anthropic:
