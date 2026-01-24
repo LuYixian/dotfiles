@@ -96,7 +96,6 @@
     ]
   },
   "env": {
-    "INSIDE_CLAUDE_CODE": "1",
 {{- $provider := .claudeProvider | default "anthropic" }}
 {{- $config := index .claude.providers $provider }}
 {{- if and $config $config.base_url }}
@@ -123,6 +122,6 @@
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "{{ $config.opus_model }}",
 {{- end }}
 {{- end }}
-    "_CLAUDE_PROVIDER": "{{ $provider }}"
+    "INSIDE_CLAUDE_CODE": "1"
   }
 }
