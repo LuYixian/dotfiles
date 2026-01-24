@@ -1,139 +1,106 @@
 name: Update Claude Provider Configs
 on:
   schedule:
-    # Run weekly on Monday at 00:00 UTC
-    - cron: "0 0 * * 1"
+    - cron: "0 6 * * 1" # Weekly on Monday at 06:00 UTC
   workflow_dispatch:
     inputs:
       provider:
         description: "Specific provider to update (or 'all')"
-        required: false
+        type: choice
+        options:
+          - all
+          - deepseek
+          - kimi
+          - glm
+          - qwen
+          - minimax
+          - doubao
         default: "all"
 permissions:
   contents: write
   pull-requests: write
 jobs:
-  update-providers:
+  update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Install Gemini CLI
-        run: npm install -g @anthropic-ai/gemini-cli
-      - name: Update provider configs
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Install yq
         run: |
-          # Provider documentation URLs
-          declare -A PROVIDER_DOCS=(
-            ["deepseek"]="https://api-docs.deepseek.com/guides/anthropic_api"
-            ["kimi"]="https://platform.moonshot.cn/docs"
-            ["glm"]="https://docs.bigmodel.cn/cn/coding-plan/tool/claude"
-            ["qwen"]="https://help.aliyun.com/zh/model-studio/claude-code"
-            ["minimax"]="https://platform.minimax.io/docs/coding-plan/claude-code"
-            ["doubao"]="https://www.volcengine.com/docs/82379/1949118"
-          )
-
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+      - name: Generate update prompt
+        id: prompt
+        run: |
+          chmod +x .github/scripts/update-claude-providers.sh
           PROVIDER="${{ github.event.inputs.provider || 'all' }}"
 
-          # Create update script
-          cat > /tmp/update_providers.py << 'PYTHON'
-          import yaml
-          import sys
-          import json
-
-          def update_provider(yaml_path, provider, config):
-              with open(yaml_path, 'r') as f:
-                  data = yaml.safe_load(f)
-
-              if provider in data['claude']['providers']:
-                  current = data['claude']['providers'][provider]
-                  updated = False
-
-                  for key, value in config.items():
-                      if key in current and current[key] != value:
-                          print(f"  {provider}.{key}: {current[key]} -> {value}")
-                          current[key] = value
-                          updated = True
-
-                  if updated:
-                      with open(yaml_path, 'w') as f:
-                          yaml.dump(data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
-                      return True
-              return False
-
-          if __name__ == "__main__":
-              yaml_path = sys.argv[1]
-              provider = sys.argv[2]
-              config = json.loads(sys.argv[3])
-              if update_provider(yaml_path, provider, config):
-                  print(f"Updated {provider}")
-              else:
-                  print(f"No changes for {provider}")
-          PYTHON
-
-          # Function to query Gemini for provider config
-          query_provider_config() {
-            local provider=$1
-            local doc_url=$2
-
-            echo "Querying config for $provider from $doc_url..."
-
-            gemini -p "You are a Claude Code configuration expert.
-            Fetch the documentation from $doc_url and extract the Claude Code settings.json configuration.
-            Return ONLY a valid JSON object with these fields (omit if not found):
-            - base_url: the ANTHROPIC_BASE_URL value
-            - model: the ANTHROPIC_MODEL value
-            - small_model: the ANTHROPIC_SMALL_FAST_MODEL value
-            - timeout_ms: the API_TIMEOUT_MS value (as string)
-            - haiku_model: the ANTHROPIC_DEFAULT_HAIKU_MODEL value
-            - sonnet_model: the ANTHROPIC_DEFAULT_SONNET_MODEL value
-            - opus_model: the ANTHROPIC_DEFAULT_OPUS_MODEL value
-
-            Return ONLY the JSON, no markdown, no explanation." 2>/dev/null || echo "{}"
-          }
-
-          # Update providers
-          YAML_PATH=".chezmoidata/claude.yaml"
-          CHANGES=0
-
-          if [ "$PROVIDER" = "all" ]; then
-            for p in "${!PROVIDER_DOCS[@]}"; do
-              CONFIG=$(query_provider_config "$p" "${PROVIDER_DOCS[$p]}")
-              if [ -n "$CONFIG" ] && [ "$CONFIG" != "{}" ]; then
-                python3 /tmp/update_providers.py "$YAML_PATH" "$p" "$CONFIG" && ((CHANGES++)) || true
-              fi
-              sleep 2  # Rate limiting
-            done
+          prompt=$(.github/scripts/update-claude-providers.sh prompt "$PROVIDER")
+          {
+            echo "prompt<<EOF"
+            echo "$prompt"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+      - name: Query provider configs with Gemini
+        id: gemini
+        uses: google-github-actions/run-gemini-cli@v0.1.19
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          gemini_model: gemini-3-flash-preview
+          prompt: ${{ steps.prompt.outputs.prompt }}
+      - name: Apply config updates
+        env:
+          AI_RESPONSE: ${{ steps.gemini.outputs.summary }}
+        run: |
+          echo "$AI_RESPONSE" | .github/scripts/update-claude-providers.sh apply
+      - name: Check for changes
+        id: changes
+        run: |
+          if [[ -n "$(git status --porcelain .chezmoidata/claude.yaml)" ]]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            git diff .chezmoidata/claude.yaml | head -50 > /tmp/diff.txt
+            {
+              echo "diff<<EOF"
+              cat /tmp/diff.txt
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
           else
-            if [ -n "${PROVIDER_DOCS[$PROVIDER]}" ]; then
-              CONFIG=$(query_provider_config "$PROVIDER" "${PROVIDER_DOCS[$PROVIDER]}")
-              if [ -n "$CONFIG" ] && [ "$CONFIG" != "{}" ]; then
-                python3 /tmp/update_providers.py "$YAML_PATH" "$PROVIDER" "$CONFIG" && ((CHANGES++)) || true
-              fi
-            fi
+            echo "has_changes=false" >> $GITHUB_OUTPUT
           fi
-
-          echo "changes=$CHANGES" >> $GITHUB_OUTPUT
       - name: Create Pull Request
+        if: steps.changes.outputs.has_changes == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore(claude): update provider configs"
           title: "chore(claude): update provider configs"
-          body: |
-            Automated update of Claude Code provider configurations.
-
-            This PR was generated by the `update-claude-providers` workflow using Gemini CLI
-            to fetch the latest configuration from provider documentation.
-
-            Please review the changes before merging.
           branch: chore/update-claude-providers
           delete-branch: true
-          labels: |
-            automated
-            claude-code
+          labels: dependencies,claude,automation
+          body: |
+            ## Provider Config Update
+
+            Updated Claude Code provider configurations from official documentation.
+
+            ### Provider(s) Updated
+            - ${{ github.event.inputs.provider || 'all' }}
+
+            ### Changes
+            ```diff
+            ${{ steps.changes.outputs.diff }}
+            ```
+
+            ### Sources
+            - [DeepSeek](https://api-docs.deepseek.com/guides/anthropic_api)
+            - [Kimi](https://platform.moonshot.cn/docs)
+            - [GLM](https://docs.bigmodel.cn/cn/coding-plan/tool/claude)
+            - [Qwen](https://help.aliyun.com/zh/model-studio/claude-code)
+            - [MiniMax](https://platform.minimax.io/docs/coding-plan/claude-code)
+            - [Doubao](https://www.volcengine.com/docs/82379/1949118)
+
+            ---
+            *Auto-generated by [update-claude-providers](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})*
+      - name: Summary
+        run: |
+          echo "## Update Results" >> $GITHUB_STEP_SUMMARY
+          echo "- Provider: ${{ github.event.inputs.provider || 'all' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Changes: ${{ steps.changes.outputs.has_changes }}" >> $GITHUB_STEP_SUMMARY
