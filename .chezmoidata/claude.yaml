@@ -1,4 +1,42 @@
 claude:
+  # Claude Code provider defaults (used by claude-switch)
+  providers:
+    anthropic:
+      base_url: ""
+      model: "claude-sonnet-4-5-20250929"
+      small_model: "claude-sonnet-4-5-20250929"
+    opus:
+      base_url: ""
+      model: "claude-opus-4-5-20251101"
+      small_model: "claude-sonnet-4-5-20250929"
+    haiku:
+      base_url: ""
+      model: "claude-haiku-4-5"
+      small_model: "claude-haiku-4-5"
+    deepseek:
+      base_url: "https://api.deepseek.com/anthropic"
+      model: "deepseek-chat"
+      small_model: "deepseek-chat"
+    kimi:
+      base_url: "https://api.kimi.com/coding/"
+      model: "kimi-for-coding"
+      small_model: "kimi-for-coding"
+    glm:
+      base_url: "https://open.bigmodel.cn/api/anthropic"
+      model: "glm-4.6"
+      small_model: "glm-4.5-air"
+    qwen:
+      base_url: "https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy"
+      model: "qwen3-max"
+      small_model: "qwen3-next-80b-a3b-instruct"
+    minimax:
+      base_url: "https://api.minimax.io/anthropic"
+      model: "MiniMax-M2"
+      small_model: "MiniMax-M2"
+    doubao:
+      base_url: "https://ark.cn-beijing.volces.com/api/coding"
+      model: "doubao-seed-code-preview-latest"
+      small_model: "doubao-seed-code-preview-latest"
   # Local directories (protected from plugin sync)
   localDirectories:
     agents:

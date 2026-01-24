@@ -13,57 +13,17 @@ NC='\033[0m'
 # gopass prefix for claude code secrets
 GOPASS_PREFIX="claude-code"
 
-# Get provider default value
+# Get provider default value (generated from .chezmoidata/claude.yaml)
 get_provider_default() {
     local provider="$1"
     local field="$2"
 
     case "$provider:$field" in
-        # Official Claude (Pro subscription or API key)
-        anthropic:base_url) echo "" ;;
-        anthropic:model) echo "claude-sonnet-4-5-20250929" ;;
-        anthropic:small_model) echo "claude-sonnet-4-5-20250929" ;;
-
-        # Claude Opus
-        opus:base_url) echo "" ;;
-        opus:model) echo "claude-opus-4-5-20251101" ;;
-        opus:small_model) echo "claude-sonnet-4-5-20250929" ;;
-
-        # Claude Haiku
-        haiku:base_url) echo "" ;;
-        haiku:model) echo "claude-haiku-4-5" ;;
-        haiku:small_model) echo "claude-haiku-4-5" ;;
-
-        # DeepSeek
-        deepseek:base_url) echo "https://api.deepseek.com/anthropic" ;;
-        deepseek:model) echo "deepseek-chat" ;;
-        deepseek:small_model) echo "deepseek-chat" ;;
-
-        # KIMI for Coding
-        kimi:base_url) echo "https://api.kimi.com/coding/" ;;
-        kimi:model) echo "kimi-for-coding" ;;
-        kimi:small_model) echo "kimi-for-coding" ;;
-
-        # GLM (Zhipu)
-        glm:base_url) echo "https://open.bigmodel.cn/api/anthropic" ;;
-        glm:model) echo "glm-4.6" ;;
-        glm:small_model) echo "glm-4.5-air" ;;
-
-        # Qwen (Alibaba)
-        qwen:base_url) echo "https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy" ;;
-        qwen:model) echo "qwen3-max" ;;
-        qwen:small_model) echo "qwen3-next-80b-a3b-instruct" ;;
-
-        # MiniMax
-        minimax:base_url) echo "https://api.minimax.io/anthropic" ;;
-        minimax:model) echo "MiniMax-M2" ;;
-        minimax:small_model) echo "MiniMax-M2" ;;
-
-        # Doubao Seed (ByteDance)
-        doubao:base_url) echo "https://ark.cn-beijing.volces.com/api/coding" ;;
-        doubao:model) echo "doubao-seed-code-preview-latest" ;;
-        doubao:small_model) echo "doubao-seed-code-preview-latest" ;;
-
+{{- range $name, $config := .claude.providers }}
+        {{ $name }}:base_url) echo "{{ $config.base_url }}" ;;
+        {{ $name }}:model) echo "{{ $config.model }}" ;;
+        {{ $name }}:small_model) echo "{{ $config.small_model }}" ;;
+{{- end }}
         # Unknown - return empty
         *) echo "" ;;
     esac
