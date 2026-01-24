@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
       - name: Install yq
         run: |
           sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
@@ -48,6 +50,8 @@ jobs:
           chmod +x .github/scripts/update-plugin-metadata.sh
           .github/scripts/update-plugin-metadata.sh /tmp/wshobson-agents /tmp/plugins.json .chezmoidata/claude.yaml
           yq -i -P '.claude.wshobson.registry = load("/tmp/plugins.json")' .chezmoidata/claude.yaml
+      - name: Format files (match local pre-commit)
+        run: nix run nixpkgs#treefmt -- --no-cache
       - name: Check for changes
         id: changes
         run: |
