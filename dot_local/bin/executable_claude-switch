@@ -1,0 +1,462 @@
+#!/bin/bash
+# Claude Code Provider Switcher
+# Uses gopass to securely manage API keys and provider configurations
+set -eo pipefail
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# gopass prefix for claude code secrets
+GOPASS_PREFIX="claude-code"
+
+# Get provider default value
+get_provider_default() {
+    local provider="$1"
+    local field="$2"
+
+    case "$provider:$field" in
+        # Official Claude (Pro subscription or API key)
+        anthropic:base_url) echo "" ;;
+        anthropic:model) echo "claude-sonnet-4-5-20250929" ;;
+        anthropic:small_model) echo "claude-sonnet-4-5-20250929" ;;
+
+        # Claude Opus
+        opus:base_url) echo "" ;;
+        opus:model) echo "claude-opus-4-5-20251101" ;;
+        opus:small_model) echo "claude-sonnet-4-5-20250929" ;;
+
+        # Claude Haiku
+        haiku:base_url) echo "" ;;
+        haiku:model) echo "claude-haiku-4-5" ;;
+        haiku:small_model) echo "claude-haiku-4-5" ;;
+
+        # DeepSeek
+        deepseek:base_url) echo "https://api.deepseek.com/anthropic" ;;
+        deepseek:model) echo "deepseek-chat" ;;
+        deepseek:small_model) echo "deepseek-chat" ;;
+
+        # KIMI for Coding
+        kimi:base_url) echo "https://api.kimi.com/coding/" ;;
+        kimi:model) echo "kimi-for-coding" ;;
+        kimi:small_model) echo "kimi-for-coding" ;;
+
+        # GLM (Zhipu)
+        glm:base_url) echo "https://open.bigmodel.cn/api/anthropic" ;;
+        glm:model) echo "glm-4.6" ;;
+        glm:small_model) echo "glm-4.5-air" ;;
+
+        # Qwen (Alibaba)
+        qwen:base_url) echo "https://dashscope.aliyuncs.com/api/v2/apps/claude-code-proxy" ;;
+        qwen:model) echo "qwen3-max" ;;
+        qwen:small_model) echo "qwen3-next-80b-a3b-instruct" ;;
+
+        # MiniMax
+        minimax:base_url) echo "https://api.minimax.io/anthropic" ;;
+        minimax:model) echo "MiniMax-M2" ;;
+        minimax:small_model) echo "MiniMax-M2" ;;
+
+        # Doubao Seed (ByteDance)
+        doubao:base_url) echo "https://ark.cn-beijing.volces.com/api/coding" ;;
+        doubao:model) echo "doubao-seed-code-preview-latest" ;;
+        doubao:small_model) echo "doubao-seed-code-preview-latest" ;;
+
+        # Unknown - return empty
+        *) echo "" ;;
+    esac
+}
+
+# Check gopass is available
+check_gopass() {
+    if ! command -v gopass &>/dev/null; then
+        echo -e "${RED}Error: gopass not found${NC}" >&2
+        echo "Install gopass first: https://github.com/gopasspw/gopass" >&2
+        exit 1
+    fi
+}
+
+# Get secret from gopass (returns empty if not found)
+gopass_get() {
+    local path="$1"
+    gopass show "$path" 2>/dev/null || echo ""
+}
+
+# Set secret in gopass
+gopass_set() {
+    local path="$1"
+    local value="$2"
+    echo "$value" | gopass insert -f "$path" >/dev/null 2>&1
+}
+
+# Check if secret exists in gopass
+gopass_exists() {
+    local path="$1"
+    gopass show "$path" &>/dev/null
+}
+
+# Get current provider
+get_current() {
+    local current
+    current=$(gopass_get "$GOPASS_PREFIX/current")
+    if [[ -z "$current" ]]; then
+        echo "anthropic"  # Default
+    else
+        echo "$current"
+    fi
+}
+
+# Set current provider
+set_current() {
+    local provider="$1"
+    gopass_set "$GOPASS_PREFIX/current" "$provider"
+}
+
+# List available providers
+list_providers() {
+    local current
+    current=$(get_current)
+
+    echo -e "${BLUE}Available providers:${NC}"
+    echo ""
+
+    # Get providers from gopass
+    local providers
+    providers=$(gopass list "$GOPASS_PREFIX/providers" 2>/dev/null | grep -E "^$GOPASS_PREFIX/providers/[^/]+/api_key$" | sed "s|$GOPASS_PREFIX/providers/||;s|/api_key||" | sort -u || echo "")
+
+    if [[ -z "$providers" ]]; then
+        echo -e "${YELLOW}No providers configured.${NC}"
+        echo ""
+        echo "Add a provider with: claude-switch add <provider>"
+        echo ""
+        echo "Supported providers:"
+        echo "  anthropic, opus, haiku, deepseek, kimi, glm, qwen, minimax, doubao"
+        return
+    fi
+
+    while IFS= read -r provider; do
+        local marker=""
+        if [[ "$provider" == "$current" ]]; then
+            marker="${GREEN} ✓ (current)${NC}"
+        fi
+
+        local desc
+        desc=$(gopass_get "$GOPASS_PREFIX/providers/$provider/description")
+        if [[ -n "$desc" ]]; then
+            echo -e "  ${YELLOW}$provider${NC}$marker - $desc"
+        else
+            echo -e "  ${YELLOW}$provider${NC}$marker"
+        fi
+    done <<< "$providers"
+}
+
+# Show current provider info
+show_current() {
+    local current
+    current=$(get_current)
+
+    echo -e "${BLUE}Current provider:${NC} ${GREEN}$current${NC}"
+    echo ""
+
+    if ! gopass_exists "$GOPASS_PREFIX/providers/$current/api_key"; then
+        echo -e "${YELLOW}Warning: No API key configured for $current${NC}"
+        return
+    fi
+
+    local base_url model small_model
+    base_url=$(gopass_get "$GOPASS_PREFIX/providers/$current/base_url")
+    model=$(gopass_get "$GOPASS_PREFIX/providers/$current/model")
+    small_model=$(gopass_get "$GOPASS_PREFIX/providers/$current/small_model")
+
+    # Use defaults if not set
+    [[ -z "$base_url" ]] && base_url=$(get_provider_default "$current" "base_url")
+    [[ -z "$model" ]] && model=$(get_provider_default "$current" "model")
+    [[ -z "$small_model" ]] && small_model=$(get_provider_default "$current" "small_model")
+    [[ -z "$model" ]] && model="claude-sonnet-4-5-20250929"
+    [[ -z "$small_model" ]] && small_model="$model"
+
+    echo "  Base URL: ${base_url:-Default (Anthropic)}"
+    echo "  Model: $model"
+    echo "  Small Model: $small_model"
+    echo "  API Key: [configured]"
+}
+
+# Switch to a provider
+switch_provider() {
+    local provider="${1:-}"
+
+    if [[ -z "$provider" ]]; then
+        echo -e "${RED}Error: Provider name required${NC}" >&2
+        echo "Usage: claude-switch use <provider>" >&2
+        return 1
+    fi
+
+    # Check if provider is configured
+    if ! gopass_exists "$GOPASS_PREFIX/providers/$provider/api_key"; then
+        echo -e "${RED}Error: Provider '$provider' not configured${NC}" >&2
+        echo ""
+        echo "Add it with: claude-switch add $provider"
+        return 1
+    fi
+
+    set_current "$provider"
+    echo -e "${GREEN}✓ Switched to $provider${NC}"
+    show_current
+}
+
+# Add a new provider
+add_provider() {
+    local provider="${1:-}"
+
+    if [[ -z "$provider" ]]; then
+        echo -e "${RED}Error: Provider name required${NC}" >&2
+        echo "Usage: claude-switch add <provider>" >&2
+        echo ""
+        echo "Supported providers:"
+        echo "  anthropic, opus, haiku, deepseek, kimi, glm, qwen, minimax, doubao"
+        echo "  Or any custom name for other providers"
+        return 1
+    fi
+
+    echo -e "${BLUE}Adding provider: $provider${NC}"
+    echo ""
+
+    # Get defaults
+    local default_base_url default_model default_small
+    default_base_url=$(get_provider_default "$provider" "base_url")
+    default_model=$(get_provider_default "$provider" "model")
+    default_small=$(get_provider_default "$provider" "small_model")
+
+    # API Key (required)
+    echo -n "API Key: "
+    read -rs api_key
+    echo ""
+
+    if [[ -z "$api_key" ]]; then
+        echo -e "${RED}Error: API key is required${NC}" >&2
+        return 1
+    fi
+
+    # Base URL (optional)
+    if [[ -n "$default_base_url" ]]; then
+        echo "Base URL [$default_base_url]: "
+    else
+        echo "Base URL [default Anthropic]: "
+    fi
+    read -r base_url
+    [[ -z "$base_url" ]] && base_url="$default_base_url"
+
+    # Model (optional)
+    if [[ -n "$default_model" ]]; then
+        echo "Model [$default_model]: "
+    else
+        echo "Model: "
+    fi
+    read -r model
+    [[ -z "$model" ]] && model="$default_model"
+
+    # Small Model (optional)
+    local default_small_display="${default_small:-$model}"
+    echo "Small/Fast Model [$default_small_display]: "
+    read -r small_model
+    [[ -z "$small_model" ]] && small_model="${default_small:-$model}"
+
+    # Description (optional)
+    echo "Description (optional): "
+    read -r description
+
+    # Save to gopass
+    echo -e "${BLUE}Saving to gopass...${NC}"
+    gopass_set "$GOPASS_PREFIX/providers/$provider/api_key" "$api_key"
+    [[ -n "$base_url" ]] && gopass_set "$GOPASS_PREFIX/providers/$provider/base_url" "$base_url"
+    [[ -n "$model" ]] && gopass_set "$GOPASS_PREFIX/providers/$provider/model" "$model"
+    [[ -n "$small_model" ]] && gopass_set "$GOPASS_PREFIX/providers/$provider/small_model" "$small_model"
+    [[ -n "$description" ]] && gopass_set "$GOPASS_PREFIX/providers/$provider/description" "$description"
+
+    echo -e "${GREEN}✓ Provider '$provider' added${NC}"
+    echo ""
+    echo "Switch to it with: claude-switch use $provider"
+}
+
+# Remove a provider
+remove_provider() {
+    local provider="${1:-}"
+
+    if [[ -z "$provider" ]]; then
+        echo -e "${RED}Error: Provider name required${NC}" >&2
+        return 1
+    fi
+
+    if ! gopass_exists "$GOPASS_PREFIX/providers/$provider/api_key"; then
+        echo -e "${RED}Error: Provider '$provider' not found${NC}" >&2
+        return 1
+    fi
+
+    echo -n "Remove provider '$provider'? [y/N] "
+    read -r confirm
+
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        gopass rm -rf "$GOPASS_PREFIX/providers/$provider" 2>/dev/null || true
+        echo -e "${GREEN}✓ Provider '$provider' removed${NC}"
+
+        # Reset current if removed provider was current
+        if [[ "$(get_current)" == "$provider" ]]; then
+            set_current "anthropic"
+            echo "Current provider reset to: anthropic"
+        fi
+    else
+        echo "Cancelled."
+    fi
+}
+
+# Output environment variables for current provider
+output_env() {
+    local current
+    current=$(get_current)
+
+    # Check if provider exists
+    if ! gopass_exists "$GOPASS_PREFIX/providers/$current/api_key"; then
+        echo "# Provider '$current' not configured" >&2
+        return 1
+    fi
+
+    local api_key base_url model small_model
+    api_key=$(gopass_get "$GOPASS_PREFIX/providers/$current/api_key")
+    base_url=$(gopass_get "$GOPASS_PREFIX/providers/$current/base_url")
+    model=$(gopass_get "$GOPASS_PREFIX/providers/$current/model")
+    small_model=$(gopass_get "$GOPASS_PREFIX/providers/$current/small_model")
+
+    # Use defaults if not set
+    [[ -z "$base_url" ]] && base_url=$(get_provider_default "$current" "base_url")
+    [[ -z "$model" ]] && model=$(get_provider_default "$current" "model")
+    [[ -z "$small_model" ]] && small_model=$(get_provider_default "$current" "small_model")
+    [[ -z "$model" ]] && model="claude-sonnet-4-5-20250929"
+    [[ -z "$small_model" ]] && small_model="$model"
+
+    # Output unset commands first
+    echo "unset ANTHROPIC_BASE_URL ANTHROPIC_API_URL ANTHROPIC_AUTH_TOKEN ANTHROPIC_API_KEY ANTHROPIC_MODEL ANTHROPIC_SMALL_FAST_MODEL"
+
+    # Set base URL if not default
+    if [[ -n "$base_url" ]]; then
+        echo "export ANTHROPIC_BASE_URL='$base_url'"
+        echo "export ANTHROPIC_API_URL='$base_url'"
+        echo "export ANTHROPIC_AUTH_TOKEN='$api_key'"
+        echo "export ANTHROPIC_API_KEY='$api_key'"
+    else
+        # Default Anthropic - only set API key if present
+        if [[ -n "$api_key" ]]; then
+            echo "export ANTHROPIC_API_KEY='$api_key'"
+        fi
+    fi
+
+    echo "export ANTHROPIC_MODEL='$model'"
+    echo "export ANTHROPIC_SMALL_FAST_MODEL='$small_model'"
+}
+
+# Launch claude with current provider
+launch_claude() {
+    # Export environment
+    eval "$(output_env)"
+
+    local current
+    current=$(get_current)
+
+    echo -e "${GREEN}Launching Claude Code with provider: $current${NC}" >&2
+    echo "  Model: ${ANTHROPIC_MODEL:-default}" >&2
+    echo "  Base URL: ${ANTHROPIC_BASE_URL:-Default (Anthropic)}" >&2
+    echo "" >&2
+
+    exec claude "$@"
+}
+
+# Show help
+show_help() {
+    cat << 'EOF'
+Claude Code Provider Switcher (gopass-based)
+
+Usage: claude-switch <command> [args]
+
+Commands:
+  list              List available providers
+  current           Show current provider details
+  use <provider>    Switch to a provider
+  add <provider>    Add a new provider interactively
+  remove <provider> Remove a provider
+  env               Output environment variables (for eval)
+  run [args]        Launch claude with current provider
+  help              Show this help
+
+Examples:
+  claude-switch list                    # List all providers
+  claude-switch add deepseek            # Add DeepSeek provider
+  claude-switch use deepseek            # Switch to DeepSeek
+  eval "$(claude-switch env)"           # Export env vars
+  claude-switch run                     # Launch claude
+
+Shell Integration (.zshrc):
+  # Auto-load provider on shell start (optional)
+  if command -v gopass &>/dev/null && gopass show claude-code/current &>/dev/null; then
+      eval "$(claude-switch env 2>/dev/null)"
+  fi
+
+Supported providers:
+  anthropic   - Official Claude (Pro/API)
+  opus        - Claude Opus 4.5
+  haiku       - Claude Haiku 4.5
+  deepseek    - DeepSeek
+  kimi        - KIMI for Coding
+  glm         - GLM 4.6 (Zhipu)
+  qwen        - Qwen (Alibaba)
+  minimax     - MiniMax M2
+  doubao      - Doubao Seed (ByteDance)
+EOF
+}
+
+# Main
+main() {
+    check_gopass
+
+    local cmd="${1:-help}"
+    shift || true
+
+    case "$cmd" in
+        list|ls)
+            list_providers
+            ;;
+        current|status)
+            show_current
+            ;;
+        use|switch)
+            switch_provider "$@"
+            ;;
+        add)
+            add_provider "$@"
+            ;;
+        remove|rm|delete)
+            remove_provider "$@"
+            ;;
+        env)
+            output_env
+            ;;
+        run|launch)
+            launch_claude "$@"
+            ;;
+        help|--help|-h)
+            show_help
+            ;;
+        *)
+            # If argument looks like a provider name, switch to it
+            if [[ "$cmd" =~ ^[a-z] ]]; then
+                switch_provider "$cmd"
+            else
+                echo -e "${RED}Unknown command: $cmd${NC}" >&2
+                show_help
+                exit 1
+            fi
+            ;;
+    esac
+}
+
+main "$@"
