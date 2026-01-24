@@ -1,5 +1,5 @@
 # Linux: Start SSH agent before sheldon (libgit2 requires SSH_AUTH_SOCK)
-# macOS uses system agent or 1Password, so skip
+# macOS uses system Keychain agent, so skip
 if [[ "$OSTYPE" == linux* ]] && [[ -z "$SSH_AUTH_SOCK" ]]; then
     eval "$(ssh-agent -s)" > /dev/null
     ssh-add ~/.ssh/main 2>/dev/null
