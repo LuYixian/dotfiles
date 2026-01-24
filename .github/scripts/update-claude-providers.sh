@@ -34,7 +34,7 @@ generate_prompt() {
 You are a configuration extraction assistant. Your task is to extract Claude Code provider configuration from official documentation.
 
 For each provider, extract these fields (if available):
-- base_url: The API endpoint URL for Claude Code
+- base_url: The API endpoint URL for Claude Code (Anthropic-compatible endpoint)
 - model: The recommended model ID
 - small_model: The smaller/faster model ID (or same as model)
 - timeout_ms: API timeout in milliseconds (if specified)
@@ -46,7 +46,7 @@ For each provider, extract these fields (if available):
 IMPORTANT:
 - Only include fields that are explicitly documented
 - Use exact model IDs as shown in the documentation
-- Return ONLY valid JSON, no markdown or explanation
+- Return ONLY valid JSON array, no markdown or explanation
 
 Output format (JSON array):
 ```json
@@ -73,6 +73,18 @@ HEADER
         if [[ -n "$url" ]]; then
             echo "## $p"
             echo "Documentation: $url"
+            # Include fetched content if available (from DOCS_JSON_FILE env var)
+            if [[ -n "${DOCS_JSON_FILE:-}" && -f "$DOCS_JSON_FILE" ]]; then
+                local content
+                content=$(jq -r ".[\"$p\"].content // empty" "$DOCS_JSON_FILE" 2>/dev/null)
+                if [[ -n "$content" ]]; then
+                    echo ""
+                    echo "Page content (truncated):"
+                    echo '```'
+                    echo "$content" | head -150
+                    echo '```'
+                fi
+            fi
             echo ""
         fi
     done

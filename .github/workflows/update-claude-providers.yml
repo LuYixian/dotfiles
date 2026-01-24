@@ -25,16 +25,30 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-      - name: Install yq
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
         run: |
           sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq
+          npm install playwright
+          npx playwright install chromium --with-deps
+      - name: Fetch documentation with Playwright
+        id: fetch
+        run: |
+          PROVIDER="${{ github.event.inputs.provider || 'all' }}"
+          node .github/scripts/fetch-provider-docs.js "$PROVIDER" > /tmp/docs.json
+          echo "Fetched documentation:"
+          cat /tmp/docs.json | jq 'to_entries | .[] | {provider: .key, chars: (.value.content | length // 0)}'
       - name: Generate update prompt
         id: prompt
+        env:
+          DOCS_JSON_FILE: /tmp/docs.json
         run: |
           chmod +x .github/scripts/update-claude-providers.sh
           PROVIDER="${{ github.event.inputs.provider || 'all' }}"
-
           prompt=$(.github/scripts/update-claude-providers.sh prompt "$PROVIDER")
           {
             echo "prompt<<EOF"
@@ -46,7 +60,7 @@ jobs:
         uses: google-github-actions/run-gemini-cli@v0.1.19
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-          gemini_model: gemini-3-flash-preview
+          gemini_model: gemini-2.5-flash
           prompt: ${{ steps.prompt.outputs.prompt }}
       - name: Apply config updates
         env:
