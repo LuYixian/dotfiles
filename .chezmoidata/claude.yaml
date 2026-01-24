@@ -31,16 +31,25 @@ claude:
     skills:
       - git-workflow
       - review-code
-  # obra/superpowers config
+  # obra/superpowers config (always enabled, only configure exclusions)
   superpowers:
-    enabled: true
-    # Exclude items that require SessionStart hook (we use CLAUDE.md instead)
+    repo: obra/superpowers
     exclude:
       skills:
-        - using-superpowers
+        - using-superpowers # Requires SessionStart hook (we use CLAUDE.md instead)
+  # anthropics/skills - Official document processing skills
+  anthropics:
+    repo: anthropics/skills
+    include:
+      skills:
+        - pdf
+        - docx
+        - xlsx
+        - pptx
   # wshobson/agents plugins
   wshobson:
-    enabled:
+    repo: wshobson/agents
+    include:
       - python-development
       - javascript-typescript
       - systems-programming
