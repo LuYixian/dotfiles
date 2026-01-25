@@ -34,7 +34,7 @@ claude:
       model: "kimi-k2-thinking-turbo"
       small_model: "kimi-k2-thinking-turbo"
       timeout_ms: "600000"
-      disable_nonessential_traffic: true
+      disable_nonessential_traffic: false
       haiku_model: kimi-k2-thinking-turbo
       sonnet_model: kimi-k2-thinking-turbo
       opus_model: kimi-k2-thinking-turbo
@@ -42,7 +42,7 @@ claude:
     glm:
       base_url: "https://open.bigmodel.cn/api/anthropic"
       model: "glm-4.7"
-      small_model: "glm-4.5-air"
+      small_model: "glm-4.7"
       timeout_ms: "3000000"
       disable_nonessential_traffic: true
       haiku_model: "glm-4.5-air"
@@ -51,10 +51,10 @@ claude:
     # Qwen (Alibaba): https://help.aliyun.com/zh/model-studio/claude-code
     qwen:
       base_url: "https://dashscope.aliyuncs.com/apps/anthropic"
-      model: "qwen3-coder-plus"
-      small_model: "qwen-flash"
+      model: "qwen3-max"
+      small_model: "qwen3-max"
       timeout_ms: "600000"
-      disable_nonessential_traffic: true
+      disable_nonessential_traffic: false
     # MiniMax: https://platform.minimax.io/docs/coding-plan/claude-code
     minimax:
       base_url: "https://api.minimax.io/anthropic"
