@@ -111,14 +111,10 @@ claude:
     exclude:
       skills:
         - using-superpowers # Requires SessionStart hook (we use CLAUDE.md instead)
-  # anthropics/skills - Official document processing skills
-  anthropicsSkills:
-    repo: anthropics/skills
-    include:
-      - pdf
-      - docx
-      - xlsx
-      - pptx
+  # anthropics/skills - MOVED to .chezmoiexternal.toml
+  # These skills are source-available (not open source), so we download
+  # them locally via chezmoi external instead of committing to git.
+  # See: .chezmoiexternal.toml
   # wshobson/agents plugins
   wshobsonAgents:
     repo: wshobson/agents

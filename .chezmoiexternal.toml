@@ -13,7 +13,44 @@
 
 # ------------------------------------------------------------------------------
 # Claude Code Plugins
-# REMOVED: Now managed by GitHub Action (sync-claude-plugins.yml)
+# Public plugins managed by GitHub Action (sync-claude-plugins.yml)
 # Plugins are committed directly to dot_claude/{agents,commands,skills}/
 # See: .github/workflows/sync-claude-plugins.yml
 # ------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
+# Anthropic Skills (source-available, NOT open source)
+# These are downloaded locally at apply time, NOT committed to git
+# License: https://github.com/anthropics/skills - see LICENSE.txt in each skill
+# ------------------------------------------------------------------------------
+[".claude/skills/anthropics/pdf"]
+    type = "archive"
+    url = "https://github.com/anthropics/skills/archive/main.tar.gz"
+    exact = true
+    stripComponents = 3
+    include = ["skills-main/skills/pdf/**"]
+    refreshPeriod = "168h"
+
+[".claude/skills/anthropics/docx"]
+    type = "archive"
+    url = "https://github.com/anthropics/skills/archive/main.tar.gz"
+    exact = true
+    stripComponents = 3
+    include = ["skills-main/skills/docx/**"]
+    refreshPeriod = "168h"
+
+[".claude/skills/anthropics/pptx"]
+    type = "archive"
+    url = "https://github.com/anthropics/skills/archive/main.tar.gz"
+    exact = true
+    stripComponents = 3
+    include = ["skills-main/skills/pptx/**"]
+    refreshPeriod = "168h"
+
+[".claude/skills/anthropics/xlsx"]
+    type = "archive"
+    url = "https://github.com/anthropics/skills/archive/main.tar.gz"
+    exact = true
+    stripComponents = 3
+    include = ["skills-main/skills/xlsx/**"]
+    refreshPeriod = "168h"
