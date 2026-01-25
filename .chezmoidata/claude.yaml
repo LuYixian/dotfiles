@@ -72,56 +72,13 @@ claude:
       small_model: "ark-code-latest"
       timeout_ms: "600000"
       disable_nonessential_traffic: true
-  # Local directories (protected from plugin sync)
-  localDirectories:
-    agents:
-      - audit
-      - development
-      - docs
-      - frontend
-      - infrastructure
-      - platform
-      - quality
-      - skill-builder
-      - workflow
-    commands:
-      - core
-      - deploy
-      - dev
-      - docs
-      - git
-      - meta
-      - orchestration
-      - performance
-      - plan
-      - pr
-      - project
-      - review
-      - setup
-      - simulation
-      - skills
-      - test
-    skills:
-      - changelog-generator
-      - git-workflow
-      - review-code
-  # obra/superpowers config (always enabled, only configure exclusions)
-  superpowers:
-    repo: obra/superpowers
-    exclude:
-      skills:
-        - using-superpowers # Requires SessionStart hook (we use CLAUDE.md instead)
-  # anthropics/skills - Official document processing skills
-  anthropicsSkills:
-    repo: anthropics/skills
-    include:
-      - pdf
-      - docx
-      - xlsx
-      - pptx
-  # wshobson/agents plugins
+  # obra/superpowers - downloaded via chezmoiexternal
+  # Note: using-superpowers skill is included but unused (we use CLAUDE.md instead)
+  # Cannot exclude due to chezmoi bug with include+exclude on same archive URL
+  # wshobson/agents - downloaded via chezmoiexternal
+  # include: list of plugins to download
+  # registry: metadata auto-updated by GitHub Action
   wshobsonAgents:
-    repo: wshobson/agents
     include:
       - python-development
       - javascript-typescript
