@@ -41,18 +41,18 @@ claude:
     # GLM (Zhipu AI): https://docs.bigmodel.cn/cn/coding-plan/tool/claude
     glm:
       base_url: "https://open.bigmodel.cn/api/anthropic"
-      model: "glm-4.7"
-      small_model: "glm-4.5-air"
+      model: "GLM-4.7"
+      small_model: "GLM-4.7"
       timeout_ms: "3000000"
       disable_nonessential_traffic: true
-      haiku_model: "glm-4.5-air"
-      sonnet_model: "glm-4.7"
-      opus_model: "glm-4.7"
+      haiku_model: "GLM-4.5-Air"
+      sonnet_model: "GLM-4.7"
+      opus_model: "GLM-4.7"
     # Qwen (Alibaba): https://help.aliyun.com/zh/model-studio/claude-code
     qwen:
       base_url: "https://dashscope.aliyuncs.com/apps/anthropic"
-      model: "qwen3-coder-plus"
-      small_model: "qwen-flash"
+      model: "qwen3-max"
+      small_model: "qwen3-max"
       timeout_ms: "600000"
       disable_nonessential_traffic: true
     # MiniMax: https://platform.minimax.io/docs/coding-plan/claude-code
