@@ -40,6 +40,8 @@
 # ------------------------------------------------------------------------------
 # obra/superpowers
 # Structure: superpowers-main/{type}/* → .claude/{type}/superpowers/*
+# Note: using-superpowers skill is included but unused (we use CLAUDE.md instead)
+# Cannot exclude due to chezmoi bug with include+exclude on same archive URL
 # ------------------------------------------------------------------------------
 [".claude/agents/superpowers"]
     type = "archive"
@@ -71,7 +73,7 @@
 # These are downloaded locally at apply time, NOT committed to git
 # Structure: skills-main/skills/{skill}/* → .claude/skills/anthropics/{skill}/*
 # ------------------------------------------------------------------------------
-{{- $anthropicsSkills := list "pdf" "docx" "pptx" "xlsx" }}
+{{- $anthropicsSkills := .claude.anthropicsSkills.include | default list }}
 
 {{- range $skill := $anthropicsSkills }}
 [".claude/skills/anthropics/{{ $skill }}"]
