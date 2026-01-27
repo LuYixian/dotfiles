@@ -159,16 +159,45 @@ resolve_account() {
             | sort -u
     )
 
-    local count
-    count=$(echo "$accounts" | sed '/^$/d' | wc -l | tr -d ' ')
-    if [[ "$count" == "1" ]]; then
-        echo "$accounts"
+    local -a account_list=()
+    local line
+    while IFS= read -r line; do
+        [[ -n "$line" ]] && account_list+=("$line")
+    done <<<"$accounts"
+
+    if [[ "${#account_list[@]}" == "1" ]]; then
+        echo "${account_list[0]}"
         return 0
     fi
 
-    if [[ "$count" -gt 1 ]]; then
+    if [[ "${#account_list[@]}" -gt 1 ]]; then
+        # If interactive, prompt to choose; otherwise ask user to specify explicitly.
+        if [[ -t 0 ]]; then
+            echo -e "${YELLOW}Multiple accounts found for '$provider'. Choose one:${NC}" >&2
+            local i=1
+            for line in "${account_list[@]}"; do
+                echo "  $i) $line" >&2
+                i=$((i + 1))
+            done
+
+            local choice
+            while true; do
+                printf "Select account [1-%d] (or 'q' to cancel): " "${#account_list[@]}" >&2
+                read -r choice
+                if [[ "$choice" == "q" || "$choice" == "Q" ]]; then
+                    return 2
+                fi
+                if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -ge 1 ]] && [[ "$choice" -le "${#account_list[@]}" ]]; then
+                    echo "${account_list[$((choice - 1))]}"
+                    return 0
+                fi
+            done
+        fi
+
         echo -e "${RED}Error: Multiple accounts found for '$provider'. Please specify one:${NC}" >&2
-        echo "$accounts" | sed '/^$/d' | sed 's/^/  - /' >&2
+        for line in "${account_list[@]}"; do
+            echo "  - $line" >&2
+        done
         return 2
     fi
 
@@ -268,6 +297,11 @@ switch_provider() {
                 account="$resolved_account"
                 target="$provider@$account"
                 echo -e "${YELLOW}No default token found; using '$target'${NC}"
+            fi
+        else
+            local rc=$?
+            if [[ "$rc" == "2" ]]; then
+                return 1
             fi
         fi
     fi
@@ -396,6 +430,11 @@ test_provider() {
         local resolved_account
         if resolved_account=$(resolve_account "$provider" "$account"); then
             account="$resolved_account"
+        else
+            local rc=$?
+            if [[ "$rc" == "2" ]]; then
+                return 1
+            fi
         fi
     fi
 
