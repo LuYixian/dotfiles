@@ -31,6 +31,125 @@ parse_provider_account() {
     fi
 }
 
+require_cmd() {
+    local cmd
+    for cmd in "$@"; do
+        if ! command -v "$cmd" &>/dev/null; then
+            echo -e "${RED}Error:${NC} required command not found: $cmd" >&2
+            return 1
+        fi
+    done
+}
+
+validate_account() {
+    local account="$1"
+    # Keep the account name path-safe and shell-friendly.
+    if [[ -z "$account" ]]; then
+        return 1
+    fi
+    if [[ "$account" =~ [/@[:space:]] ]]; then
+        return 1
+    fi
+    if [[ ! "$account" =~ ^[A-Za-z0-9._-]+$ ]]; then
+        return 1
+    fi
+    return 0
+}
+
+list_accounts() {
+    local provider="$1"
+    local prefix="claude-code/providers/$provider"
+    local matches
+    if ! matches=$(gopass list -f "$prefix" 2>/dev/null); then
+        return 1
+    fi
+    echo "$matches" \
+        | awk -F/ -v provider="$provider" '$1=="claude-code" && $2=="providers" && $3==provider && $5=="api_key" { print $4 }' \
+        | awk 'NF' \
+        | sort -u
+}
+
+prompt_select_existing_account() {
+    local provider="$1"
+    shift
+    local -a account_list=("$@")
+
+    if [[ "${#account_list[@]}" -le 0 ]]; then
+        return 1
+    fi
+
+    echo -e "${YELLOW}Multiple accounts found for '$provider'. Choose one:${NC}" >&2
+    local i=1
+    local account
+    for account in "${account_list[@]}"; do
+        echo "  $i) $account" >&2
+        i=$((i + 1))
+    done
+
+    local choice
+    while true; do
+        printf "Select account [1-%d] (or 'q' to cancel): " "${#account_list[@]}" >&2
+        read -r choice
+        if [[ "$choice" == "q" || "$choice" == "Q" ]]; then
+            return 2
+        fi
+        if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -ge 1 ]] && [[ "$choice" -le "${#account_list[@]}" ]]; then
+            echo "${account_list[$((choice - 1))]}"
+            return 0
+        fi
+    done
+}
+
+prompt_select_account_for_add_key() {
+    local provider="$1"
+    shift
+    local -a account_list=("$@")
+
+    if [[ "${#account_list[@]}" -le 0 ]]; then
+        printf "Account name [default]: " >&2
+        local account
+        read -r account
+        account=${account:-default}
+        if ! validate_account "$account"; then
+            echo -e "${RED}Error:${NC} invalid account name '$account' (use letters/numbers/._- only)" >&2
+            return 2
+        fi
+        echo "$account"
+        return 0
+    fi
+
+    echo -e "${YELLOW}Multiple accounts found for '$provider'. Choose which one to update:${NC}" >&2
+    local i=1
+    local account
+    for account in "${account_list[@]}"; do
+        echo "  $i) $account" >&2
+        i=$((i + 1))
+    done
+
+    local choice
+    while true; do
+        printf "Select account [1-%d] (or 'n' to create new, 'q' to cancel): " "${#account_list[@]}" >&2
+        read -r choice
+        if [[ "$choice" == "q" || "$choice" == "Q" ]]; then
+            return 2
+        fi
+        if [[ "$choice" == "n" || "$choice" == "N" ]]; then
+            printf "New account name: " >&2
+            read -r account
+            if ! validate_account "$account"; then
+                echo -e "${RED}Error:${NC} invalid account name '$account' (use letters/numbers/._- only)" >&2
+                continue
+            fi
+            echo "$account"
+            return 0
+        fi
+        if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -ge 1 ]] && [[ "$choice" -le "${#account_list[@]}" ]]; then
+            echo "${account_list[$((choice - 1))]}"
+            return 0
+        fi
+    done
+}
+
 # Get current provider@account from chezmoi data
 get_current() {
     chezmoi data --format json 2>/dev/null | jq -r '.claudeProviderAccount // .claudeProvider // "anthropic"'
@@ -147,17 +266,10 @@ resolve_account() {
 
     # Try to auto-pick if there is exactly one account under this provider.
     # This avoids requiring users to pass @account when they only have one.
-    local prefix="claude-code/providers/$provider"
-    local matches accounts
-    if ! matches=$(gopass list -f "$prefix" 2>/dev/null); then
+    local accounts
+    if ! accounts=$(list_accounts "$provider"); then
         return 1
     fi
-
-    accounts=$(
-        echo "$matches" \
-            | awk -F/ -v provider="$provider" '$1=="claude-code" && $2=="providers" && $3==provider && $5=="api_key" { print $4 }' \
-            | sort -u
-    )
 
     local -a account_list=()
     local line
@@ -173,31 +285,14 @@ resolve_account() {
     if [[ "${#account_list[@]}" -gt 1 ]]; then
         # If interactive, prompt to choose; otherwise ask user to specify explicitly.
         if [[ -t 0 ]]; then
-            echo -e "${YELLOW}Multiple accounts found for '$provider'. Choose one:${NC}" >&2
-            local i=1
-            for line in "${account_list[@]}"; do
-                echo "  $i) $line" >&2
-                i=$((i + 1))
-            done
-
-            local choice
-            while true; do
-                printf "Select account [1-%d] (or 'q' to cancel): " "${#account_list[@]}" >&2
-                read -r choice
-                if [[ "$choice" == "q" || "$choice" == "Q" ]]; then
-                    return 2
-                fi
-                if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -ge 1 ]] && [[ "$choice" -le "${#account_list[@]}" ]]; then
-                    echo "${account_list[$((choice - 1))]}"
-                    return 0
-                fi
-            done
+            if prompt_select_existing_account "$provider" "${account_list[@]}"; then
+                return 0
+            fi
+            return $?
         fi
 
         echo -e "${RED}Error: Multiple accounts found for '$provider'. Please specify one:${NC}" >&2
-        for line in "${account_list[@]}"; do
-            echo "  - $line" >&2
-        done
+        printf '  - %s@%s\n' "$provider" "${account_list[@]}" >&2
         return 2
     fi
 
@@ -213,16 +308,8 @@ resolve_account_for_add_key() {
         return 0
     fi
 
-    # If there are existing accounts, try to pick one (same UX as use/test).
-    local prefix="claude-code/providers/$provider"
-    local matches accounts
-    matches=$(gopass list -f "$prefix" 2>/dev/null || true)
-
-    accounts=$(
-        echo "$matches" \
-            | awk -F/ -v provider="$provider" '$1=="claude-code" && $2=="providers" && $3==provider && $5=="api_key" { print $4 }' \
-            | sort -u
-    )
+    local accounts
+    accounts=$(list_accounts "$provider" 2>/dev/null || true)
 
     local -a account_list=()
     local line
@@ -236,43 +323,18 @@ resolve_account_for_add_key() {
         return 0
     fi
 
+    if [[ -t 0 ]]; then
+        prompt_select_account_for_add_key "$provider" "${account_list[@]}"
+        return $?
+    fi
+
     if [[ "${#account_list[@]}" -gt 1 ]]; then
-        if [[ -t 0 ]]; then
-            echo -e "${YELLOW}Multiple accounts found for '$provider'. Choose which one to update:${NC}" >&2
-            local i=1
-            for line in "${account_list[@]}"; do
-                echo "  $i) $line" >&2
-                i=$((i + 1))
-            done
-
-            local choice
-            while true; do
-                printf "Select account [1-%d] (or 'n' to create new, 'q' to cancel): " "${#account_list[@]}" >&2
-                read -r choice
-                if [[ "$choice" == "q" || "$choice" == "Q" ]]; then
-                    return 2
-                fi
-                if [[ "$choice" == "n" || "$choice" == "N" ]]; then
-                    printf "New account name: " >&2
-                    read -r choice
-                    [[ -n "$choice" ]] && echo "$choice" && return 0
-                    continue
-                fi
-                if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -ge 1 ]] && [[ "$choice" -le "${#account_list[@]}" ]]; then
-                    echo "${account_list[$((choice - 1))]}"
-                    return 0
-                fi
-            done
-        fi
-
         echo -e "${RED}Error: Multiple accounts found for '$provider'. Please specify one:${NC}" >&2
-        for line in "${account_list[@]}"; do
-            echo "  - $provider@$line" >&2
-        done
+        printf '  - %s@%s\n' "$provider" "${account_list[@]}" >&2
         return 2
     fi
 
-    # No existing accounts: default to "default" unless user specifies otherwise.
+    # Non-interactive with no existing accounts: default to "default".
     echo "default"
 }
 
@@ -342,10 +404,6 @@ switch_provider() {
     parsed=$(parse_provider_account "$input")
     provider=$(echo "$parsed" | cut -d'|' -f1)
     account=$(echo "$parsed" | cut -d'|' -f2)
-    local account_was_default=false
-    if [[ "$account" == "default" ]]; then
-        account_was_default=true
-    fi
 
     if ! is_valid_provider "$provider"; then
         echo -e "${RED}Error: Unknown provider '$provider'${NC}" >&2
@@ -456,6 +514,11 @@ add_key() {
         fi
     fi
 
+    if ! validate_account "$account"; then
+        echo -e "${RED}Error:${NC} invalid account name '$account' (use letters/numbers/._- only)" >&2
+        return 1
+    fi
+
     local display_name
     if [[ "$account" == "default" ]]; then
         display_name="$provider"
@@ -518,6 +581,8 @@ test_provider() {
             return 0
             ;;
     esac
+
+    require_cmd curl || return 1
 
     # Auto-resolve default account if needed.
     if [[ "$account" == "default" ]]; then
@@ -666,6 +731,8 @@ EOF
 main() {
     local cmd="${1:-help}"
     shift || true
+
+    require_cmd chezmoi jq || exit 1
 
     case "$cmd" in
         list|ls)
