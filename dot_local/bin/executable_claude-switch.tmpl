@@ -130,6 +130,51 @@ get_token() {
     gopass show -o "$path"
 }
 
+resolve_account() {
+    local provider="$1"
+    local account="${2:-default}"
+
+    if [[ "$account" != "default" ]]; then
+        echo "$account"
+        return 0
+    fi
+
+    # If default exists, use it.
+    if check_token_exists "$provider" "default"; then
+        echo "default"
+        return 0
+    fi
+
+    # Try to auto-pick if there is exactly one account under this provider.
+    # This avoids requiring users to pass @account when they only have one.
+    local prefix="claude-code/providers/$provider"
+    local matches accounts
+    if ! matches=$(gopass list -f "$prefix" 2>/dev/null); then
+        return 1
+    fi
+
+    accounts=$(
+        echo "$matches" \
+            | awk -F/ -v provider="$provider" '$1=="claude-code" && $2=="providers" && $3==provider && $5=="api_key" { print $4 }' \
+            | sort -u
+    )
+
+    local count
+    count=$(echo "$accounts" | sed '/^$/d' | wc -l | tr -d ' ')
+    if [[ "$count" == "1" ]]; then
+        echo "$accounts"
+        return 0
+    fi
+
+    if [[ "$count" -gt 1 ]]; then
+        echo -e "${RED}Error: Multiple accounts found for '$provider'. Please specify one:${NC}" >&2
+        echo "$accounts" | sed '/^$/d' | sed 's/^/  - /' >&2
+        return 2
+    fi
+
+    return 1
+}
+
 # List available providers
 list_providers() {
     local current current_provider current_account
@@ -213,6 +258,18 @@ switch_provider() {
         target="$provider"
     else
         target="$provider@$account"
+    fi
+
+    # For third-party providers, auto-resolve default account if needed.
+    if is_third_party "$provider" && [[ "$account" == "default" ]]; then
+        local resolved_account
+        if resolved_account=$(resolve_account "$provider" "$account"); then
+            if [[ "$resolved_account" != "default" ]]; then
+                account="$resolved_account"
+                target="$provider@$account"
+                echo -e "${YELLOW}No default token found; using '$target'${NC}"
+            fi
+        fi
     fi
 
     if [[ "$current" == "$target" ]]; then
@@ -333,6 +390,14 @@ test_provider() {
             return 0
             ;;
     esac
+
+    # Auto-resolve default account if needed.
+    if [[ "$account" == "default" ]]; then
+        local resolved_account
+        if resolved_account=$(resolve_account "$provider" "$account"); then
+            account="$resolved_account"
+        fi
+    fi
 
     local display_name
     if [[ "$account" == "default" ]]; then
