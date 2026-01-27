@@ -204,6 +204,78 @@ resolve_account() {
     return 1
 }
 
+resolve_account_for_add_key() {
+    local provider="$1"
+    local account="${2:-default}"
+
+    if [[ "$account" != "default" ]]; then
+        echo "$account"
+        return 0
+    fi
+
+    # If there are existing accounts, try to pick one (same UX as use/test).
+    local prefix="claude-code/providers/$provider"
+    local matches accounts
+    matches=$(gopass list -f "$prefix" 2>/dev/null || true)
+
+    accounts=$(
+        echo "$matches" \
+            | awk -F/ -v provider="$provider" '$1=="claude-code" && $2=="providers" && $3==provider && $5=="api_key" { print $4 }' \
+            | sort -u
+    )
+
+    local -a account_list=()
+    local line
+    while IFS= read -r line; do
+        [[ -n "$line" ]] && account_list+=("$line")
+    done <<<"$accounts"
+
+    if [[ "${#account_list[@]}" == "1" ]]; then
+        echo -e "${YELLOW}No account specified; updating existing account '$provider@${account_list[0]}'${NC}" >&2
+        echo "${account_list[0]}"
+        return 0
+    fi
+
+    if [[ "${#account_list[@]}" -gt 1 ]]; then
+        if [[ -t 0 ]]; then
+            echo -e "${YELLOW}Multiple accounts found for '$provider'. Choose which one to update:${NC}" >&2
+            local i=1
+            for line in "${account_list[@]}"; do
+                echo "  $i) $line" >&2
+                i=$((i + 1))
+            done
+
+            local choice
+            while true; do
+                printf "Select account [1-%d] (or 'n' to create new, 'q' to cancel): " "${#account_list[@]}" >&2
+                read -r choice
+                if [[ "$choice" == "q" || "$choice" == "Q" ]]; then
+                    return 2
+                fi
+                if [[ "$choice" == "n" || "$choice" == "N" ]]; then
+                    printf "New account name: " >&2
+                    read -r choice
+                    [[ -n "$choice" ]] && echo "$choice" && return 0
+                    continue
+                fi
+                if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -ge 1 ]] && [[ "$choice" -le "${#account_list[@]}" ]]; then
+                    echo "${account_list[$((choice - 1))]}"
+                    return 0
+                fi
+            done
+        fi
+
+        echo -e "${RED}Error: Multiple accounts found for '$provider'. Please specify one:${NC}" >&2
+        for line in "${account_list[@]}"; do
+            echo "  - $provider@$line" >&2
+        done
+        return 2
+    fi
+
+    # No existing accounts: default to "default" unless user specifies otherwise.
+    echo "default"
+}
+
 # List available providers
 list_providers() {
     local current current_provider current_account
@@ -369,6 +441,19 @@ add_key() {
     if ! command -v gopass &>/dev/null; then
         echo -e "${RED}Error: gopass not found${NC}" >&2
         return 1
+    fi
+
+    # If user didn't specify an account, try to reuse existing one(s).
+    if [[ "$account" == "default" ]]; then
+        local resolved_account
+        if resolved_account=$(resolve_account_for_add_key "$provider" "$account"); then
+            account="$resolved_account"
+        else
+            local rc=$?
+            if [[ "$rc" == "2" ]]; then
+                return 1
+            fi
+        fi
     fi
 
     local display_name
