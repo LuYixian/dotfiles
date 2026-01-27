@@ -93,23 +93,16 @@ is_third_party() {
 }
 
 # Check if token exists in gopass (supports multi-account paths)
-# Tries: provider/account/api_key first, then provider/api_key for backward compat
+# Path: claude-code/providers/<provider>/<account>/api_key
 get_token_path() {
     local provider="$1"
     local account="${2:-default}"
 
     local new_path="claude-code/providers/$provider/$account/api_key"
-    local old_path="claude-code/providers/$provider/api_key"
 
     # NOTE: use `gopass list` so we don't trigger GPG prompts just to check existence
     if gopass list -f "$new_path" &>/dev/null; then
         echo "$new_path"
-        return 0
-    fi
-
-    # For default account, try old path: provider/api_key (backward compat)
-    if [[ "$account" == "default" ]] && gopass list -f "$old_path" &>/dev/null; then
-        echo "$old_path"
         return 0
     fi
 
