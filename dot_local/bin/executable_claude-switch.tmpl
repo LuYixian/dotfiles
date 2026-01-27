@@ -23,6 +23,9 @@ parse_provider_account() {
     local input="$1"
     if [[ "$input" =~ ^([^@]+)@(.+)$ ]]; then
         echo "${BASH_REMATCH[1]}|${BASH_REMATCH[2]}"
+    elif [[ "$input" =~ ^([^/]+)/(.+)$ ]]; then
+        # Also accept provider/account (matches gopass folder layout)
+        echo "${BASH_REMATCH[1]}|${BASH_REMATCH[2]}"
     else
         echo "$input|default"
     fi
@@ -91,23 +94,47 @@ is_third_party() {
 
 # Check if token exists in gopass (supports multi-account paths)
 # Tries: provider/account/api_key first, then provider/api_key for backward compat
-check_token_exists() {
+get_token_path() {
     local provider="$1"
     local account="${2:-default}"
 
-    # Try new path: provider/account/api_key
-    if gopass show -o "claude-code/providers/$provider/$account/api_key" &>/dev/null; then
+    local new_path="claude-code/providers/$provider/$account/api_key"
+    local old_path="claude-code/providers/$provider/api_key"
+
+    # NOTE: use `gopass list` so we don't trigger GPG prompts just to check existence
+    if gopass list -f "$new_path" &>/dev/null; then
+        echo "$new_path"
         return 0
     fi
 
     # For default account, try old path: provider/api_key (backward compat)
-    if [[ "$account" == "default" ]]; then
-        if gopass show -o "claude-code/providers/$provider/api_key" &>/dev/null; then
-            return 0
-        fi
+    if [[ "$account" == "default" ]] && gopass list -f "$old_path" &>/dev/null; then
+        echo "$old_path"
+        return 0
     fi
 
     return 1
+}
+
+check_token_exists() {
+    local provider="$1"
+    local account="${2:-default}"
+
+    if get_token_path "$provider" "$account" &>/dev/null; then
+        return 0
+    fi
+    return 1
+}
+
+get_token() {
+    local provider="$1"
+    local account="${2:-default}"
+
+    local path
+    if ! path=$(get_token_path "$provider" "$account"); then
+        return 1
+    fi
+    gopass show -o "$path"
 }
 
 # List available providers
@@ -165,7 +192,7 @@ switch_provider() {
 
     if [[ -z "$input" ]]; then
         echo -e "${RED}Error: Provider name required${NC}" >&2
-        echo "Usage: claude-switch use <provider[@account]>" >&2
+        echo "Usage: claude-switch use <provider[@account] | provider/account>" >&2
         echo ""
         list_providers
         return 1
@@ -234,7 +261,7 @@ add_key() {
 
     if [[ -z "$input" ]]; then
         echo -e "${RED}Error: Provider name required${NC}" >&2
-        echo "Usage: claude-switch add-key <provider[@account]>" >&2
+        echo "Usage: claude-switch add-key <provider[@account] | provider/account>" >&2
         return 1
     fi
 
@@ -332,12 +359,16 @@ test_provider() {
     fi
     echo -e "  ${GREEN}✓ Token found in gopass${NC}"
 
-    # Get the actual token
-    local token
-    if gopass show -o "claude-code/providers/$provider/$account/api_key" &>/dev/null; then
-        token=$(gopass show -o "claude-code/providers/$provider/$account/api_key")
-    else
-        token=$(gopass show -o "claude-code/providers/$provider/api_key")
+    # Get the actual token (decrypt once)
+    local token secret_path
+    if ! token=$(get_token "$provider" "$account"); then
+        echo -e "${RED}✗ Failed to decrypt API token from gopass${NC}" >&2
+        if secret_path=$(get_token_path "$provider" "$account"); then
+            echo -e "Try: ${YELLOW}gopass show $secret_path${NC}" >&2
+        else
+            echo -e "Try: ${YELLOW}gopass show claude-code/providers/$provider/$account/api_key${NC}" >&2
+        fi
+        return 1
     fi
 
     # Test API connectivity with minimal messages request
@@ -409,15 +440,16 @@ Usage: claude-switch <command> [args]
 Commands:
   list                       List available providers
   current                    Show current provider details
-  use <provider[@account]>   Switch to a provider (with optional account)
-  add-key <provider[@account]> Add/update API key in gopass
-  test [provider[@account]]  Test API connectivity
+  use <provider[@account] | provider/account>   Switch to a provider (with optional account)
+  add-key <provider[@account] | provider/account> Add/update API key in gopass
+  test [provider[@account] | provider/account]  Test API connectivity
   help                       Show this help
 
 Examples:
   claude-switch list               # List all providers
   claude-switch use deepseek       # Switch to DeepSeek (default account)
   claude-switch use deepseek@work  # Switch to DeepSeek work account
+  claude-switch use doubao/private # Slash format is also accepted
   claude-switch add-key deepseek@work  # Add API key for work account
   claude-switch test               # Test current provider
   claude-switch test deepseek@work # Test specific provider/account
