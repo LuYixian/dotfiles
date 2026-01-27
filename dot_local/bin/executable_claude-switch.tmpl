@@ -270,6 +270,10 @@ switch_provider() {
     parsed=$(parse_provider_account "$input")
     provider=$(echo "$parsed" | cut -d'|' -f1)
     account=$(echo "$parsed" | cut -d'|' -f2)
+    local account_was_default=false
+    if [[ "$account" == "default" ]]; then
+        account_was_default=true
+    fi
 
     if ! is_valid_provider "$provider"; then
         echo -e "${RED}Error: Unknown provider '$provider'${NC}" >&2
@@ -296,7 +300,8 @@ switch_provider() {
             if [[ "$resolved_account" != "default" ]]; then
                 account="$resolved_account"
                 target="$provider@$account"
-                echo -e "${YELLOW}No default token found; using '$target'${NC}"
+                echo -e "${YELLOW}No account specified; using '$target'${NC}"
+                echo -e "${YELLOW}Tip:${NC} pass ${YELLOW}$target${NC} to be explicit"
             fi
         else
             local rc=$?
@@ -393,6 +398,7 @@ test_provider() {
     local input="${1:-}"
 
     local provider account base_url
+    local account_was_default=false
 
     if [[ -z "$input" ]]; then
         # Test current provider
@@ -404,6 +410,9 @@ test_provider() {
         parsed=$(parse_provider_account "$input")
         provider=$(echo "$parsed" | cut -d'|' -f1)
         account=$(echo "$parsed" | cut -d'|' -f2)
+    fi
+    if [[ "$account" == "default" ]]; then
+        account_was_default=true
     fi
 
     if ! is_valid_provider "$provider"; then
@@ -436,6 +445,11 @@ test_provider() {
                 return 1
             fi
         fi
+    fi
+
+    if [[ "$account_was_default" == "true" ]] && [[ "$account" != "default" ]]; then
+        echo -e "${YELLOW}No account specified; using '$provider@$account'${NC}"
+        echo -e "${YELLOW}Tip:${NC} run ${YELLOW}claude-switch test $provider@$account${NC} to be explicit"
     fi
 
     local display_name
