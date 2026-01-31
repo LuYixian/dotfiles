@@ -6,8 +6,8 @@ Manage Claude Code API providers with multi-account support and FZF integration.
 
 | Tool            | Purpose                        | Alias |
 | --------------- | ------------------------------ | ----- |
-| `claude-with`   | Launch with temporary provider | `cw`  |
-| `claude-manage` | Manage provider configuration  | `cm`  |
+| `claude-with`   | Launch with temporary provider | `ccw` |
+| `claude-manage` | Manage provider configuration  | `ccm` |
 | `claude-token`  | Internal token fetcher         | -     |
 
 ## claude-with

@@ -36,8 +36,8 @@ alias_if_cmd_exists "hyperfine" "hf"
 alias_if_cmd_exists "lazygit" "lg"
 
 # Claude Code provider tools
-alias_if_cmd_exists "claude-with" "cw"
-alias_if_cmd_exists "claude-manage" "cm"
+alias_if_cmd_exists "claude-with" "ccw"
+alias_if_cmd_exists "claude-manage" "ccm"
 
 # ─────────────────────────────────────────────────────────────
 # Global Aliases (zsh only) - Expand anywhere in command line
