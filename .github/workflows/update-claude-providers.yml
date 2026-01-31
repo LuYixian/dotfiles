@@ -60,10 +60,9 @@ jobs:
             echo "$prompt"
             echo "EOF"
           } >> $GITHUB_OUTPUT
-      - name: Query provider configs with OpenRouter
+      - name: Query provider configs with LLM
         env:
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          OPENROUTER_REFERER: https://github.com/${{ github.repository }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           PROMPT: ${{ steps.prompt.outputs.prompt }}
         run: |
           chmod +x .github/scripts/openrouter-query.sh
