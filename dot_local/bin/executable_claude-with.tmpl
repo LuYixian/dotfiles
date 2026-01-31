@@ -118,18 +118,17 @@ build_provider_list() {
 fzf_select_provider() {
     while true; do
         local selected
-        selected=$({ echo -e "${YELLOW}+ Add/update API key...${NC}"; build_provider_list; } | fzf --ansi \
+        selected=$({ echo -e "${GREEN}+ Add new account...${NC}"; build_provider_list; } | fzf --ansi \
             --height=50% \
             --border=rounded \
             --header='Select provider to launch' \
             --preview='
                 input={}
-                if [[ "$input" == *"Add/update"* ]]; then
-                    echo -e "\033[1;33mAdd or update API key for a provider\033[0m"
+                if [[ "$input" == *"Add new"* ]]; then
+                    echo -e "\033[1;32mAdd new account\033[0m"
                     echo ""
-                    echo "Select this option to:"
-                    echo "  • Add API key for a new account"
-                    echo "  • Update existing API key"
+                    echo "Create a new provider account."
+                    echo "Account must not already exist."
                     exit 0
                 fi
                 provider=$(echo "$input" | cut -d@ -f1)
@@ -153,7 +152,7 @@ fzf_select_provider() {
                 else
                     if claude-token --config "$provider" 2>/dev/null | jq -e ".base_url // empty" >/dev/null 2>&1; then
                         echo -e "\033[0;31m✗ No token configured\033[0m"
-                        echo -e "Run: claude-provider add-key $input"
+                        echo -e "Run: claude-manage add $input"
                     else
                         echo -e "\033[0;33m○ Native OAuth (no token needed)\033[0m"
                     fi
@@ -165,9 +164,9 @@ fzf_select_provider() {
         if [[ -z "$selected" ]]; then
             echo ""
             return
-        elif [[ "$selected" == *"Add/update"* ]]; then
-            # Delegate to claude-provider for key management
-            claude-provider new-account
+        elif [[ "$selected" == *"Add new"* ]]; then
+            # Delegate to claude-manage for account creation
+            claude-manage add
             # Loop back to show picker again
         else
             echo "$selected"
@@ -218,7 +217,7 @@ launch_claude() {
         local token
         if ! token=$(claude-token "$display_name" 2>/dev/null); then
             echo -e "${RED}Error: No API token for $display_name${NC}" >&2
-            echo -e "Run: ${YELLOW}claude-provider add-key $display_name${NC}" >&2
+            echo -e "Run: ${YELLOW}claude-manage add $display_name${NC}" >&2
             return 1
         fi
 

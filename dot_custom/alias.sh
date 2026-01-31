@@ -37,7 +37,7 @@ alias_if_cmd_exists "lazygit" "lg"
 
 # Claude Code provider tools
 alias_if_cmd_exists "claude-with" "cw"
-alias_if_cmd_exists "claude-provider" "cprov"
+alias_if_cmd_exists "claude-manage" "cm"
 
 # ─────────────────────────────────────────────────────────────
 # Global Aliases (zsh only) - Expand anywhere in command line

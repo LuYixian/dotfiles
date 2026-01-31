@@ -4,17 +4,15 @@ Manage Claude Code API providers with multi-account support and FZF integration.
 
 ## Overview
 
-| Tool              | Purpose                        | Use Case                           |
-| ----------------- | ------------------------------ | ---------------------------------- |
-| `claude-with`     | Launch with temporary provider | Quick switch without config change |
-| `claude-provider` | Manage default provider config | Set default, manage API keys       |
-| `claude-token`    | Internal token fetcher         | Called by other tools              |
+| Tool            | Purpose                        | Alias |
+| --------------- | ------------------------------ | ----- |
+| `claude-with`   | Launch with temporary provider | `cw`  |
+| `claude-manage` | Manage provider configuration  | `cm`  |
+| `claude-token`  | Internal token fetcher         | -     |
 
 ## claude-with
 
 Wrapper script that launches Claude Code with a specified provider via environment variables.
-
-### Usage
 
 ```bash
 # FZF interactive picker
@@ -27,50 +25,49 @@ claude-with kimi@work
 # Pass arguments to claude
 claude-with deepseek -- --resume
 
-# Interactive provider selection
-claude-with
-# → Opens FZF picker, launches after selection
+# List available providers
+claude-with --list
 ```
 
-## claude-provider
+## claude-manage
 
-Manage default provider configuration and API keys.
-
-### Usage
+Manage default provider configuration, accounts, and API keys.
 
 ```bash
 # FZF interactive manager
-claude-provider
+claude-manage
 
-# List all providers
-claude-provider list
-
-# Get/set default provider
-claude-provider default           # Show current default
-claude-provider default kimi@work # Set default
-
-# Manage API keys
-claude-provider add-key deepseek@work
-claude-provider add-key  # FZF selection
-
-# Test connectivity
-claude-provider test
-claude-provider test kimi
+# List providers
+claude-manage provider
 
 # List accounts
-claude-provider accounts
-claude-provider accounts deepseek
+claude-manage accounts
+claude-manage accounts deepseek
 
-# Interactive management
-claude-provider
-# → Opens FZF picker, Enter to set as default
+# Get/set default provider
+claude-manage default           # Show current
+claude-manage default kimi@work # Set default
+
+# Add new account (must not exist)
+claude-manage add
+claude-manage add deepseek@work
+
+# Update existing account API key
+claude-manage update
+claude-manage update kimi@work
+
+# Delete account
+claude-manage delete
+claude-manage delete kimi@work
+
+# Test connectivity
+claude-manage test
+claude-manage test kimi
 ```
 
 ## claude-token
 
 Internal tool for fetching API tokens. Primarily called by `apiKeyHelper` and other tools.
-
-### Usage
 
 ```bash
 # Get current provider token (for apiKeyHelper)
@@ -117,12 +114,12 @@ Use `provider@account` format to manage multiple accounts:
 
 ```bash
 # Add different accounts
-claude-provider add-key deepseek@work
-claude-provider add-key deepseek@personal
+claude-manage add deepseek@work
+claude-manage add deepseek@personal
 
 # Use specific account
 claude-with deepseek@work
-claude-provider default deepseek@personal
+claude-manage default deepseek@personal
 ```
 
 API keys are stored in gopass:
@@ -153,20 +150,20 @@ claude
 claude-with deepseek
 
 # Need Kimi frequently? Set as default
-claude-provider default kimi
+claude-manage default kimi
 ```
 
 ### New Machine Setup
 
 ```bash
 # 1. Add API key
-claude-provider add-key deepseek
+claude-manage add deepseek
 
 # 2. Test connectivity
-claude-provider test deepseek
+claude-manage test deepseek
 
 # 3. Set as default (optional)
-claude-provider default deepseek
+claude-manage default deepseek
 ```
 
 ### Multi-Project Switching
