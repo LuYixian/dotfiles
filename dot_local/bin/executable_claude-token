@@ -1,12 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Claude Code Token Helper
-# Unified token fetcher for apiKeyHelper, claude-with, and claude-provider
+# Unified token fetcher for apiKeyHelper, claude-with, and claude-manage
 #
 # Usage:
 #   claude-token                    # Current provider token (for apiKeyHelper)
 #   claude-token deepseek@work      # Specific provider@account token
 #   claude-token --check kimi@work  # Check if token exists (exit 0/1)
-#   claude-token --config kimi      # Output provider config as JSON
+#   claude-token --config kimi      # Output account config as JSON
 
 set -euo pipefail
 
@@ -42,18 +42,56 @@ get_provider_account() {
     echo "$data" | jq -r '.claudeProviderAccount // .claudeProvider // "anthropic"'
 }
 
+# Get the actual provider name for an account
+# (handles accounts like "opus" that have provider: anthropic)
+get_actual_provider() {
+    local account_key="$1"
+    local data
+    data=$(chezmoi data --format json 2>/dev/null) || return 1
+
+    # Check if account has explicit provider field
+    local explicit_provider
+    explicit_provider=$(echo "$data" | jq -r ".claude.accounts.\"$account_key\".provider // empty")
+
+    if [[ -n "$explicit_provider" ]]; then
+        echo "$explicit_provider"
+    else
+        # Extract provider from account key (e.g., "deepseek@work" -> "deepseek")
+        echo "${account_key%%@*}"
+    fi
+}
+
 # Check if provider has base_url (is third-party)
 is_third_party() {
     local provider="$1"
     local base_url
-    base_url=$(chezmoi data --format json 2>/dev/null | jq -r ".claude.providers.$provider.base_url // empty")
+    base_url=$(chezmoi data --format json 2>/dev/null | jq -r ".claude.providers.\"$provider\".base_url // empty")
     [[ -n "$base_url" ]]
 }
 
-# Get provider config as JSON
-get_provider_config() {
-    local provider="$1"
-    chezmoi data --format json 2>/dev/null | jq -c ".claude.providers.$provider // {}"
+# Get merged account config as JSON
+# Merges: defaults + provider.base_url + account settings
+get_account_config() {
+    local account_key="$1"
+    local provider="$2"
+
+    chezmoi data --format json 2>/dev/null | jq -c "
+        .claude as \$c |
+        (\$c.defaults // {}) as \$defaults |
+        (\$c.providers.\"$provider\" // {}) as \$provider |
+        (\$c.accounts.\"$account_key\" // {}) as \$account |
+        {
+            base_url: \$provider.base_url,
+            models: \$provider.models,
+            model: \$account.model,
+            small_model: \$account.small_model,
+            haiku_model: \$account.haiku_model,
+            sonnet_model: \$account.sonnet_model,
+            opus_model: \$account.opus_model,
+            timeout_ms: (\$account.timeout_ms // \$defaults.timeout_ms),
+            disable_nonessential_traffic: (\$account.disable_nonessential_traffic // \$defaults.disable_nonessential_traffic)
+        } | with_entries(select(.value != null))
+    "
 }
 
 # Check if token exists in gopass (non-interactive)
@@ -124,11 +162,11 @@ Usage:
   claude-token                    # Current provider token (for apiKeyHelper)
   claude-token deepseek@work      # Specific provider@account token
   claude-token --check kimi@work  # Check if token exists (exit 0/1)
-  claude-token --config kimi      # Output provider config as JSON
+  claude-token --config kimi      # Output account config as JSON
 
 Options:
   --check <provider[@account]>    Check if token exists (no output, exit code only)
-  --config <provider>             Output provider config as JSON
+  --config <account>              Output merged account config as JSON
   -h, --help                      Show this help
 
 Exit codes:
@@ -150,10 +188,20 @@ EOF
     fi
 
     # Parse provider@account
-    local parsed provider account
+    local parsed provider account account_key
     parsed=$(parse_provider_account "$input")
-    provider="${parsed%%|*}"
+    account_key="${parsed%%|*}"
     account="${parsed#*|}"
+
+    # Build the full account key for lookup
+    if [[ "$account" == "default" ]]; then
+        account_key="$account_key"
+    else
+        account_key="${parsed%%|*}@$account"
+    fi
+
+    # Get actual provider (handles aliases like opus -> anthropic)
+    provider=$(get_actual_provider "$account_key") || provider="${parsed%%|*}"
 
     # Validate names to prevent path traversal
     if ! validate_name "$provider"; then
@@ -176,8 +224,8 @@ EOF
             fi
             ;;
         config)
-            # Output provider config as JSON
-            get_provider_config "$provider"
+            # Output merged account config as JSON
+            get_account_config "$account_key" "$provider"
             ;;
         token)
             # Native Anthropic providers use OAuth, no token needed
@@ -190,12 +238,12 @@ EOF
             if ! token=$(get_token "$provider" "$account"); then
                 local display_name
                 if [[ "$account" == "default" ]]; then
-                    display_name="$provider"
+                    display_name="${parsed%%|*}"
                 else
-                    display_name="$provider@$account"
+                    display_name="${parsed%%|*}@$account"
                 fi
                 echo "Error: API token not found for '$display_name'" >&2
-                echo "Run: claude-provider add-key $display_name" >&2
+                echo "Run: claude-manage add-key $display_name" >&2
                 exit 1
             fi
 

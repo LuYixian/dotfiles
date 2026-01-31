@@ -1,569 +1,459 @@
-#!/bin/bash
-# Claude Code Provider Manager
-# Manage default provider and API keys with fzf interface
+#!/usr/bin/env bash
+# Claude Code Account Manager
+# Manage accounts and API keys with fzf interface
 #
 # Usage:
-#   claude-manage                  # fzf interactive manager
-#   claude-manage list [provider]  # List accounts
-#   claude-manage default [p@a]    # Get/set default provider
-#   claude-manage add [p@a]        # Add new account (must not exist)
-#   claude-manage update [p@a]     # Update existing account API key
-#   claude-manage delete [p@a]     # Delete account
-#   claude-manage test [p@a]       # Test connectivity
+#   claude-manage                   # Interactive menu
+#   claude-manage switch [account]  # Switch default account
+#   claude-manage add-account       # Add new account
+#   claude-manage edit-account      # Edit account config
+#   claude-manage remove-account    # Remove account
+#   claude-manage add-key [account] # Add new API key
+#   claude-manage update-key [acct] # Update existing API key
+#   claude-manage delete-key [acct] # Delete API key
+#   claude-manage test [account]    # Test connectivity
+#   claude-manage list [provider]   # List accounts
 
 set -euo pipefail
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m'
+# shellcheck source=claude-lib
+source "$(dirname "$0")/claude-lib"
 
-# Paths
-CHEZMOI_CONFIG="${HOME}/.config/chezmoi/chezmoi.toml"
-SETTINGS_FILE="${HOME}/.claude/settings.json"
-
-# Available providers (from chezmoi data)
-PROVIDERS=({{- range $name, $_ := .claude.providers }} "{{ $name }}"{{- end }})
-
-# Parse provider@account format
-parse_provider_account() {
-    local input="$1"
-    # Strip status markers from fzf output
-    input=$(echo "$input" | sed 's/ ✓$//' | sed 's/^[[:space:]]*//')
-    if [[ "$input" =~ ^([^@]+)@(.+)$ ]]; then
-        echo "${BASH_REMATCH[1]}|${BASH_REMATCH[2]}"
-    elif [[ "$input" =~ ^([^/]+)/(.+)$ ]]; then
-        echo "${BASH_REMATCH[1]}|${BASH_REMATCH[2]}"
-    else
-        echo "$input|default"
-    fi
-}
-
-require_cmd() {
-    local c
-    for c in "$@"; do
-        if ! command -v "$c" &>/dev/null; then
-            echo -e "${RED}Error:${NC} required command not found: $c" >&2
-            return 1
-        fi
-    done
-}
-
-validate_account() {
+# Set account in chezmoi.toml
+set_chezmoi_account() {
     local account="$1"
-    [[ -n "$account" ]] || return 1
-    [[ ! "$account" =~ [/@[:space:]] ]] || return 1
-    [[ "$account" =~ ^[A-Za-z0-9._-]+$ ]] || return 1
-}
-
-# Check if provider is valid
-is_valid_provider() {
-    local provider="$1"
-    for p in "${PROVIDERS[@]}"; do
-        [[ "$p" == "$provider" ]] && return 0
-    done
-    return 1
-}
-
-# Check if provider is third-party
-is_third_party() {
-    local provider="$1"
-    case "$provider" in
-{{- range $name, $config := .claude.providers }}
-{{- if $config.base_url }}
-        {{ $name }}) return 0 ;;
-{{- end }}
-{{- end }}
-        *) return 1 ;;
-    esac
-}
-
-# Get current provider@account from chezmoi
-get_current() {
-    chezmoi data --format json 2>/dev/null | jq -r '.claudeProviderAccount // .claudeProvider // "anthropic"'
-}
-
-# Set provider in chezmoi.toml
-set_provider() {
-    local provider_account="$1"
     local tmp_file
-    tmp_file=$(mktemp)
-    # Cleanup on exit/error
-    trap "rm -f '$tmp_file'" EXIT
+    tmp_file=$(mktemp) || { echo -e "${RED}Failed to create temp file${NC}" >&2; return 1; }
+    trap 'rm -f "$tmp_file"' RETURN
 
     if grep -q "^claudeProviderAccount = " "$CHEZMOI_CONFIG"; then
-        sed "s/^claudeProviderAccount = .*/claudeProviderAccount = \"$provider_account\"/" "$CHEZMOI_CONFIG" > "$tmp_file"
+        sed "s/^claudeProviderAccount = .*/claudeProviderAccount = \"$account\"/" "$CHEZMOI_CONFIG" > "$tmp_file"
     elif grep -q "^claudeProvider = " "$CHEZMOI_CONFIG"; then
-        sed "s/^claudeProvider = .*/claudeProviderAccount = \"$provider_account\"/" "$CHEZMOI_CONFIG" > "$tmp_file"
+        sed "s/^claudeProvider = .*/claudeProviderAccount = \"$account\"/" "$CHEZMOI_CONFIG" > "$tmp_file"
     else
         cp "$CHEZMOI_CONFIG" "$tmp_file"
-        echo "claudeProviderAccount = \"$provider_account\"" >> "$tmp_file"
+        echo "claudeProviderAccount = \"$account\"" >> "$tmp_file"
     fi
     mv "$tmp_file" "$CHEZMOI_CONFIG"
-    trap - EXIT  # Clear trap after successful move
 }
 
-# List accounts for a provider from gopass
-list_accounts() {
-    local provider="$1"
-    local prefix="claude-code/providers/$provider"
-    gopass list -f "$prefix" 2>/dev/null \
-        | grep -E '/api_key$' \
-        | sed 's|.*/\([^/]*\)/api_key$|\1|' \
-        | sort -u
-}
-
-# Build provider list with accounts
-build_provider_list() {
-    for provider in "${PROVIDERS[@]}"; do
-        local accounts
-        accounts=$(list_accounts "$provider" 2>/dev/null) || true
-
-        if [[ -z "$accounts" ]]; then
-            echo "$provider"
-        else
-            while IFS= read -r account; do
-                if [[ "$account" == "default" ]]; then
-                    echo "$provider"
-                else
-                    echo "$provider@$account"
-                fi
-            done <<< "$accounts"
+# Build list of accounts with existing keys
+build_accounts_with_keys() {
+    for acct in "${ACCOUNTS[@]}"; do
+        local prov
+        prov=$(get_provider "$acct")
+        if is_third_party "$prov"; then
+            local parsed acct_name
+            parsed=$(parse_provider_account "$acct")
+            acct_name="${parsed#*|}"
+            key_exists "$prov" "$acct_name" && echo "$acct"
         fi
     done
 }
 
-# Build list with current status indicator
-build_provider_list_with_status() {
-    local current
-    current=$(get_current)
-    local current_clean
-    current_clean=$(echo "$current" | sed 's/@default$//')
-
-    build_provider_list | while read -r item; do
-        local item_clean
-        item_clean=$(echo "$item" | sed 's/@default$//')
-
-        if [[ "$item_clean" == "$current_clean" ]]; then
-            echo -e "${GREEN}$item ✓${NC}"
-        else
-            echo "  $item"
-        fi
-    done
-}
-
-# FZF interactive manager
-fzf_manage() {
-    local current
-    current=$(get_current)
-
-    local selected
-    selected=$({
-        echo -e "${GREEN}+ Add new account...${NC}"
-        echo -e "${YELLOW}+ Update API key...${NC}"
-        build_provider_list_with_status
-    } | fzf --ansi \
-        --height=50% \
-        --border=rounded \
-        --header="Provider Manager (Current: $current)" \
-        --preview='
-            input=$(echo {} | sed "s/ ✓$//" | sed "s/^[[:space:]]*//" | sed "s/^+ .*//" )
-            if [[ -z "$input" ]]; then
-                exit 0
-            fi
-            if echo {} | grep -q "Add new"; then
-                echo -e "\033[1;32mAdd new account\033[0m"
-                echo ""
-                echo "Create a new provider account."
-                echo "Account must not already exist."
-                exit 0
-            fi
-            if echo {} | grep -q "Update API"; then
-                echo -e "\033[1;33mUpdate API key\033[0m"
-                echo ""
-                echo "Update API key for existing account."
-                echo "Select from configured accounts."
-                exit 0
-            fi
-            provider=$(echo "$input" | cut -d@ -f1)
-            account=$(echo "$input" | grep -o "@.*" | cut -c2-)
-            account=${account:-default}
-
-            echo -e "\033[1;34mProvider:\033[0m $provider"
-            echo -e "\033[1;34mAccount:\033[0m $account"
-            echo ""
-
-            # Show config
-            claude-token --config "$provider" 2>/dev/null | jq -r "
-                \"Model: \(.model // \"N/A\")\",
-                \"Base URL: \(.base_url // \"Native Anthropic (OAuth)\")\"
-            " 2>/dev/null || echo "Config not available"
-            echo ""
-
-            # Check token status
-            if claude-token --check "$input" 2>/dev/null; then
-                echo -e "\033[0;32m✓ Token configured\033[0m"
-            else
-                base_url=$(claude-token --config "$provider" 2>/dev/null | jq -r ".base_url // empty")
-                if [[ -n "$base_url" ]]; then
-                    echo -e "\033[0;31m✗ No token configured\033[0m"
-                else
-                    echo -e "\033[0;33m○ Native OAuth (no token needed)\033[0m"
-                fi
-            fi
-
-            # Show if current
-            current_provider="'"$current"'"
-            current_clean=$(echo "$current_provider" | sed "s/@default$//")
-            input_clean=$(echo "$input" | sed "s/@default$//")
-            if [[ "$input_clean" == "$current_clean" ]]; then
-                echo -e "\n\033[0;32m● This is the current default\033[0m"
-            fi
-        ' \
-        --preview-window='right:45%:wrap') || true
-
-    [[ -z "$selected" ]] && return 0
-
-    # Handle special entries
-    if [[ "$selected" == *"Add new"* ]]; then
-        cmd_add
-    elif [[ "$selected" == *"Update API"* ]]; then
-        cmd_update
-    else
-        # Clean up selection and set as default
-        selected=$(echo "$selected" | sed 's/ ✓$//' | sed 's/^[[:space:]]*//')
-        cmd_default "$selected"
-    fi
-}
-
-# Default command (get/set)
-cmd_default() {
-    local input="${1:-}"
-
-    if [[ -z "$input" ]]; then
-        # Get current
+# FZF interactive menu
+fzf_menu() {
+    while true; do
         local current
         current=$(get_current)
-        echo -e "Current default: ${GREEN}$current${NC}"
-        return 0
-    fi
 
-    # Parse and validate
-    local parsed provider account
-    parsed=$(parse_provider_account "$input")
-    provider=$(echo "$parsed" | cut -d'|' -f1)
-    account=$(echo "$parsed" | cut -d'|' -f2)
+        local selected
+        selected=$(cat << 'MENU' | fzf --ansi \
+            --height=50% \
+            --border=rounded \
+            --header="Account Manager" \
+            --preview='
+                cmd=$(echo {} | awk "{print \$1}")
+                echo -e "\033[1;34m━━━ $cmd ━━━\033[0m"
+                echo ""
+                case "$cmd" in
+                    switch)         echo "Switch the default account." ;;
+                    add-account)    echo "Add a new account to claude.yaml." ;;
+                    edit-account)   echo "Edit account model settings." ;;
+                    remove-account) echo "Remove account from claude.yaml." ;;
+                    add-key)        echo "Add API key (must not exist)." ;;
+                    update-key)     echo "Update existing API key." ;;
+                    delete-key)     echo "Remove API key from gopass." ;;
+                    test)           echo "Test API connectivity." ;;
+                    list)           echo "Show all accounts." ;;
+                esac
+                echo ""
+                echo -e "\033[1;34m━━━ Accounts ━━━\033[0m"
+                echo ""
+                claude-manage list 2>/dev/null | tail -n +3
+            ' \
+            --preview-window='right:50%:wrap' \
+            --preview-label="[ Current: $current ]"
+switch         Change default account
+add-account    Add new account
+edit-account   Edit account config
+remove-account Remove account
+add-key        Add API key
+update-key     Update API key
+delete-key     Delete API key
+test           Test connectivity
+list           Show all accounts
+MENU
+        ) || return 0
 
-    if ! is_valid_provider "$provider"; then
-        echo -e "${RED}Error: Unknown provider '$provider'${NC}" >&2
-        echo ""
-        cmd_list
+        local cmd
+        cmd=$(echo "$selected" | awk '{print $1}')
+
+        # Run command; if it returns 0 (success), exit; if non-zero (Back), loop
+        case "$cmd" in
+            switch)         cmd_switch && return 0 ;;
+            add-account)    cmd_add_account && return 0 ;;
+            edit-account)   cmd_edit_account && return 0 ;;
+            remove-account) cmd_remove_account && return 0 ;;
+            add-key)        cmd_add_key && return 0 ;;
+            update-key)     cmd_update_key && return 0 ;;
+            delete-key)     cmd_delete_key && return 0 ;;
+            test)           cmd_test && return 0 ;;
+            list)           cmd_list && return 0 ;;
+        esac
+    done
+}
+
+# Switch account
+cmd_switch() {
+    local input="${1:-}"
+    [[ -z "$input" ]] && { input=$(fzf_pick_account "Switch Account") || return 1; }
+
+    if ! is_configured_account "$input"; then
+        echo -e "${RED}Error: Unknown account '$input'${NC}" >&2
         return 1
     fi
 
-    # For third-party, verify token exists
-    if is_third_party "$provider"; then
-        local display_name
-        if [[ "$account" == "default" ]]; then
-            display_name="$provider"
-        else
-            display_name="$provider@$account"
-        fi
+    local provider
+    provider=$(get_provider "$input")
 
-        if ! claude-token --check "$display_name" 2>/dev/null; then
-            echo -e "${RED}Error: No API token for $display_name${NC}" >&2
-            echo -e "Run: ${YELLOW}claude-manage add-key $display_name${NC}" >&2
-            return 1
-        fi
+    if is_third_party "$provider" && ! claude-token --check "$input" 2>/dev/null; then
+        echo -e "${RED}Error: No API token for $input${NC}" >&2
+        echo -e "Run: ${YELLOW}claude-manage add-key $input${NC}" >&2
+        return 1
     fi
 
-    local target
-    if [[ "$account" == "default" ]]; then
-        target="$provider"
-    else
-        target="$provider@$account"
-    fi
+    [[ "$(get_current)" == "$input" ]] && { echo -e "${YELLOW}Already using '$input'${NC}"; return 0; }
 
-    local current
-    current=$(get_current)
-    if [[ "$current" == "$target" ]]; then
-        echo -e "${YELLOW}Already using '$target'${NC}"
-        return 0
-    fi
-
-    echo -e "${BLUE}Setting default to $target...${NC}"
-
-    # Update chezmoi.toml
-    set_provider "$target"
+    echo -e "${BLUE}Setting default to $input...${NC}"
+    set_chezmoi_account "$input"
     echo "  ✓ Updated chezmoi.toml"
-
-    # Apply chezmoi
     chezmoi apply "$SETTINGS_FILE"
     echo "  ✓ Applied chezmoi"
-
-    echo ""
-    echo -e "${GREEN}✓ Default set to $target${NC}"
+    echo -e "\n${GREEN}✓ Default set to $input${NC}"
     echo -e "${YELLOW}Restart Claude Code to apply changes${NC}"
 }
 
-# Check if account exists in gopass
-account_exists() {
-    local provider="$1"
-    local account="$2"
-    gopass list -f "claude-code/providers/$provider/$account/api_key" &>/dev/null
+# Add account
+cmd_add_account() {
+    require_cmd yq || return 1
+
+    echo -e "${BLUE}Add New Account${NC}\n"
+
+    # Select provider
+    local provider
+    provider=$({
+        echo -e "${YELLOW}← Back${NC}"
+        printf '%s\n' "${PROVIDERS[@]}"
+    } | fzf --ansi --height=40% --border=rounded --header="Select Provider") || true
+    [[ -z "$provider" || "$provider" == *"Back"* ]] && return 1
+
+    # Get account name
+    local account_name full_name
+    echo ""
+    if [[ "$provider" == "anthropic" ]]; then
+        printf "Account name (e.g., sonnet, opus): "
+        read -r account_name
+        [[ -z "$account_name" ]] && return 1
+        full_name="$account_name"
+    else
+        printf "Account name (will become ${provider}@<name>): "
+        read -r account_name
+        [[ -z "$account_name" ]] && return 1
+        full_name="${provider}@${account_name}"
+    fi
+
+    yq -e ".accounts.\"$full_name\"" "$CLAUDE_YAML" &>/dev/null && {
+        echo -e "${RED}Error: Account '$full_name' already exists${NC}"
+        return 1
+    }
+
+    # Get model
+    echo ""
+    printf "Model name: "
+    read -r model
+    [[ -z "$model" ]] && { echo -e "${RED}Model is required${NC}"; return 1; }
+
+    printf "Small model (Enter to use same): "
+    read -r small_model
+    [[ -z "$small_model" ]] && small_model="$model"
+
+    # Add to YAML
+    echo -e "\n${BLUE}Adding account...${NC}"
+    if [[ "$provider" == "anthropic" ]]; then
+        yq -i ".accounts.\"$full_name\" = {\"provider\": \"anthropic\", \"model\": \"$model\", \"small_model\": \"$small_model\"}" "$CLAUDE_YAML"
+    else
+        yq -i ".accounts.\"$full_name\" = {\"model\": \"$model\", \"small_model\": \"$small_model\"}" "$CLAUDE_YAML"
+    fi
+    echo -e "${GREEN}✓ Account '$full_name' added${NC}"
+
+    # Add API key for third-party
+    if is_third_party "$provider"; then
+        echo ""
+        printf "Add API key now? [Y/n]: "
+        read -r choice
+        if [[ "$choice" != "n" && "$choice" != "N" ]]; then
+            printf "API Key: "
+            read -rs api_key
+            echo ""
+            [[ -n "$api_key" ]] && {
+                echo "$api_key" | gopass insert -f "claude-code/providers/$provider/$account_name/api_key"
+                echo -e "${GREEN}✓ API key saved${NC}"
+            }
+        fi
+    fi
+
+    echo -e "\n${BLUE}Applying chezmoi...${NC}"
+    chezmoi apply
+    echo -e "${GREEN}✓ Done${NC}"
 }
 
-# Add new account command (must not exist)
-cmd_add() {
+# Edit account
+cmd_edit_account() {
+    require_cmd yq || return 1
+
     local input="${1:-}"
-    local provider account
+    [[ -z "$input" ]] && { input=$(fzf_pick_account "Edit Account" "plain") || return 1; }
+
+    is_configured_account "$input" || { echo -e "${RED}Error: Unknown account '$input'${NC}"; return 1; }
+
+    echo -e "${BLUE}Edit Account: $input${NC}\n"
+
+    local current_model current_small
+    current_model=$(yq -r ".accounts.\"$input\".model // \"\"" "$CLAUDE_YAML")
+    current_small=$(yq -r ".accounts.\"$input\".small_model // \"\"" "$CLAUDE_YAML")
+
+    echo "Current model: $current_model"
+    printf "New model (Enter to keep): "
+    read -r new_model
+    [[ -z "$new_model" ]] && new_model="$current_model"
+
+    echo "Current small_model: $current_small"
+    printf "New small_model (Enter to keep): "
+    read -r new_small
+    [[ -z "$new_small" ]] && new_small="$current_small"
+
+    yq -i ".accounts.\"$input\".model = \"$new_model\" | .accounts.\"$input\".small_model = \"$new_small\"" "$CLAUDE_YAML"
+
+    echo -e "\n${GREEN}✓ Account '$input' updated${NC}"
+    echo -e "${BLUE}Applying chezmoi...${NC}"
+    chezmoi apply
+    echo -e "${GREEN}✓ Done${NC}"
+}
+
+# Remove account
+cmd_remove_account() {
+    require_cmd yq || return 1
+
+    local input="${1:-}"
+    [[ -z "$input" ]] && { input=$(fzf_pick_account "Remove Account" "plain") || return 1; }
+
+    is_configured_account "$input" || { echo -e "${RED}Error: Unknown account '$input'${NC}"; return 1; }
+
+    echo -e "${YELLOW}Remove account '$input'?${NC}"
+    printf "This will delete it from claude.yaml. Continue? [y/N]: "
+    read -r confirm
+    [[ "$confirm" != "y" && "$confirm" != "Y" ]] && { echo "Cancelled"; return 0; }
+
+    local provider
+    provider=$(get_provider "$input")
+
+    yq -i "del(.accounts.\"$input\")" "$CLAUDE_YAML"
+    echo -e "${GREEN}✓ Account removed${NC}"
+
+    if is_third_party "$provider"; then
+        local parsed acct_name
+        parsed=$(parse_provider_account "$input")
+        acct_name="${parsed#*|}"
+        if key_exists "$provider" "$acct_name"; then
+            printf "Also delete API key? [y/N]: "
+            read -r del_key
+            [[ "$del_key" == "y" || "$del_key" == "Y" ]] && {
+                gopass rm -f "claude-code/providers/$provider/$acct_name/api_key" 2>/dev/null || true
+                echo -e "${GREEN}✓ API key deleted${NC}"
+            }
+        fi
+    fi
+
+    echo -e "\n${BLUE}Applying chezmoi...${NC}"
+    chezmoi apply
+    echo -e "${GREEN}✓ Done${NC}"
+}
+
+# Add API key
+cmd_add_key() {
+    local input="${1:-}"
 
     if [[ -z "$input" ]]; then
-        # Select provider first
-        provider=$(printf '%s\n' "${PROVIDERS[@]}" | fzf \
-            --height=40% \
-            --border=rounded \
-            --header='Select provider for new account') || true
-        [[ -z "$provider" ]] && return 0
+        local needs_key=()
+        for acct in "${ACCOUNTS[@]}"; do
+            local prov
+            prov=$(get_provider "$acct")
+            if is_third_party "$prov"; then
+                local parsed acct_name
+                parsed=$(parse_provider_account "$acct")
+                acct_name="${parsed#*|}"
+                key_exists "$prov" "$acct_name" || needs_key+=("$acct")
+            fi
+        done
 
-        if ! is_third_party "$provider"; then
-            echo -e "${YELLOW}Provider '$provider' uses native OAuth, no accounts needed${NC}"
-            return 0
-        fi
+        [[ ${#needs_key[@]} -eq 0 ]] && {
+            echo -e "${YELLOW}All accounts already have API keys${NC}"
+            return 1
+        }
 
-        # Get account name
-        printf "Account name (e.g., work, personal, default): "
-        read -r account
-    else
-        # Parse provider@account
-        local parsed
-        parsed=$(parse_provider_account "$input")
-        provider=$(echo "$parsed" | cut -d'|' -f1)
-        account=$(echo "$parsed" | cut -d'|' -f2)
+        input=$({
+            echo -e "${YELLOW}← Back${NC}"
+            printf '%s\n' "${needs_key[@]}"
+        } | fzf --ansi --height=40% --border=rounded --header='Add API Key') || true
+        [[ -z "$input" || "$input" == *"Back"* ]] && return 1
     fi
 
-    if ! is_valid_provider "$provider"; then
-        echo -e "${RED}Error: Unknown provider '$provider'${NC}" >&2
-        return 1
-    fi
+    local provider
+    provider=$(get_provider "$input")
+    local parsed acct_name
+    parsed=$(parse_provider_account "$input")
+    acct_name="${parsed#*|}"
 
-    if ! is_third_party "$provider"; then
-        echo -e "${YELLOW}Provider '$provider' uses native OAuth, no accounts needed${NC}"
-        return 0
-    fi
+    is_third_party "$provider" || { echo -e "${YELLOW}Native OAuth, no key needed${NC}"; return 0; }
+    key_exists "$provider" "$acct_name" && { echo -e "${RED}Key already exists. Use update-key.${NC}"; return 1; }
 
-    if ! validate_account "$account"; then
-        echo -e "${RED}Error: Invalid account name '$account' (use letters/numbers/._- only)${NC}" >&2
-        return 1
-    fi
-
-    # Check account doesn't already exist
-    if account_exists "$provider" "$account"; then
-        local display_name
-        if [[ "$account" == "default" ]]; then
-            display_name="$provider"
-        else
-            display_name="$provider@$account"
-        fi
-        echo -e "${RED}Error: Account '$display_name' already exists${NC}" >&2
-        echo -e "Use ${YELLOW}claude-manage update $display_name${NC} to update the API key" >&2
-        return 1
-    fi
-
-    local display_name
-    if [[ "$account" == "default" ]]; then
-        display_name="$provider"
-    else
-        display_name="$provider@$account"
-    fi
-
-    echo -e "${BLUE}Adding new account $display_name${NC}"
+    echo -e "${BLUE}Adding API key for $input${NC}"
     printf "API Key: "
     read -rs api_key
     echo ""
+    [[ -z "$api_key" ]] && { echo -e "${RED}API key required${NC}"; return 1; }
 
-    if [[ -z "$api_key" ]]; then
-        echo -e "${RED}Error: API key required${NC}" >&2
-        return 1
-    fi
+    echo "$api_key" | gopass insert -f "claude-code/providers/$provider/$acct_name/api_key"
+    echo -e "${GREEN}✓ API key saved${NC}"
 
-    # Store in gopass
-    echo "$api_key" | gopass insert -f "claude-code/providers/$provider/$account/api_key"
-    echo -e "${GREEN}✓ Account created and API key saved${NC}"
-
-    # Offer to test
     printf "Test connectivity? [Y/n]: "
     read -r test_choice
-    if [[ "$test_choice" != "n" && "$test_choice" != "N" ]]; then
-        cmd_test "$display_name"
-    fi
+    [[ "$test_choice" != "n" && "$test_choice" != "N" ]] && cmd_test "$input"
 }
 
-# Build list of existing accounts only
-build_existing_accounts() {
-    for provider in "${PROVIDERS[@]}"; do
-        if ! is_third_party "$provider"; then
-            continue
-        fi
-        local accounts
-        accounts=$(list_accounts "$provider" 2>/dev/null) || true
-        if [[ -n "$accounts" ]]; then
-            while IFS= read -r account; do
-                if [[ "$account" == "default" ]]; then
-                    echo "$provider"
-                else
-                    echo "$provider@$account"
-                fi
-            done <<< "$accounts"
-        fi
-    done
-}
-
-# Update existing account command (must exist)
-cmd_update() {
+# Update API key
+cmd_update_key() {
     local input="${1:-}"
 
     if [[ -z "$input" ]]; then
-        # Show only existing accounts
         local existing
-        existing=$(build_existing_accounts)
-        if [[ -z "$existing" ]]; then
-            echo -e "${YELLOW}No existing accounts to update${NC}"
-            echo -e "Use ${GREEN}claude-manage add${NC} to create a new account"
-            return 0
-        fi
+        existing=$(build_accounts_with_keys)
+        [[ -z "$existing" ]] && { echo -e "${YELLOW}No API keys to update${NC}"; return 1; }
 
-        input=$(echo "$existing" | fzf \
-            --height=40% \
-            --border=rounded \
-            --header='Select account to update API key' \
-            --preview='echo "Will update API key for: {}"') || true
-        [[ -z "$input" ]] && return 0
+        input=$({
+            echo -e "${YELLOW}← Back${NC}"
+            echo "$existing"
+        } | fzf --ansi --height=40% --border=rounded --header='Update API Key') || true
+        [[ -z "$input" || "$input" == *"Back"* ]] && return 1
     fi
 
-    # Parse
-    local parsed provider account
+    local provider
+    provider=$(get_provider "$input")
+    local parsed acct_name
     parsed=$(parse_provider_account "$input")
-    provider=$(echo "$parsed" | cut -d'|' -f1)
-    account=$(echo "$parsed" | cut -d'|' -f2)
+    acct_name="${parsed#*|}"
 
-    if ! is_valid_provider "$provider"; then
-        echo -e "${RED}Error: Unknown provider '$provider'${NC}" >&2
-        return 1
-    fi
+    is_third_party "$provider" || { echo -e "${YELLOW}Native OAuth, no key needed${NC}"; return 0; }
+    key_exists "$provider" "$acct_name" || { echo -e "${RED}No key exists. Use add-key.${NC}"; return 1; }
 
-    if ! is_third_party "$provider"; then
-        echo -e "${YELLOW}Provider '$provider' uses native OAuth, no API key needed${NC}"
-        return 0
-    fi
-
-    # Check account exists
-    if ! account_exists "$provider" "$account"; then
-        local display_name
-        if [[ "$account" == "default" ]]; then
-            display_name="$provider"
-        else
-            display_name="$provider@$account"
-        fi
-        echo -e "${RED}Error: Account '$display_name' does not exist${NC}" >&2
-        echo -e "Use ${GREEN}claude-manage add $display_name${NC} to create it first" >&2
-        return 1
-    fi
-
-    local display_name
-    if [[ "$account" == "default" ]]; then
-        display_name="$provider"
-    else
-        display_name="$provider@$account"
-    fi
-
-    echo -e "${BLUE}Updating API key for $display_name${NC}"
+    echo -e "${BLUE}Updating API key for $input${NC}"
     printf "New API Key: "
     read -rs api_key
     echo ""
+    [[ -z "$api_key" ]] && { echo -e "${RED}API key required${NC}"; return 1; }
 
-    if [[ -z "$api_key" ]]; then
-        echo -e "${RED}Error: API key required${NC}" >&2
-        return 1
-    fi
-
-    # Store in gopass (overwrite)
-    echo "$api_key" | gopass insert -f "claude-code/providers/$provider/$account/api_key"
+    echo "$api_key" | gopass insert -f "claude-code/providers/$provider/$acct_name/api_key"
     echo -e "${GREEN}✓ API key updated${NC}"
 
-    # Offer to test
     printf "Test connectivity? [Y/n]: "
     read -r test_choice
-    if [[ "$test_choice" != "n" && "$test_choice" != "N" ]]; then
-        cmd_test "$display_name"
-    fi
+    [[ "$test_choice" != "n" && "$test_choice" != "N" ]] && cmd_test "$input"
 }
 
-# Test command
-cmd_test() {
+# Delete API key
+cmd_delete_key() {
     local input="${1:-}"
 
-    # If no input, use fzf or current
     if [[ -z "$input" ]]; then
-        input=$(get_current)
+        local existing
+        existing=$(build_accounts_with_keys)
+        [[ -z "$existing" ]] && { echo -e "${YELLOW}No API keys to delete${NC}"; return 1; }
+
+        input=$({
+            echo -e "${YELLOW}← Back${NC}"
+            echo "$existing"
+        } | fzf --ansi --height=40% --border=rounded --header='Delete API Key') || true
+        [[ -z "$input" || "$input" == *"Back"* ]] && return 1
     fi
 
-    # Parse
-    local parsed provider account
+    local provider
+    provider=$(get_provider "$input")
+    local parsed acct_name
     parsed=$(parse_provider_account "$input")
-    provider=$(echo "$parsed" | cut -d'|' -f1)
-    account=$(echo "$parsed" | cut -d'|' -f2)
+    acct_name="${parsed#*|}"
 
-    if ! is_valid_provider "$provider"; then
-        echo -e "${RED}Error: Unknown provider '$provider'${NC}" >&2
-        return 1
-    fi
+    key_exists "$provider" "$acct_name" || { echo -e "${RED}No key exists${NC}"; return 1; }
 
-    local display_name
-    if [[ "$account" == "default" ]]; then
-        display_name="$provider"
-    else
-        display_name="$provider@$account"
-    fi
+    echo -e "${YELLOW}Delete API key for $input?${NC}"
+    printf "Continue? [y/N]: "
+    read -r confirm
+    [[ "$confirm" == "y" || "$confirm" == "Y" ]] && {
+        gopass rm -f "claude-code/providers/$provider/$acct_name/api_key" 2>/dev/null || true
+        echo -e "${GREEN}✓ API key deleted${NC}"
+    } || echo "Cancelled"
+}
 
-    # Get base_url
-    local base_url
-    base_url=$(claude-token --config "$provider" | jq -r '.base_url // empty')
+# Test connectivity
+cmd_test() {
+    local input="${1:-}"
+    [[ -z "$input" ]] && { input=$(fzf_pick_account "Test Connectivity") || return 1; }
 
-    if [[ -z "$base_url" ]]; then
-        echo -e "${YELLOW}Provider '$provider' is native Anthropic (uses OAuth)${NC}"
+    is_configured_account "$input" || { echo -e "${RED}Error: Unknown account '$input'${NC}"; return 1; }
+
+    local provider config base_url
+    provider=$(get_provider "$input")
+    config=$(claude-token --config "$input")
+    base_url=$(echo "$config" | jq -r '.base_url // empty')
+
+    [[ -z "$base_url" ]] && {
+        echo -e "${YELLOW}Native Anthropic (OAuth)${NC}"
         echo -e "${GREEN}✓ No API key needed${NC}"
         return 0
-    fi
+    }
 
     require_cmd curl || return 1
 
-    echo -e "${BLUE}Testing $display_name...${NC}"
+    echo -e "${BLUE}Testing $input...${NC}"
     echo "  Base URL: $base_url"
 
-    # Check token
-    if ! claude-token --check "$display_name" 2>/dev/null; then
-        echo -e "  ${RED}✗ No API token configured${NC}"
-        echo -e "Run: ${YELLOW}claude-manage add-key $display_name${NC}"
-        return 1
-    fi
-    echo -e "  ${GREEN}✓ Token found${NC}"
+    local parsed acct_name
+    parsed=$(parse_provider_account "$input")
+    acct_name="${parsed#*|}"
 
-    # Get token and test
-    local token
-    if ! token=$(claude-token "$display_name" 2>/dev/null); then
-        echo -e "  ${RED}✗ Failed to decrypt token${NC}" >&2
+    key_exists "$provider" "$acct_name" || {
+        echo -e "  ${RED}✗ No API key${NC}"
         return 1
-    fi
+    }
+    echo -e "  ${GREEN}✓ Key found${NC}"
+
+    local token
+    token=$(claude-token "$input" 2>/dev/null) || { echo -e "  ${RED}✗ Failed to decrypt${NC}"; return 1; }
 
     echo "  Testing API..."
+    local model response http_code
+    model=$(echo "$config" | jq -r '.model // "unknown"')
 
-    local model
-    model=$(claude-token --config "$provider" | jq -r '.model // "unknown"')
-
-    local response http_code
     response=$(curl -sS -w "\n%{http_code}" --max-time 30 \
         -X POST "$base_url/v1/messages" \
         -H "x-api-key: $token" \
@@ -574,131 +464,64 @@ cmd_test() {
     http_code=$(echo "$response" | tail -n1)
 
     case "$http_code" in
-        200)
-            echo -e "  ${GREEN}✓ API connection successful${NC}"
-            ;;
-        401)
-            echo -e "  ${RED}✗ Authentication failed (invalid API key)${NC}"
-            return 1
-            ;;
-        403)
-            echo -e "  ${RED}✗ Access forbidden${NC}"
-            return 1
-            ;;
-        429)
-            echo -e "  ${YELLOW}⚠ Rate limited but reachable${NC}"
-            ;;
-        *)
-            echo -e "  ${YELLOW}⚠ HTTP $http_code${NC}"
-            ;;
+        200) echo -e "  ${GREEN}✓ API OK${NC}" ;;
+        401) echo -e "  ${RED}✗ Invalid API key${NC}"; return 1 ;;
+        403) echo -e "  ${RED}✗ Access forbidden${NC}"; return 1 ;;
+        429) echo -e "  ${YELLOW}⚠ Rate limited${NC}" ;;
+        *)   echo -e "  ${YELLOW}⚠ HTTP $http_code${NC}" ;;
     esac
 
-    echo ""
-    echo -e "${GREEN}✓ Provider $display_name is working${NC}"
+    echo -e "\n${GREEN}✓ Account $input is working${NC}"
 }
 
-# List accounts command
+# List accounts
 cmd_list() {
-    local provider="${1:-}"
+    local filter="${1:-}"
+    echo -e "${BLUE}Configured accounts:${NC}\n"
 
-    if [[ -z "$provider" ]]; then
-        # List all accounts for all providers
-        for p in "${PROVIDERS[@]}"; do
-            local accounts
-            accounts=$(list_accounts "$p" 2>/dev/null) || true
-            if [[ -n "$accounts" ]]; then
-                echo -e "${BLUE}$p:${NC}"
-                echo "$accounts" | sed 's/^/  /'
+    for account in "${ACCOUNTS[@]}"; do
+        local provider
+        provider=$(get_provider "$account")
+
+        [[ -n "$filter" && "$provider" != "$filter" ]] && continue
+
+        if is_third_party "$provider"; then
+            local parsed acct_name
+            parsed=$(parse_provider_account "$account")
+            acct_name="${parsed#*|}"
+            if key_exists "$provider" "$acct_name"; then
+                echo -e "  ${GREEN}✓${NC} $account"
+            else
+                echo -e "  ${RED}✗${NC} $account (no key)"
             fi
-        done
-    else
-        if ! is_valid_provider "$provider"; then
-            echo -e "${RED}Error: Unknown provider '$provider'${NC}" >&2
-            return 1
-        fi
-
-        local accounts
-        accounts=$(list_accounts "$provider" 2>/dev/null) || true
-        if [[ -n "$accounts" ]]; then
-            echo -e "${BLUE}Accounts for $provider:${NC}"
-            echo "$accounts" | sed 's/^/  /'
         else
-            echo -e "${YELLOW}No accounts configured for $provider${NC}"
+            echo -e "  ${GREEN}○${NC} $account (native)"
         fi
-    fi
+    done
 }
 
-# Delete account command
-cmd_delete() {
-    local input="${1:-}"
-
-    if [[ -z "$input" ]]; then
-        # Show only existing accounts
-        local existing
-        existing=$(build_existing_accounts)
-        if [[ -z "$existing" ]]; then
-            echo -e "${YELLOW}No accounts to delete${NC}"
-            return 0
-        fi
-
-        input=$(echo "$existing" | fzf \
-            --height=40% \
-            --border=rounded \
-            --header='Select account to delete' \
-            --preview='echo "Will delete: {}"') || true
-        [[ -z "$input" ]] && return 0
-    fi
-
-    local parsed provider account
-    parsed=$(parse_provider_account "$input")
-    provider=$(echo "$parsed" | cut -d'|' -f1)
-    account=$(echo "$parsed" | cut -d'|' -f2)
-
-    if ! account_exists "$provider" "$account"; then
-        echo -e "${RED}Error: Account does not exist${NC}" >&2
-        return 1
-    fi
-
-    local display_name
-    if [[ "$account" == "default" ]]; then
-        display_name="$provider"
-    else
-        display_name="$provider@$account"
-    fi
-
-    echo -e "${YELLOW}Delete account $display_name?${NC}"
-    printf "This will remove the API key from gopass. Continue? [y/N]: "
-    read -r confirm
-
-    if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
-        gopass rm -f "claude-code/providers/$provider/$account/api_key" 2>/dev/null || true
-        echo -e "${GREEN}✓ Account deleted${NC}"
-    else
-        echo "Cancelled"
-    fi
+# Show current
+cmd_current() {
+    echo -e "Current: ${GREEN}$(get_current)${NC}"
 }
 
 # Show help
 show_help() {
     cat << 'EOF'
-Claude Code Provider Manager
+Claude Code Account Manager
 
 Usage:
-  claude-manage                  Interactive fzf picker
-  claude-manage list [provider]  List accounts
-  claude-manage default [p@a]    Get/set default provider
-  claude-manage add [p@a]        Add new account (must not exist)
-  claude-manage update [p@a]     Update existing account API key
-  claude-manage delete [p@a]     Delete account
-  claude-manage test [p@a]       Test connectivity
-
-Examples:
-  claude-manage                    # Open fzf picker
-  claude-manage list               # List all accounts
-  claude-manage list deepseek      # List deepseek accounts
-  claude-manage add kimi@work      # Add new Kimi work account
-  claude-manage update kimi@work   # Update API key
-  claude-manage default deepseek   # Set DeepSeek as default
+  claude-manage                        Interactive menu
+  claude-manage switch [account]       Switch default account
+  claude-manage add-account            Add new account
+  claude-manage edit-account [account] Edit account config
+  claude-manage remove-account [acct]  Remove account
+  claude-manage add-key [account]      Add API key
+  claude-manage update-key [account]   Update API key
+  claude-manage delete-key [account]   Delete API key
+  claude-manage test [account]         Test connectivity
+  claude-manage list [provider]        List accounts
+  claude-manage current                Show current account
 EOF
 }
 
@@ -710,42 +533,19 @@ main() {
     require_cmd chezmoi jq fzf gopass || exit 1
 
     case "$cmd" in
-        ""|interactive)
-            fzf_manage
-            ;;
-        list|ls)
-            cmd_list "$@"
-            ;;
-        default)
-            cmd_default "$@"
-            ;;
-        add|new)
-            cmd_add "$@"
-            ;;
-        update|set)
-            cmd_update "$@"
-            ;;
-        delete|rm|remove)
-            cmd_delete "$@"
-            ;;
-        test)
-            cmd_test "$@"
-            ;;
-        help|--help|-h)
-            show_help
-            ;;
-        *)
-            # Check if it looks like a provider
-            local parsed_provider
-            parsed_provider=$(parse_provider_account "$cmd" | cut -d'|' -f1)
-            if is_valid_provider "$parsed_provider"; then
-                cmd_default "$cmd"
-            else
-                echo -e "${RED}Unknown command: $cmd${NC}" >&2
-                show_help
-                exit 1
-            fi
-            ;;
+        "")             fzf_menu ;;
+        switch|sw)      cmd_switch "$@" ;;
+        add-account)    cmd_add_account "$@" ;;
+        edit-account)   cmd_edit_account "$@" ;;
+        remove-account) cmd_remove_account "$@" ;;
+        add-key)        cmd_add_key "$@" ;;
+        update-key)     cmd_update_key "$@" ;;
+        delete-key)     cmd_delete_key "$@" ;;
+        test)           cmd_test "$@" ;;
+        list|ls)        cmd_list "$@" ;;
+        current)        cmd_current ;;
+        help|--help|-h) show_help ;;
+        *)              echo -e "${RED}Unknown: $cmd${NC}" >&2; show_help; exit 1 ;;
     esac
 }
 
