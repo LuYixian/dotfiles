@@ -4,14 +4,14 @@
 #
 # Environment variables:
 #   OPENROUTER_API_KEY - Required: API key for OpenRouter
-#   OPENROUTER_MODEL   - Optional: Model ID (default: deepseek/deepseek-chat-v3-0324:free)
+#   OPENROUTER_MODEL   - Optional: Model ID (default: google/gemini-2.0-flash-exp:free)
 #   OPENROUTER_REFERER - Optional: HTTP Referer header
 #   MAX_RETRIES        - Optional: Max retry attempts (default: 3)
 
 set -euo pipefail
 
 : "${OPENROUTER_API_KEY:?OPENROUTER_API_KEY is required}"
-: "${OPENROUTER_MODEL:=mistralai/devstral-2512:free}"
+: "${OPENROUTER_MODEL:=google/gemini-2.0-flash-exp:free}"
 : "${OPENROUTER_REFERER:=https://github.com}"
 : "${MAX_RETRIES:=3}"
 
