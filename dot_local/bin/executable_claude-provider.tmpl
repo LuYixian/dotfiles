@@ -160,9 +160,9 @@ fzf_manage() {
 
     local selected
     selected=$(build_provider_list_with_status | fzf --ansi \
-        --height=70% \
+        --height=50% \
         --border=rounded \
-        --header="Provider Manager (Current: $current)"$'\n'"Enter=set default, Ctrl-K=add key, Ctrl-T=test, Ctrl-D=delete, Ctrl-N=new" \
+        --header="Provider Manager (Current: $current)" \
         --preview='
             input=$(echo {} | sed "s/ ✓$//" | sed "s/^[[:space:]]*//")
             provider=$(echo "$input" | cut -d@ -f1)
@@ -200,12 +200,8 @@ fzf_manage() {
                 echo -e "\n\033[0;32m● This is the current default\033[0m"
             fi
         ' \
-        --preview-window='right:50%:wrap' \
-        --bind='enter:become(claude-provider default {})' \
-        --bind='ctrl-k:execute(claude-provider add-key {} </dev/tty >/dev/tty 2>&1)+reload(claude-provider --build-list)' \
-        --bind='ctrl-t:execute(claude-provider test {} </dev/tty >/dev/tty 2>&1)' \
-        --bind='ctrl-d:execute(claude-provider delete-account {} </dev/tty >/dev/tty 2>&1)+reload(claude-provider --build-list)' \
-        --bind='ctrl-n:execute(claude-provider new-account </dev/tty >/dev/tty 2>&1)+reload(claude-provider --build-list)') || true
+        --preview-window='right:45%:wrap' \
+        --bind='enter:become(claude-provider default {})') || true
 }
 
 # List providers command
@@ -563,22 +559,15 @@ show_help() {
 Claude Code Provider Manager
 
 Usage:
-  claude-provider                  Interactive fzf manager
+  claude-provider                  Interactive fzf picker (set default)
   claude-provider list             List all providers
   claude-provider default [p@a]    Get/set default provider
   claude-provider add-key [p@a]    Add/update API key
   claude-provider test [p@a]       Test connectivity
   claude-provider accounts [p]     List accounts for provider
 
-Key bindings (in fzf):
-  Enter     Set as default provider
-  Ctrl-K    Add/update API key
-  Ctrl-T    Test connectivity
-  Ctrl-D    Delete account
-  Ctrl-N    Create new account
-
 Examples:
-  claude-provider                    # Open fzf manager
+  claude-provider                    # Open fzf picker, Enter to set default
   claude-provider default deepseek   # Set DeepSeek as default
   claude-provider add-key kimi@work  # Add key for Kimi work account
   claude-provider test               # Test current provider
@@ -616,10 +605,6 @@ main() {
             ;;
         delete-account)
             cmd_delete_account "$@"
-            ;;
-        --build-list)
-            # Internal: for fzf reload
-            build_provider_list_with_status
             ;;
         help|--help|-h)
             show_help

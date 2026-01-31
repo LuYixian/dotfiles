@@ -26,28 +26,6 @@ claude-with kimi@work
 
 # Pass arguments to claude
 claude-with deepseek -- --resume
-```
-
-### FZF Key Bindings
-
-| Key      | Action                                   |
-| -------- | ---------------------------------------- |
-| `Enter`  | Launch claude with selected provider     |
-| `Ctrl-K` | Add/update API key for selected provider |
-| `Ctrl-T` | Test connectivity for selected provider  |
-| `Ctrl-R` | Refresh provider list                    |
-
-### Examples
-
-```bash
-# Temporarily use DeepSeek (no config change)
-claude-with deepseek
-
-# Use Kimi with work account
-claude-with kimi@work
-
-# Use Kimi and resume previous session
-claude-with kimi -- --resume
 
 # Interactive provider selection
 claude-with
@@ -82,36 +60,10 @@ claude-provider test kimi
 # List accounts
 claude-provider accounts
 claude-provider accounts deepseek
-```
 
-### FZF Key Bindings
-
-| Key      | Action             |
-| -------- | ------------------ |
-| `Enter`  | Set as default     |
-| `Ctrl-K` | Add/update API key |
-| `Ctrl-T` | Test connectivity  |
-| `Ctrl-D` | Delete account     |
-| `Ctrl-N` | Create new account |
-
-### Examples
-
-```bash
 # Interactive management
 claude-provider
-# → Opens FZF manager for setting default, adding keys, etc.
-
-# Switch default provider
-claude-provider default deepseek
-# → Updates chezmoi.toml
-# → Runs chezmoi apply
-# → Prompts to restart Claude Code
-
-# Add new API key
-claude-provider add-key kimi@work
-# → Prompts for API key
-# → Saves to gopass
-# → Optionally tests connectivity
+# → Opens FZF picker, Enter to set as default
 ```
 
 ## claude-token

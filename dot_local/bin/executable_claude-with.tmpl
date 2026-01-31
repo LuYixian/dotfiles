@@ -118,9 +118,9 @@ build_provider_list() {
 fzf_select_provider() {
     local selected
     selected=$(build_provider_list | fzf --ansi \
-        --height=60% \
+        --height=50% \
         --border=rounded \
-        --header=$'Select provider (Enter=launch, Ctrl-K=add key, Ctrl-T=test)\n' \
+        --header='Select provider to launch' \
         --preview='
             input={}
             provider=$(echo "$input" | cut -d@ -f1)
@@ -134,8 +134,7 @@ fzf_select_provider() {
             # Show config
             claude-token --config "$provider" 2>/dev/null | jq -r "
                 \"Model: \(.model // \"N/A\")\",
-                \"Base URL: \(.base_url // \"Native Anthropic (OAuth)\")\",
-                \"Timeout: \(.timeout_ms // \"default\")ms\"
+                \"Base URL: \(.base_url // \"Native Anthropic (OAuth)\")\"
             " 2>/dev/null || echo "Config not available"
             echo ""
 
@@ -145,15 +144,13 @@ fzf_select_provider() {
             else
                 if claude-token --config "$provider" 2>/dev/null | jq -e ".base_url // empty" >/dev/null 2>&1; then
                     echo -e "\033[0;31m✗ No token configured\033[0m"
+                    echo -e "Run: claude-provider add-key $input"
                 else
                     echo -e "\033[0;33m○ Native OAuth (no token needed)\033[0m"
                 fi
             fi
         ' \
-        --preview-window='right:50%:wrap' \
-        --bind='ctrl-k:execute(claude-provider add-key {} </dev/tty >/dev/tty 2>&1)+reload(claude-with --build-list)' \
-        --bind='ctrl-t:execute(claude-provider test {} </dev/tty >/dev/tty 2>&1)' \
-        --bind='ctrl-r:reload(claude-with --build-list)') || true
+        --preview-window='right:45%:wrap') || true
 
     echo "$selected"
 }
@@ -270,14 +267,8 @@ Options:
   --list, -l    List all provider@account combinations
   --help, -h    Show this help
 
-Key bindings (in fzf):
-  Enter     Launch claude with selected provider
-  Ctrl-K    Add/update API key for selected provider
-  Ctrl-T    Test connectivity for selected provider
-  Ctrl-R    Refresh provider list
-
 Examples:
-  claude-with                    # Open fzf picker
+  claude-with                    # Open fzf picker, Enter to launch
   claude-with deepseek           # Launch with DeepSeek
   claude-with deepseek@work      # Launch with specific account
   claude-with kimi -- --resume   # Launch Kimi and resume session
@@ -295,11 +286,6 @@ main() {
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            --build-list)
-                # Internal: for fzf reload
-                build_provider_list
-                exit 0
-                ;;
             --list|-l)
                 mode="list"
                 shift
