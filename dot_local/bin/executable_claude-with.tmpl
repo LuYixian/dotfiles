@@ -116,43 +116,64 @@ build_provider_list() {
 
 # FZF picker for provider selection
 fzf_select_provider() {
-    local selected
-    selected=$(build_provider_list | fzf --ansi \
-        --height=50% \
-        --border=rounded \
-        --header='Select provider to launch' \
-        --preview='
-            input={}
-            provider=$(echo "$input" | cut -d@ -f1)
-            account=$(echo "$input" | grep -o "@.*" | cut -c2-)
-            account=${account:-default}
-
-            echo -e "\033[1;34mProvider:\033[0m $provider"
-            echo -e "\033[1;34mAccount:\033[0m $account"
-            echo ""
-
-            # Show config
-            claude-token --config "$provider" 2>/dev/null | jq -r "
-                \"Model: \(.model // \"N/A\")\",
-                \"Base URL: \(.base_url // \"Native Anthropic (OAuth)\")\"
-            " 2>/dev/null || echo "Config not available"
-            echo ""
-
-            # Check token
-            if claude-token --check "$input" 2>/dev/null; then
-                echo -e "\033[0;32m✓ Token available\033[0m"
-            else
-                if claude-token --config "$provider" 2>/dev/null | jq -e ".base_url // empty" >/dev/null 2>&1; then
-                    echo -e "\033[0;31m✗ No token configured\033[0m"
-                    echo -e "Run: claude-provider add-key $input"
-                else
-                    echo -e "\033[0;33m○ Native OAuth (no token needed)\033[0m"
+    while true; do
+        local selected
+        selected=$({ echo -e "${YELLOW}+ Add/update API key...${NC}"; build_provider_list; } | fzf --ansi \
+            --height=50% \
+            --border=rounded \
+            --header='Select provider to launch' \
+            --preview='
+                input={}
+                if [[ "$input" == *"Add/update"* ]]; then
+                    echo -e "\033[1;33mAdd or update API key for a provider\033[0m"
+                    echo ""
+                    echo "Select this option to:"
+                    echo "  • Add API key for a new account"
+                    echo "  • Update existing API key"
+                    exit 0
                 fi
-            fi
-        ' \
-        --preview-window='right:45%:wrap') || true
+                provider=$(echo "$input" | cut -d@ -f1)
+                account=$(echo "$input" | grep -o "@.*" | cut -c2-)
+                account=${account:-default}
 
-    echo "$selected"
+                echo -e "\033[1;34mProvider:\033[0m $provider"
+                echo -e "\033[1;34mAccount:\033[0m $account"
+                echo ""
+
+                # Show config
+                claude-token --config "$provider" 2>/dev/null | jq -r "
+                    \"Model: \(.model // \"N/A\")\",
+                    \"Base URL: \(.base_url // \"Native Anthropic (OAuth)\")\"
+                " 2>/dev/null || echo "Config not available"
+                echo ""
+
+                # Check token
+                if claude-token --check "$input" 2>/dev/null; then
+                    echo -e "\033[0;32m✓ Token available\033[0m"
+                else
+                    if claude-token --config "$provider" 2>/dev/null | jq -e ".base_url // empty" >/dev/null 2>&1; then
+                        echo -e "\033[0;31m✗ No token configured\033[0m"
+                        echo -e "Run: claude-provider add-key $input"
+                    else
+                        echo -e "\033[0;33m○ Native OAuth (no token needed)\033[0m"
+                    fi
+                fi
+            ' \
+            --preview-window='right:45%:wrap') || true
+
+        # Handle selection
+        if [[ -z "$selected" ]]; then
+            echo ""
+            return
+        elif [[ "$selected" == *"Add/update"* ]]; then
+            # Delegate to claude-provider for key management
+            claude-provider new-account
+            # Loop back to show picker again
+        else
+            echo "$selected"
+            return
+        fi
+    done
 }
 
 # Launch claude with provider

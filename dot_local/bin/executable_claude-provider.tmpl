@@ -159,12 +159,20 @@ fzf_manage() {
     current=$(get_current)
 
     local selected
-    selected=$(build_provider_list_with_status | fzf --ansi \
+    selected=$({ echo -e "${YELLOW}+ Add/update API key...${NC}"; build_provider_list_with_status; } | fzf --ansi \
         --height=50% \
         --border=rounded \
         --header="Provider Manager (Current: $current)" \
         --preview='
-            input=$(echo {} | sed "s/ ✓$//" | sed "s/^[[:space:]]*//")
+            input=$(echo {} | sed "s/ ✓$//" | sed "s/^[[:space:]]*//" | sed "s/^+ .*//" )
+            if [[ -z "$input" || "$input" == *"Add/update"* ]]; then
+                echo -e "\033[1;33mAdd or update API key for a provider\033[0m"
+                echo ""
+                echo "Select this option to:"
+                echo "  • Add API key for a new account"
+                echo "  • Update existing API key"
+                exit 0
+            fi
             provider=$(echo "$input" | cut -d@ -f1)
             account=$(echo "$input" | grep -o "@.*" | cut -c2-)
             account=${account:-default}
@@ -200,8 +208,18 @@ fzf_manage() {
                 echo -e "\n\033[0;32m● This is the current default\033[0m"
             fi
         ' \
-        --preview-window='right:45%:wrap' \
-        --bind='enter:become(claude-provider default {})') || true
+        --preview-window='right:45%:wrap') || true
+
+    [[ -z "$selected" ]] && return 0
+
+    # Handle special entries
+    if [[ "$selected" == *"Add/update"* ]]; then
+        cmd_new_account
+    else
+        # Clean up selection and set as default
+        selected=$(echo "$selected" | sed 's/ ✓$//' | sed 's/^[[:space:]]*//')
+        cmd_default "$selected"
+    fi
 }
 
 # List providers command

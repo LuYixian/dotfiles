@@ -35,6 +35,10 @@ alias_if_cmd_exists "tldr" "man"
 alias_if_cmd_exists "hyperfine" "hf"
 alias_if_cmd_exists "lazygit" "lg"
 
+# Claude Code provider tools
+alias_if_cmd_exists "claude-with" "cw"
+alias_if_cmd_exists "claude-provider" "cprov"
+
 # ─────────────────────────────────────────────────────────────
 # Global Aliases (zsh only) - Expand anywhere in command line
 # Usage: cat file G error  =>  cat file | grep error
