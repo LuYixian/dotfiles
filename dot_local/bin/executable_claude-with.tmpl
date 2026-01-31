@@ -151,9 +151,9 @@ fzf_select_provider() {
             fi
         ' \
         --preview-window='right:50%:wrap' \
-        --bind='ctrl-k:execute(claude-provider add-key {} </dev/tty >/dev/tty 2>&1)+reload(eval "$(declare -f build_provider_list); build_provider_list")' \
+        --bind='ctrl-k:execute(claude-provider add-key {} </dev/tty >/dev/tty 2>&1)+reload(claude-with --build-list)' \
         --bind='ctrl-t:execute(claude-provider test {} </dev/tty >/dev/tty 2>&1)' \
-        --bind='ctrl-r:reload(eval "$(declare -f build_provider_list); build_provider_list")') || true
+        --bind='ctrl-r:reload(claude-with --build-list)') || true
 
     echo "$selected"
 }
@@ -166,8 +166,8 @@ launch_claude() {
     # Parse provider@account
     local parsed provider account
     parsed=$(parse_provider_account "$provider_account")
-    provider=$(echo "$parsed" | cut -d'|' -f1)
-    account=$(echo "$parsed" | cut -d'|' -f2)
+    provider="${parsed%%|*}"
+    account="${parsed#*|}"
 
     # Validate provider
     if ! is_valid_provider "$provider"; then
@@ -295,6 +295,11 @@ main() {
     # Parse arguments
     while [[ $# -gt 0 ]]; do
         case "$1" in
+            --build-list)
+                # Internal: for fzf reload
+                build_provider_list
+                exit 0
+                ;;
             --list|-l)
                 mode="list"
                 shift

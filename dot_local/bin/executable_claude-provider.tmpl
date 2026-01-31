@@ -89,6 +89,8 @@ set_provider() {
     local provider_account="$1"
     local tmp_file
     tmp_file=$(mktemp)
+    # Cleanup on exit/error
+    trap "rm -f '$tmp_file'" EXIT
 
     if grep -q "^claudeProviderAccount = " "$CHEZMOI_CONFIG"; then
         sed "s/^claudeProviderAccount = .*/claudeProviderAccount = \"$provider_account\"/" "$CHEZMOI_CONFIG" > "$tmp_file"
@@ -99,6 +101,7 @@ set_provider() {
         echo "claudeProviderAccount = \"$provider_account\"" >> "$tmp_file"
     fi
     mv "$tmp_file" "$CHEZMOI_CONFIG"
+    trap - EXIT  # Clear trap after successful move
 }
 
 # List accounts for a provider from gopass
