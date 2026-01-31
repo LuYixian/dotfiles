@@ -9,7 +9,7 @@
 {{- $config := index .claude.providers $provider -}}
 {
 {{- if and $config $config.base_url }}
-  "apiKeyHelper": "~/.local/bin/claude-get-token",
+  "apiKeyHelper": "~/.local/bin/claude-token",
 {{- end }}
   "mcpServers": {
     "github": {
