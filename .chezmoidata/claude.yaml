@@ -32,8 +32,7 @@ claude:
     kimi:
       base_url: https://api.kimi.com/coding
       models:
-        - kimi-k2.5
-        - kimi-k2
+        - kimi-k2-thinking-turbo
     # GLM (Zhipu AI): https://docs.bigmodel.cn/cn/guide/develop/claude
     glm:
       base_url: https://open.bigmodel.cn/api/anthropic
