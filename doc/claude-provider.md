@@ -37,12 +37,9 @@ Manage default provider configuration, accounts, and API keys.
 # FZF interactive manager
 claude-manage
 
-# List providers
-claude-manage provider
-
 # List accounts
-claude-manage accounts
-claude-manage accounts deepseek
+claude-manage list
+claude-manage list deepseek
 
 # Get/set default provider
 claude-manage default           # Show current

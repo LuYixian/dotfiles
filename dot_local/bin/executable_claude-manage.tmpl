@@ -4,13 +4,12 @@
 #
 # Usage:
 #   claude-manage                  # fzf interactive manager
-#   claude-manage provider         # List all providers
-#   claude-manage accounts [p]     # List accounts for provider
+#   claude-manage list [provider]  # List accounts
 #   claude-manage default [p@a]    # Get/set default provider
 #   claude-manage add [p@a]        # Add new account (must not exist)
 #   claude-manage update [p@a]     # Update existing account API key
-#   claude-manage test [p@a]       # Test connectivity
 #   claude-manage delete [p@a]     # Delete account
+#   claude-manage test [p@a]       # Test connectivity
 
 set -euo pipefail
 
@@ -236,39 +235,6 @@ fzf_manage() {
         # Clean up selection and set as default
         selected=$(echo "$selected" | sed 's/ ✓$//' | sed 's/^[[:space:]]*//')
         cmd_default "$selected"
-    fi
-}
-
-# List providers command
-cmd_provider() {
-    local current
-    current=$(get_current)
-    local current_provider current_account
-    local parsed
-    parsed=$(parse_provider_account "$current")
-    current_provider=$(echo "$parsed" | cut -d'|' -f1)
-    current_account=$(echo "$parsed" | cut -d'|' -f2)
-
-    echo -e "${BLUE}Available providers:${NC}"
-    echo ""
-
-{{- range $name, $config := .claude.providers }}
-    if [[ "{{ $name }}" == "$current_provider" ]]; then
-        if [[ "$current_account" == "default" ]]; then
-            echo -e "  ${GREEN}✓ {{ $name }}${NC} - {{ index $config "model" }}"
-        else
-            echo -e "  ${GREEN}✓ {{ $name }}@${current_account}${NC} - {{ index $config "model" }}"
-        fi
-    else
-        echo -e "    {{ $name }} - {{ index $config "model" }}"
-    fi
-{{- end }}
-
-    echo ""
-    if [[ "$current_account" == "default" ]]; then
-        echo -e "Current: ${GREEN}$current_provider${NC}"
-    else
-        echo -e "Current: ${GREEN}$current_provider@$current_account${NC}"
     fi
 }
 
@@ -631,8 +597,8 @@ cmd_test() {
     echo -e "${GREEN}✓ Provider $display_name is working${NC}"
 }
 
-# Accounts command
-cmd_accounts() {
+# List accounts command
+cmd_list() {
     local provider="${1:-}"
 
     if [[ -z "$provider" ]]; then
@@ -719,8 +685,7 @@ Claude Code Provider Manager
 
 Usage:
   claude-manage                  Interactive fzf picker
-  claude-manage provider         List all providers
-  claude-manage accounts [p]     List accounts for provider
+  claude-manage list [provider]  List accounts
   claude-manage default [p@a]    Get/set default provider
   claude-manage add [p@a]        Add new account (must not exist)
   claude-manage update [p@a]     Update existing account API key
@@ -729,7 +694,8 @@ Usage:
 
 Examples:
   claude-manage                    # Open fzf picker
-  claude-manage provider           # List all providers
+  claude-manage list               # List all accounts
+  claude-manage list deepseek      # List deepseek accounts
   claude-manage add kimi@work      # Add new Kimi work account
   claude-manage update kimi@work   # Update API key
   claude-manage default deepseek   # Set DeepSeek as default
@@ -747,8 +713,8 @@ main() {
         ""|interactive)
             fzf_manage
             ;;
-        provider|providers|list|ls)
-            cmd_provider
+        list|ls)
+            cmd_list "$@"
             ;;
         default)
             cmd_default "$@"
@@ -764,9 +730,6 @@ main() {
             ;;
         test)
             cmd_test "$@"
-            ;;
-        accounts)
-            cmd_accounts "$@"
             ;;
         help|--help|-h)
             show_help
